@@ -1,0 +1,2 @@
+include schema/temoa_mod.sqlite
+include schema/universal.sqlite
