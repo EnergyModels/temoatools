@@ -1,3 +1,7 @@
 # Remove filetype from filename
-def name(db):
-    return db[:db.find('.')]
+def remove_ext(filename):
+    """
+
+    :string filename: object
+    """
+    return filename[:filename.find('.')]
