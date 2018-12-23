@@ -9,7 +9,5 @@ setup(name='temoatools',
       license='MIT',
       packages=['temoatools'],
       zip_safe=False,
-      include_package_data=True,
-      data_files=[('db_schema', ['bm/b1.gif', 'bm/b2.gif']),
-                  ('config', ['cfg/data.cfg']),
-                  ('/etc/init.d', ['init-script'])])
+      package_data = {},
+      include_package_data=True)

@@ -1,4 +1,6 @@
 # Remove filetype from filename
+
+
 def remove_ext(filename):
     """
 
