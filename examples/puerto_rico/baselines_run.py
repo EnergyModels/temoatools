@@ -7,17 +7,9 @@ Created on Fri Nov 16 18:21:13 2018
 #=======================================================
 # Imports
 #=======================================================
-# General
-import os
+import temoatools as tt
 import multiprocessing
 from joblib import Parallel, delayed, parallel_backend
-
-# TemoaTools
-os.chdir("TemoaTools")
-from XLS2DB import moveXLS2DB
-from TemoaModelBuild import BuildModel
-from TemoaModelRun   import RunModel
-os.chdir("..")
 
 #=======================================================
 # Function to evaluate a single model
@@ -28,11 +20,11 @@ def evaluateModel(modelInputs, scenarioXLSX, scenarioName, temoa_paths):
     model_filename = scenarioName
     
     # Build Model
-    BuildModel(modelInputs,scenarioXLSX,scenarioName,model_filename)
+    tt.build(modelInputs,scenarioXLSX,scenarioName,model_filename)
     
     # Run Model
     saveEXCEL=True
-    RunModel(model_filename,temoa_paths,saveEXCEL=saveEXCEL)
+    tt.run(model_filename,temoa_paths,saveEXCEL=saveEXCEL)
     
 if __name__ == '__main__':
     

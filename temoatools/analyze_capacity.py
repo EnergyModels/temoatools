@@ -18,7 +18,7 @@ resolution = 1000 #DPI
 def name(db):
     return db[:db.find('.')]
 #==============================================================================
-def MultipleDB(folders,dbs,switch='fuel',group={},sectorName='electric',saveData='N',createPlots='N'):
+def getCapacity(folders,dbs,switch='fuel',group={},sectorName='electric',saveData='N',createPlots='N'):
 #    inputs:
 #    1) folders         - paths containing dbs (list or single string if all in the same path)
 #    2) dbs             - names of databases (list)

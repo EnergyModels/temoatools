@@ -9,24 +9,29 @@ import os
 import pandas as pd
 import shutil
 
-
 # ============================================================================#
 # Run Temoa Model using a batch File
 # ============================================================================#
-def run(model_filename, temoa_paths, saveEXCEL=False):
+def run(model_filename, temoa_paths, saveEXCEL=False, data_path='data',debug=False):
     # Keep track of main(working) directory
     workDir = os.getcwd()
 
     # Unpack temoa_paths
+    os.chdir(data_path)
     df = pd.read_csv(temoa_paths, delimiter=',')
-    Conda_Batch = df.iloc[0, 0]
-    Temoa_Dir = df.iloc[0, 1]
+    df = df.set_index('name')
+    Conda_Batch = df.loc['Conda_batch','path']
+    Temoa_Dir = df.loc['Temoa_Dir','path']
+
+    if debug==True:
+        print "Conda_Batch: " + Conda_Batch
+        print "Temoa_Dir  : " + Temoa_Dir
 
     # Model Directory
-    model_directory = workDir + "\\Databases"
+    model_directory = workDir + "\\databases"
 
     # Directory to hold configuration files
-    configDir = workDir + "\\Configs"
+    configDir = workDir + "\\configs"
     try:
         os.stat(configDir)
     except:
@@ -36,8 +41,11 @@ def run(model_filename, temoa_paths, saveEXCEL=False):
     # Create configuration file
     config_file = CreateConfigFile(model_directory, model_filename, saveEXCEL=saveEXCEL)
 
+    if debug==True:
+        print "config_file: " + config_file
+
     # Directory to hold configuration files
-    batchDir = workDir + "\\Batch"
+    batchDir = workDir + "\\batch"
     try:
         os.stat(batchDir)
     except:
@@ -46,6 +54,9 @@ def run(model_filename, temoa_paths, saveEXCEL=False):
 
     # Create Batch File
     batchPath = CreateBatchFile(model_filename, configDir, config_file, Conda_Batch, Temoa_Dir)
+
+    if debug==True:
+        print "batchPath: " + batchPath
 
     # Run Batch File
     os.system(batchPath)

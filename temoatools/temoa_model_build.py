@@ -14,6 +14,7 @@ import sqlite3
 import pandas as pd
 import copy
 import numpy as np
+import temoatools as tt
 
 #=============================================================================
 # Table structures used for inputs, local variables and temoa(outputs)
@@ -55,15 +56,15 @@ demand_commodity = 'ELC_DMD'
 #=============================================================================
 # Function to build a temoa model
 #=============================================================================
-def build(modelInputs,scenarioXLSX,scenarioName,outFilename,sensitivity={},MCinputs={}):
+def build(modelInputs,scenarioXLSX,scenarioName,outFilename,sensitivity={},MCinputs={}, path='.' ):
     # Get empty dictionary of local variables
     local = getEmptyLocalDict()
     
     # Process scenarios
-    local = processScenarios(scenarioXLSX,scenarioName,local)
+    local = processScenarios(scenarioXLSX,scenarioName,local,path)
     
     # Read-in inputs as dictionary
-    inputs = inputs2Dict(modelInputs)
+    inputs = inputs2Dict(modelInputs,path)
     
     # Apply Sensitvity to inputs
     if debug == True:
@@ -101,7 +102,11 @@ def build(modelInputs,scenarioXLSX,scenarioName,outFilename,sensitivity={},MCinp
 #=============================================================================
 # Move modelInputs to a dictionary using pandas
 #=============================================================================
-def inputs2Dict(modelInputs):
+def inputs2Dict(modelInputs,path):
+
+    # Keep track of working directory
+    workDir = os.getcwd()
+    os.chdir(path)
 
     # Set-up sqlite connection
     conn = sqlite3.connect(modelInputs)
@@ -128,8 +133,11 @@ def inputs2Dict(modelInputs):
     # Set index using fuel for easier access
     inputs['Fuels']  = inputs['Fuels'].set_index('fuel')    
     # Set index using connection for easier access
-    inputs['Connections']               = inputs['Connections'].set_index('connection')   
-    
+    inputs['Connections']               = inputs['Connections'].set_index('connection')
+
+    # Return to original directory
+    os.chdir(workDir)
+
     # Return dictionary of inputs
     return inputs
 
@@ -154,7 +162,7 @@ def Write2Temoa(outputs,outFilename):
     workDir = os.getcwd()
     
     # Directory to hold empty (unrun) database files
-    databaseDir = workDir + "\\Databases"
+    databaseDir = workDir + "\\databases"
     try:
         os.stat(databaseDir)
     except:
@@ -162,9 +170,9 @@ def Write2Temoa(outputs,outFilename):
         
     # Create New SQL File
     # Set Filenames
-    emptydB = "db_schema_temoa_mod.sqlite" 
+    emptydB = tt.resource_path + "\\db_schema_temoa_mod.sqlite"
     outputdB = databaseDir + '\\' + outFilename + '.sqlite'
-            
+
     # Delete old *.sqlite file (if it already exists) and copy/rename copy of temoa_schema.sqlite
     if os.path.isfile(outputdB):
         os.remove(outputdB)
@@ -215,8 +223,12 @@ def getEmptyLocalDict():
 #=============================================================================
 # Process Scenarios
 #=============================================================================
-def processScenarios(scenarioXLSX,scenarioName,local):
-    
+def processScenarios(scenarioXLSX,scenarioName,local,path):
+
+    # Keep track of working directory
+    workDir = os.getcwd()
+    os.chdir(path)
+
     # Unpack PowerPlants
     df = pd.read_excel(scenarioXLSX,sheetname = 'PowerPlants')
     ind = df.loc[:,scenarioName]=='Y'
@@ -250,9 +262,11 @@ def processScenarios(scenarioXLSX,scenarioName,local):
         # Maximum growth rate
     local['MaxGrowthRate']     = df.loc['MaxGrowthRate',scenarioName] 
         # Minimum initial growth
-    local['MinGrowthSeed']     = df.loc['MinGrowthSeed',scenarioName] 
-    
-    
+    local['MinGrowthSeed']     = df.loc['MinGrowthSeed',scenarioName]
+
+    # Return to working directory
+    os.chdir(workDir)
+
     # return local
     return local
     

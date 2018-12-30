@@ -9,5 +9,5 @@ setup(name='temoatools',
       license='MIT',
       packages=['temoatools'],
       zip_safe=False,
-      package_data = {},
-      include_package_data=True)
+      include_package_data=True,
+      install_requires=['pandas','numpy'])

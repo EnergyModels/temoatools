@@ -17,7 +17,7 @@ resolution = 1000 #DPI
 def name(db):
     return db[:db.find('.')]
 #==============================================================================
-def MultipleDB(folders, dbs, conversion=1E-6, saveData='N', createPlots='N'):
+def getEmissions(folders, dbs, conversion=1E-6, saveData='N', createPlots='N'):
 #==============================================================================      
 #    inputs:
 #    1) folders         - paths containing dbs (list or single string if all in the same path)

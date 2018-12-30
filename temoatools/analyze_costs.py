@@ -18,7 +18,7 @@ resolution = 1000 #DPI
 def name(db):
     return db[:db.find('.')]
 #==============================================================================
-def MultipleDB(folders, dbs, elc_dmd='ELC_DMD', conversion=0.359971, saveData='N', createPlots ='N'):    
+def getCosts(folders, dbs, elc_dmd='ELC_DMD', conversion=0.359971, saveData='N', createPlots ='N'):
 #    inputs:
 #    1) folders         - paths containing dbs (list or single string if all in the same path)
 #    2) dbs             - names of databases (list)

@@ -1,2 +1,2 @@
-include temoatools/db_schema/db_schema_temoa_mod.sqlite
-include temoatools/db_schema/db_schema)universal.sqlite
+include temoatools/resources/db_schema_temoa_mod.sqlite
+include temoatools/resources/db_schema_universal.db

@@ -17,7 +17,7 @@ resolution = 1000 #DPI
 def name(db):
     return db[:db.find('.')]
 #==============================================================================
-def MultipleDB(folders,dbs,switch='fuel',sectorName='electric',saveData='N',createPlots='N',conversion=277.777778):
+def getActivity(folders,dbs,switch='fuel',sectorName='electric',saveData='N',createPlots='N',conversion=277.777778):
 #    inputs:
 #    1) folders         - paths containing dbs (list or single string if all in the same path)
 #    2) dbs             - names of databases (list)
