@@ -8,6 +8,7 @@ Created on Mon Apr 16 14:05:50 2018
 import os
 import pandas as pd
 import shutil
+from help_functions import remove_ext
 
 # ============================================================================#
 # Run Temoa Model using a batch File
@@ -85,13 +86,16 @@ def run(model_filename, temoa_paths, saveEXCEL=False, data_path='data',debug=Fal
 # ============================================================================#
 def CreateBatchFile(model_filename, configDir, config_file, Conda_Batch, Temoa_Dir):
     # Create Batch File
-    batchFile = "run_" + model_filename + ".bat"
+    batchFile = "run_" + remove_ext(model_filename) + ".bat"
+    if debug==True:
+        print "batchFile: " + batchFile
     f = open(batchFile, "w")
     f.write(
         "call " + Conda_Batch + " \n")  # Activate Conda2 Environment, example: C:\\Users\\jab6ft\\AppData\\Local\\Continuum\\anaconda2\\Scripts\\activate.bat
     f.write("cd " + Temoa_Dir + "\n")  # Temoa Directory, example:
     f.write("python temoa_model/ --config=" + configDir + "\\" + config_file + "\n")
-    f.write("pausepause")
+    if debug == True:
+        f.write("pause")
     f.close()
 
     batchPath = os.getcwd() + '\\' + batchFile
@@ -104,10 +108,12 @@ def CreateBatchFile(model_filename, configDir, config_file, Conda_Batch, Temoa_D
 # ============================================================================#
 def CreateConfigFile(model_directory, model_filename, saveEXCEL=False, saveTEXTFILE=False, keep_pyomo_lp_file=False):
     # Locate Database
-    dBpath = model_directory + "\\" + model_filename + '.sqlite'
+    dBpath = model_directory + "\\" + remove_ext(model_filename) + '.sqlite'
 
     # Write Config File
-    config_file = "config_" + model_filename + ".txt"
+    config_file = "config_" + remove_ext(model_filename) + ".txt"
+    if debug==True:
+        print "config_file: " + config_file
     f = open(config_file, "w")
     # ---
     f.write(
