@@ -1,12 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Nov 16 18:21:13 2018
-
-@author: benne
-"""
-#=======================================================
-# Imports
-#=======================================================
 import temoatools as tt
 import multiprocessing
 from joblib import Parallel, delayed, parallel_backend
@@ -43,7 +34,7 @@ if __name__ == '__main__':
     
     #====================================    
     # Perform Simulations
-    option = 1 # 1 - Run single, 2 - Run all
+    option = 2 # 1 - Run single, 2 - Run all
     #====================================
     num_cores = multiprocessing.cpu_count() -1 # Save one core for other processes
     
