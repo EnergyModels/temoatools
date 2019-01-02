@@ -40,7 +40,7 @@ def run(model_filename, temoa_paths, saveEXCEL=False, data_path='data',debug=Fal
     os.chdir(configDir)
 
     # Create configuration file
-    config_file = CreateConfigFile(model_directory, model_filename, saveEXCEL=saveEXCEL)
+    config_file = CreateConfigFile(model_directory, model_filename, saveEXCEL=saveEXCEL,debug=debug)
 
     if debug==True:
         print "config_file: " + config_file
@@ -54,7 +54,7 @@ def run(model_filename, temoa_paths, saveEXCEL=False, data_path='data',debug=Fal
     os.chdir(batchDir)
 
     # Create Batch File
-    batchPath = CreateBatchFile(model_filename, configDir, config_file, Conda_Batch, Temoa_Dir)
+    batchPath = CreateBatchFile(model_filename, configDir, config_file, Conda_Batch, Temoa_Dir,debug=debug)
 
     if debug==True:
         print "batchPath: " + batchPath
@@ -84,7 +84,7 @@ def run(model_filename, temoa_paths, saveEXCEL=False, data_path='data',debug=Fal
 # ============================================================================#
 # Create Batch File
 # ============================================================================#
-def CreateBatchFile(model_filename, configDir, config_file, Conda_Batch, Temoa_Dir):
+def CreateBatchFile(model_filename, configDir, config_file, Conda_Batch, Temoa_Dir,debug=False):
     # Create Batch File
     batchFile = "run_" + remove_ext(model_filename) + ".bat"
     if debug==True:
@@ -106,7 +106,7 @@ def CreateBatchFile(model_filename, configDir, config_file, Conda_Batch, Temoa_D
 # ============================================================================#
 # Create Config File
 # ============================================================================#
-def CreateConfigFile(model_directory, model_filename, saveEXCEL=False, saveTEXTFILE=False, keep_pyomo_lp_file=False):
+def CreateConfigFile(model_directory, model_filename, saveEXCEL=False, saveTEXTFILE=False, keep_pyomo_lp_file=False,debug=False):
     # Locate Database
     dBpath = model_directory + "\\" + remove_ext(model_filename) + '.sqlite'
 

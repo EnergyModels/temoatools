@@ -6,4 +6,8 @@ def remove_ext(filename):
 
     :string filename: object
     """
-    return filename[:filename.find('.')]
+    ind = filename.find('.')
+    if not ind == -1:
+        return filename[ind]
+    else:
+        return filename

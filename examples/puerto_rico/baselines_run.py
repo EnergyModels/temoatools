@@ -14,36 +14,36 @@ from joblib import Parallel, delayed, parallel_backend
 #=======================================================
 # Function to evaluate a single model
 #=======================================================
-def evaluateModel(modelInputs, scenarioXLSX, scenarioName, temoa_paths):  
+def evaluateModel(modelInputs, scenarioInputs, scenarioName, paths):
 
     # Unique filename
     model_filename = scenarioName
     
     # Build Model
-    tt.build(modelInputs,scenarioXLSX,scenarioName,model_filename)
+    tt.build(modelInputs, scenarioInputs, scenarioName, model_filename, path='data')
     
     # Run Model
     saveEXCEL=True
-    tt.run(model_filename,temoa_paths,saveEXCEL=saveEXCEL)
+    tt.run(model_filename, paths, saveEXCEL=True, data_path='data', debug=False)
     
 if __name__ == '__main__':
     
     #=======================================================
     # Model Inputs
     #=======================================================
-    modelInputs_XLSX  = 'A_Input_Data.xlsx'
-    scenarioInputs    = 'A_Input_Scenarios.xlsx'
+    modelInputs_XLSX  = 'data.xlsx'
+    scenarioInputs    = 'scenarios.xlsx'
     scenarioNames     = ['A','B','C','D']
-    paths             = 'A_Input_Paths.csv'
+    paths             = 'paths.csv'
 
     #=======================================================
     # Move modelInputs_XLSX to database
     #=======================================================
-    modelInputs = moveXLS2DB(modelInputs_XLSX)
+    modelInputs = tt.move_data_to_db(modelInputs_XLSX, path='data')
     
     #====================================    
     # Perform Simulations
-    option = 2 # 1 - Run single, 2 - Run all
+    option = 1 # 1 - Run single, 2 - Run all
     #====================================
     num_cores = multiprocessing.cpu_count() -1 # Save one core for other processes
     
