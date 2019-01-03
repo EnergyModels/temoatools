@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Dec 10 12:55:13 2018
-
-@author: benne
-"""
 import os
 import sqlite3
 import pandas as pd

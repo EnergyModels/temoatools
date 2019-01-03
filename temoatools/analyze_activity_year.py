@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Dec 10 14:38:20 2018
-
-@author: benne
-"""
 import os
 import sqlite3
 import pandas as pd
@@ -67,19 +61,28 @@ def getActivity(folders,dbs,switch='fuel',sectorName='electric',saveData='N',cre
     if createPlots == 'Y':
         # Create plots
         n_subplots = len(dbs)
-        f,a = plt.subplots(n_subplots,1,sharex=True, sharey=True)
-        if n_subplots > 1:
-            a = a.ravel()
-        # Create subplots
-        for idx,ax in enumerate(a):
-            db = dbs[idx]
+        if n_subplots == 1:
+            db = dbs[0]
             if switch == 'fuel':
                 titlename = name(db) + ' by fuel'
             elif switch == 'tech':
                 titlename = name(db) + ' by tech'
-            activity[name(db)].plot.bar(ax=ax,stacked=True, title=titlename)
+            ax = activity[name(db)].plot.bar(stacked=True, title=titlename)
             ax.set_xlabel("Year [-]")
             ax.set_ylabel("Activity [GWh]")
+        else:  # With subplots
+            f,a = plt.subplots(n_subplots,1,sharex=True, sharey=True)
+            a = a.ravel()
+            # Create subplots
+            for idx,ax in enumerate(a):
+                db = dbs[idx]
+                if switch == 'fuel':
+                    titlename = name(db) + ' by fuel'
+                elif switch == 'tech':
+                    titlename = name(db) + ' by tech'
+                activity[name(db)].plot.bar(ax=ax,stacked=True, title=titlename)
+                ax.set_xlabel("Year [-]")
+                ax.set_ylabel("Activity [GWh]")
 
         if switch == 'fuel':
             savename  = 'Results_yearlyActivity_byFuel.png'

@@ -14,7 +14,7 @@ dbs = ["A.sqlite","B.sqlite","C.sqlite","D.sqlite"]
 #===============
 if analyzeSingle == True:    
     # Inputs
-    db = [dbs[0]]
+    db = dbs[0]
     createPlots =    'Y'         # Create default plots
     saveData =       'Y'         # Do not save data as a csv or xls
     sectorName =     'electric'  # Name of sector to be analyzed
@@ -24,7 +24,6 @@ if analyzeSingle == True:
     
     # Emissions
     yearlyEmissions, avgEmissions = tt.getEmissions(folder, db, saveData=saveData, createPlots=createPlots)
-
 
     # Analyze capacity and activity by fuel types
     switch = 'fuel'

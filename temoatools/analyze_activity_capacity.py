@@ -1,14 +1,6 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Dec 10 14:15:42 2018
-
-@author: benne
-"""
-
 import os
 import sqlite3
 import pandas as pd
-import matplotlib.pyplot as plt
 
 debug = False
 resolution = 1000 #DPI

@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Dec 10 14:15:42 2018
-
-@author: benne
-"""
-
 import os
 import sqlite3
 import pandas as pd
@@ -69,7 +62,19 @@ def getCapacity(folders,dbs,switch='fuel',group={},sectorName='electric',saveDat
         # Create plots
         n_subplots = len(dbs)
 
-        if n_subplots>1:
+        if n_subplots == 1: # Only one plot
+            db = dbs[0]
+            if switch == 'fuel':
+                titlename = name(db) + ' by fuel'
+            elif switch == 'tech':
+                titlename = name(db) + ' by tech'
+            elif switch == 'techgroup':
+                titlename = name(db) + ' by tech group'
+            ax = capacity[name(db)].plot.bar(stacked=True, title=titlename)
+            ax.set_xlabel("Year [-]")
+            ax.set_ylabel("Capacity [GW]")
+
+        else: # With subplots
             f, a = plt.subplots(n_subplots, 1, sharex=True, sharey=True)
             a = a.ravel()
             # Create subplots
@@ -84,17 +89,6 @@ def getCapacity(folders,dbs,switch='fuel',group={},sectorName='electric',saveDat
                 capacity[name(db)].plot.bar(ax=ax,stacked=True, title=titlename)
                 ax.set_xlabel("Year [-]")
                 ax.set_ylabel("Capacity [GW]")
-        else:
-            db = dbs[0]
-            if switch == 'fuel':
-                titlename = name(db) + ' by fuel'
-            elif switch == 'tech':
-                titlename = name(db) + ' by tech'
-            elif switch == 'techgroup':
-                titlename = name(db) + ' by tech group'
-            ax = capacity[name(db)].plot.bar(stacked=True, title=titlename)
-            ax.set_xlabel("Year [-]")
-            ax.set_ylabel("Capacity [GW]")
 
         if switch == 'fuel':
             savename  = 'Results_yearlyCapacity_byFuel.png'
