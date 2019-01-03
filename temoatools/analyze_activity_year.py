@@ -60,7 +60,8 @@ def getActivity(folders,dbs,switch='fuel',sectorName='electric',saveData='N',cre
         # Create plots
         n_subplots = len(dbs)
         f,a = plt.subplots(n_subplots,1,sharex=True, sharey=True)
-        a = a.ravel()
+        if len(a)>1:
+            a = a.ravel()
         # Create subplots
         for idx,ax in enumerate(a):
             db = dbs[idx]
