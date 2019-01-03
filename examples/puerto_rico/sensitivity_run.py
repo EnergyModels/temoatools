@@ -41,7 +41,7 @@ def evaluateModelSensitivity(modelInputs, scenarioXLSX, scenarioName, temoa_path
     RunModel(model_filename,temoa_paths,saveEXCEL=saveEXCEL)
     
     # Analyze Results
-    folder = os.getcwd() + '\\Databases'
+    folder = os.getcwd() + '\\databases'
     db = model_filename + '.sqlite'
     yearlyCosts, LCOE = Costs.SingleDB(folder, db)
     yearlyEmissions, avgEmissions = Emissions.SingleDB(folder, db)
@@ -82,7 +82,7 @@ if __name__ == '__main__':
     # Create directory to hold sensitivity inputs and outputs
     #=======================================================
     workDir = os.getcwd()
-    sensDir = workDir + "\\Sensitivity"
+    sensDir = workDir + "\\sensitivity"
     try:
         os.stat(sensDir)
     except:

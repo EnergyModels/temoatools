@@ -60,7 +60,7 @@ def getActCap(folders,dbs,switch='fuel',group={},sectorName='electric',saveData=
     
     # Directory to hold results
     if saveData == 'Y' or createPlots == 'Y':
-        resultsDir = origDir + "\\Results"
+        resultsDir = origDir + "\\results"
         try:
             os.stat(resultsDir)
         except:
@@ -253,7 +253,7 @@ def SingleDB(folder,db,switch='fuel',group={},sectorName='electric',saveData='N'
             
 #    # Directory to hold results
 #    if saveData == 'Y' or createPlots == 'Y':
-#        resultsDir = origDir + "\\Results"
+#        resultsDir = origDir + "\\results"
 #        try:
 #            os.stat(resultsDir)
 #        except:

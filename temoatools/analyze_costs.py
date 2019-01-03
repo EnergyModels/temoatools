@@ -66,7 +66,7 @@ def getCosts(folders, dbs, elc_dmd='ELC_DMD', conversion=0.359971, saveData='N',
         
     # Directory to hold results
     if saveData == 'Y' or createPlots == 'Y':
-        resultsDir = origDir + "\\Results"
+        resultsDir = origDir + "\\results"
         try:
             os.stat(resultsDir)
         except:
@@ -379,7 +379,7 @@ def SingleDB(folder, db, elc_dmd='ELC_DMD', conversion=0.359971, saveCSV='N', cr
        
     # Directory to hold results
     if saveCSV == 'Y' or createPlots == 'Y':
-        resultsDir = origDir + "\\Results"
+        resultsDir = origDir + "\\results"
         try:
             os.stat(resultsDir)
         except:

@@ -22,7 +22,7 @@ os.chdir("..")
 #------------------------
 # Inputs
 #------------------------
-folder = '\\Sensitivity'
+folder = '\\sensitivity'
 cases  = ['SensitivityResults_A.csv','SensitivityResults_B.csv','SensitivityResults_C.csv','SensitivityResults_D.csv']
 labels = ["Centralized","Regionalized","Small-scale PV + Batt","Market Driven"]
 

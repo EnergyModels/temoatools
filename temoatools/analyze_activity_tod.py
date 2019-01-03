@@ -146,7 +146,7 @@ def SingleDB(folder,db,switch='fuel',sectorName='electric',saveData='N',createPl
     
     # Directory to hold results
     if saveData == 'Y' or createPlots == 'Y':
-        resultsDir = origDir + "\\Results"
+        resultsDir = origDir + "\\results"
         try:
             os.stat(resultsDir)
         except:

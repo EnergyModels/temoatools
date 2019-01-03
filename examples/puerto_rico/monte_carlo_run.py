@@ -84,7 +84,7 @@ if __name__ == '__main__':
     # Create directory to hold inputs and outputs
     #=======================================================
     workDir = os.getcwd()
-    sensDir = workDir + "\\MonteCarlo"
+    sensDir = workDir + "\\monteCarlo"
     try:
         os.stat(sensDir)
     except:
