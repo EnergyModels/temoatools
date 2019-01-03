@@ -1,29 +1,10 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Jun 18 17:19:50 2018
-
-@author: jab6ft
-"""
-#=======================================================
-# Imports
-#=======================================================
-# General
 import os
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 import pandas as pd
-
-# TemoaTools
-os.chdir("TemoaTools")
-import AnalyzeCosts         as Costs
-import AnalyzeEmissions     as Emissions
-import AnalyzeCapacity      as Capacity
-import AnalyzeActivityYear  as ActivityYear
-import AnalyzeActivityTOD   as ActivityTOD
-from   CustomAnalysisGroups  import getCustomGroup
-import AnalyzeActivityAndCapacity as Comb
-os.chdir("..")
+import temoatools as tt
+from   custom_analysis_groups  import getCustomGroup
 
 #=============================================================================#
 # Common Inputs
@@ -44,7 +25,7 @@ def name(db):
 savename = 'Fig_CostByYear.png'
 #=============================================================================#
 # Analyze and get results
-yearlyCosts, LCOE = Costs.MultipleDB(folder, dbs)
+yearlyCosts, LCOE = tt.getCosts(folder, dbs)
 
 # Create plot
 plt.figure()
@@ -65,8 +46,7 @@ savename = 'Fig_EmissionsByYear.png'
 #=============================================================================#
 # Analyze and get results
 #yearlyEmissions, avgEmissions = Emissions.SingleDB(folder, dbs[0])
-yearlyEmissions, avgEmissions = Emissions.MultipleDB(folder, dbs)
-
+yearlyEmissions, avgEmissions = tt.getEmissions(folder, dbs)
 
 # Create plot
 plt.figure()
@@ -88,7 +68,7 @@ plt.savefig(savename,dpi=resolution,bbox_inches="tight")
 switch     = 'techgroup'
 group      = getCustomGroup(groupNum=1)
 sectorName = 'electric'  # Name of sector to be analyzed
-activity,capacity,df = Comb.MultipleDB(folder, dbs, switch=switch,group=group,sectorName=sectorName)
+activity,capacity,df = tt.getActCap(folder, dbs, switch=switch,group=group,sectorName=sectorName)
 #sns.relplot(x='Year',y='Capacity',col='Group',hue='Scenario',col_wrap=4,kind='line',data=df)
 #sns.relplot(x='Year',y='Activity',col='Group',hue='Scenario',col_wrap=4,kind='line',data=df)
 
@@ -218,6 +198,7 @@ plt.tight_layout()
 
 # Save
 plt.savefig(savename,dpi=resolution,bbox_inches="tight")
+
 
 #%%=============================================================================#
 ## 5) Combine Capacity and Activity by year and fuel
