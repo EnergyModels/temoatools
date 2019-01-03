@@ -1,23 +1,9 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 12 10:42:54 2018
-
-@author: benne
-"""
-
-#=======================================================
-# Imports
-#=======================================================
-# General
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# TemoaTools
-os.chdir("TemoaTools")
-from SensitivitySupport import removeCamelHump,formatPlantName,formatFuelName,formatConnName
-os.chdir("..")
+from sensitivity_support import removeCamelHump,formatPlantName,formatFuelName,formatConnName
 
 #------------------------
 # Inputs
@@ -31,7 +17,6 @@ varLabels = ['Levelized Cost of Electricity (cents/kWh)','Average Emissions (Mto
 conversions = [1.0,1E-3] # kton/yr to Mton/yr
 n_display  = 10 # max number of variables to display
 resolution = 600
-
 
 #------------------------
 # Begin program
