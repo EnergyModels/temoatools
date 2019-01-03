@@ -35,8 +35,16 @@ def getCosts(folders, dbs, elc_dmd='ELC_DMD', conversion=0.359971, saveData='N',
     # Save original directory
     origDir = os.getcwd()
     
+    # If only a single db and folder provided, change to a list
+    if type(dbs) == str and type(folders) == str:
+        dbs = [dbs]
+        folders = [folders]
+    # If a list of folders is provided with one database, only use first folder
+    elif type(dbs) == str:
+        dbs = [dbs]
+        folders = [folders[0]]
     # If only a single folder provided, create a list of the same folder
-    if type(folders)==str:
+    elif type(folders) == str:
         fldrs = []
         for db in dbs:
             fldrs.append(folders)
