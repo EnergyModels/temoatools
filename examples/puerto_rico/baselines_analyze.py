@@ -25,6 +25,7 @@ if analyzeSingle == True:
     # Emissions
     yearlyEmissions, avgEmissions = tt.getEmissions(folder, db, saveData=saveData, createPlots=createPlots)
 
+
     # Analyze capacity and activity by fuel types
     switch = 'fuel'
     capacityByFuel = tt.getCapacity(folder, db, switch=switch,sectorName=sectorName,saveData=saveData,createPlots=createPlots)

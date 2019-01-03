@@ -60,19 +60,31 @@ def getCapacity(folders,dbs,switch='fuel',group={},sectorName='electric',saveDat
     if createPlots == 'Y':
         # Create plots
         n_subplots = len(dbs)
-        f,a = plt.subplots(n_subplots,1,sharex=True, sharey=True)
-        if len(a)>1:
+
+        if n_subplots>1:
+            f, a = plt.subplots(n_subplots, 1, sharex=True, sharey=True)
             a = a.ravel()
-        # Create subplots
-        for idx,ax in enumerate(a):
-            db = dbs[idx]
+            # Create subplots
+            for idx,ax in enumerate(a):
+                db = dbs[idx]
+                if switch == 'fuel':
+                    titlename = name(db) + ' by fuel'
+                elif switch == 'tech':
+                    titlename = name(db) + ' by tech'
+                elif switch == 'techgroup':
+                    titlename = name(db) + ' by tech group'
+                capacity[name(db)].plot.bar(ax=ax,stacked=True, title=titlename)
+                ax.set_xlabel("Year [-]")
+                ax.set_ylabel("Capacity [GW]")
+        else:
+            db = dbs[0]
             if switch == 'fuel':
                 titlename = name(db) + ' by fuel'
             elif switch == 'tech':
                 titlename = name(db) + ' by tech'
             elif switch == 'techgroup':
                 titlename = name(db) + ' by tech group'
-            capacity[name(db)].plot.bar(ax=ax,stacked=True, title=titlename)
+            ax = capacity[name(db)].plot.bar(stacked=True, title=titlename)
             ax.set_xlabel("Year [-]")
             ax.set_ylabel("Capacity [GW]")
 
