@@ -1,31 +1,13 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Nov 16 18:21:13 2018
-
-@author: benne
-"""
-#=======================================================
-# Imports
-#=======================================================
-# General
 import os
 import multiprocessing
 from joblib import Parallel, delayed, parallel_backend
 import pandas as pd
-
-# TemoaTools
-os.chdir("TemoaTools")
-from XLS2DB import moveXLS2DB
-from TemoaModelBuild import BuildModel, createSensitivityCases
-from TemoaModelRun   import RunModel
-import AnalyzeCosts         as Costs
-import AnalyzeEmissions     as Emissions
-os.chdir("..")
+import temoatools as tt
 
 #=======================================================
 # Function to evaluate a single model
 #=======================================================
-def evaluateModelSensitivity(modelInputs, scenarioXLSX, scenarioName, temoa_paths, cases, caseNum):  
+def evaluateModelSensitivity(modelInputs, scenarioXLSX, scenarioName, temoa_paths, cases, caseNum):
 
     # Unique filename
     model_filename = scenarioName + '_Sens_' + str(caseNum)
@@ -34,17 +16,18 @@ def evaluateModelSensitivity(modelInputs, scenarioXLSX, scenarioName, temoa_path
     sensitivity = cases.loc[caseNum]
     
     # Build Model
-    BuildModel(modelInputs,scenarioXLSX,scenarioName,model_filename,sensitivity=sensitivity)
+    tt.build(modelInputs,scenarioXLSX,scenarioName,model_filename,sensitivity=sensitivity,path='data')
 
     # Run Model
     saveEXCEL=False
-    RunModel(model_filename,temoa_paths,saveEXCEL=saveEXCEL)
+    tt.run(model_filename,temoa_paths,saveEXCEL=saveEXCEL)
     
     # Analyze Results
     folder = os.getcwd() + '\\databases'
     db = model_filename + '.sqlite'
-    yearlyCosts, LCOE = Costs.SingleDB(folder, db)
-    yearlyEmissions, avgEmissions = Emissions.SingleDB(folder, db)
+    print "db: " + db
+    yearlyCosts, LCOE = tt.getCosts(folder, db)
+    yearlyEmissions, avgEmissions = tt.getEmissions(folder, db)
     
     # Package Outputs
     output                    = sensitivity.copy() # Inputs
@@ -54,29 +37,30 @@ def evaluateModelSensitivity(modelInputs, scenarioXLSX, scenarioName, temoa_path
     output['avgEmissions']    = avgEmissions
     for ind in yearlyCosts.index:
         label = 'cost_' + str(ind)
-        output[label] = yearlyCosts[ind]
+        output[label] = yearlyCosts.loc[ind]
     for ind in yearlyEmissions.index:
         label = 'emis_' + str(ind)
-        output[label] = yearlyEmissions[ind]
+        output[label] = yearlyEmissions.loc[ind]
     
     return output
-    
+
+
 if __name__ == '__main__':
-    
+
     #=======================================================
     # Model Inputs
     #=======================================================
-    modelInputs_XLSX        = 'A_Input_Data.xlsx'
-    scenarioInputs          = 'A_Input_Scenarios.xlsx'
+    modelInputs_XLSX        = 'data.xlsx'
+    scenarioInputs          = 'scenarios.xlsx'
     scenarioNames           = ['A','B','C','D'] 
-    paths                   = 'A_Input_Paths.csv'
-    sensitivityInputs       = 'A_Input_Sensitivity_Variables.xlsx'
+    paths                   = 'paths.csv'
+    sensitivityInputs       = 'sensitivityVariables.xlsx'
     sensitivityMultiplier   = 10.0 # percent perturbation
     
     #=======================================================
     # Move modelInputs_XLSX to database
     #=======================================================
-    modelInputs = moveXLS2DB(modelInputs_XLSX)
+    modelInputs = tt.move_data_to_db(modelInputs_XLSX, path='data')
     
     #=======================================================
     # Create directory to hold sensitivity inputs and outputs
@@ -96,7 +80,7 @@ if __name__ == '__main__':
     for scenarioName in scenarioNames:
     
         # Create sensitivity cases
-        cases = createSensitivityCases(scenarioInputs, scenarioName, sensitivityInputs,sensitivityMultiplier)
+        cases = tt.createSensitivityCases(scenarioInputs, scenarioName, sensitivityInputs,sensitivityMultiplier,path='data')
         
         # Save sensitivity cases
         os.chdir(sensDir)
@@ -108,7 +92,7 @@ if __name__ == '__main__':
         
         # Perform simulations in parallel
         with parallel_backend('multiprocessing', n_jobs=num_cores):
-            outputs = Parallel(n_jobs=num_cores,verbose=5)(delayed(evaluateModelSensitivity)(modelInputs, scenarioInputs, scenarioName, paths, cases, caseNum) for caseNum in range(7))     
+            outputs = Parallel(n_jobs=num_cores,verbose=5)(delayed(evaluateModelSensitivity)(modelInputs, scenarioInputs, scenarioName, paths, cases, caseNum) for caseNum in range(n_cases))
     
         # Save results to a csv
         os.chdir(sensDir)

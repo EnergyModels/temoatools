@@ -722,7 +722,7 @@ def processTech(inputs,local,outputs,tech):
 #=============================================================================
 # Create Sensitivity Inputs
 #=============================================================================
-def createSensitivityCases(scenarioXLSX, scenarioName, sensitivityInputs,multiplier):
+def createSensitivityCases(scenarioXLSX, scenarioName, sensitivityInputs,multiplier,path='.'):
     
     params = {}    
     
@@ -733,8 +733,7 @@ def createSensitivityCases(scenarioXLSX, scenarioName, sensitivityInputs,multipl
     local = getEmptyLocalDict()
     
     # Process scenarios
-    local = processScenarios(scenarioXLSX,scenarioName,local)
-    
+    local = processScenarios(scenarioXLSX,scenarioName,local,path=path)
     # Extract quantities of interest
     params['plants']         = local['plants_to_include']
     params['fuels']          = local['fuels_to_include']
@@ -743,7 +742,9 @@ def createSensitivityCases(scenarioXLSX, scenarioName, sensitivityInputs,multipl
     #----------
     # Process sensitivityInputs
     #----------
-    
+
+    # Move to directory with inputs
+    os.chdir(path)
     # Globals
     df = pd.read_excel(sensitivityInputs,sheetname = 'Globals')
     ind = df.loc[:,'include']=='Y'
@@ -763,7 +764,9 @@ def createSensitivityCases(scenarioXLSX, scenarioName, sensitivityInputs,multipl
     df = pd.read_excel(sensitivityInputs,sheetname = 'Connections')
     ind = df.loc[:,'include']=='Y'
     params['conn_vars'] = df.variable[ind]
-    
+
+    # Return to original directory
+    os.chdir('..')
     #----------
     # Create sensitivity cases
     #----------               
@@ -820,7 +823,7 @@ def createSensitivityCases(scenarioXLSX, scenarioName, sensitivityInputs,multipl
 #=============================================================================
 # Create Sensitivity Inputs
 #=============================================================================
-def createMonteCarloCases(scenarioXLSX, scenarioName, sensitivityInputs,multiplier,n_cases=100):
+def createMonteCarloCases(scenarioXLSX, scenarioName, sensitivityInputs,multiplier,n_cases=100,path='.'):
     
     params = {}    
     
@@ -831,7 +834,7 @@ def createMonteCarloCases(scenarioXLSX, scenarioName, sensitivityInputs,multipli
     local = getEmptyLocalDict()
     
     # Process scenarios
-    local = processScenarios(scenarioXLSX,scenarioName,local)
+    local = processScenarios(scenarioXLSX,scenarioName,local,path=path)
     
     # Extract quantities of interest
     params['plants']         = local['plants_to_include']
@@ -841,7 +844,9 @@ def createMonteCarloCases(scenarioXLSX, scenarioName, sensitivityInputs,multipli
     #----------
     # Process sensitivityInputs
     #----------
-    
+    # Move to directory with inputs
+    os.chdir(path)
+
     # Globals
     df = pd.read_excel(sensitivityInputs,sheetname = 'Globals')
     ind = df.loc[:,'include']=='Y'
@@ -861,7 +866,9 @@ def createMonteCarloCases(scenarioXLSX, scenarioName, sensitivityInputs,multipli
     df = pd.read_excel(sensitivityInputs,sheetname = 'Connections')
     ind = df.loc[:,'include']=='Y'
     params['conn_vars'] = df.variable[ind]
-    
+
+    # Return to original directory
+    os.chdir('..')
     #----------
     # Create sensitivity cases
     #----------               
