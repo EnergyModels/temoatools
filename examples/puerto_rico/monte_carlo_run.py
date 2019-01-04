@@ -21,8 +21,7 @@ def evaluateMonteCarlo(modelInputs, scenarioXLSX, scenarioName, temoa_paths, cas
     tt.build(modelInputs,scenarioXLSX,scenarioName,model_filename,MCinputs=MCinputs,path='data')
 
     # Run Model
-    saveEXCEL=False
-    tt.run(model_filename,temoa_paths,saveEXCEL=saveEXCEL)
+    tt.run(model_filename,temoa_paths,saveEXCEL=False)
     
     # Analyze Results
     folder = os.getcwd() + '\\Databases'
