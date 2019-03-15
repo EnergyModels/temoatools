@@ -21,7 +21,8 @@ workDir = os.getcwd()
 os.chdir(folder)
 
 # Process data
-df = pd.DataFrame()
+df_all = pd.DataFrame()
+d = {}
 for caseName,csv in zip(caseNames,csvs):
     
     # Read-in csv
@@ -41,8 +42,8 @@ for caseName,csv in zip(caseNames,csvs):
     # Remove null values, use cost as indicator
     df2 = df2.dropna()
     # Add to df
-    df = pd.concat([df, df2])
-    
+    df_all = pd.concat([df_all, df2])
+
 # Return to original directory    
 os.chdir(workDir)
 #=============================================================================#

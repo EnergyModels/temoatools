@@ -29,6 +29,19 @@ def evaluateMonteCarlo(modelInputs, scenarioXLSX, scenarioName, temoa_paths, cas
     yearlyCosts, LCOE = tt.getCosts(folder, db)
     yearlyEmissions, avgEmissions = tt.getEmissions(folder, db)
 
+    # Capacity and Activity by Fuel By Year
+    createPlots = 'Y'  # Create default plots
+    saveData = 'Y'  # Do not save data as a csv or xls
+    sectorName = 'electric'  # Name of sector to be analyzed
+    switch = 'fuel'
+    capacityByFuel = tt.getCapacity(folder, db, switch=switch, sectorName=sectorName, saveData=saveData,
+                                    createPlots=createPlots)
+    key = capacityByFuel.keys()[0]
+    cap = capacityByFuel[key]
+    ActivityByYearFuel = tt.getActivity(folder, db, switch=switch,sectorName=sectorName,saveData=saveData,createPlots=createPlots)
+    key = ActivityByYearFuel.keys()[0]
+    act = ActivityByYearFuel[key]
+
     # Move results to series
     col = yearlyCosts.columns[0]
     yearlyCosts = yearlyCosts[col]
@@ -44,12 +57,21 @@ def evaluateMonteCarlo(modelInputs, scenarioXLSX, scenarioName, temoa_paths, cas
     output['LCOE']            = LCOE
     output['avgEmissions']    = avgEmissions
     for ind in yearlyCosts.index:
-        label = 'cost_' + str(ind)
+        label = 'cost-' + str(ind)
         output[label] = yearlyCosts.loc[ind]
     for ind in yearlyEmissions.index:
-        label = 'emis_' + str(ind)
+        label = 'emis-' + str(ind)
         output[label] = yearlyEmissions.loc[ind]
-    
+    # CapacityByYearFuel
+    for ind in cap.index:
+        for col in cap.columns:
+            label = 'cap_' + str(col) + '-' + str(ind)
+            output[label] = cap.loc[ind,col]
+    # ActivityByYearFuel
+    for ind in act.index:
+        for col in act.columns:
+            label = 'act_' + str(col) + '-' + str(ind)
+            output[label] = act.loc[ind,col]
     return output
     
 if __name__ == '__main__':
@@ -97,8 +119,8 @@ if __name__ == '__main__':
                 
         # Perform simulations in parallel
         with parallel_backend('multiprocessing', n_jobs=num_cores):
-            outputs = Parallel(n_jobs=num_cores,verbose=5)(delayed(evaluateMonteCarlo)(modelInputs, scenarioInputs, scenarioName, paths, cases, caseNum) for caseNum in range(n_cases))     
-    
+            outputs = Parallel(n_jobs=num_cores,verbose=5)(delayed(evaluateMonteCarlo)(modelInputs, scenarioInputs, scenarioName, paths, cases, caseNum) for caseNum in range(n_cases))
+
         # Save results to a csv
         os.chdir(sensDir)
         df = pd.DataFrame(outputs)

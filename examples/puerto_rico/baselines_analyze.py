@@ -3,7 +3,7 @@ import temoatools as tt
 #===============
 # Inputs
 #===============
-analyzeSingle = False
+analyzeSingle = True
 onlySimple = False
 folder = dbFolder = os.getcwd() + '\\Databases'
 dbs = ["A.sqlite","B.sqlite","C.sqlite","D.sqlite"]
