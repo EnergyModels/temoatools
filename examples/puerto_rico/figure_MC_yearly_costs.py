@@ -27,7 +27,7 @@ for caseName, csv,scenario in zip(caseNames, csvs,scenarios):
     # Read-in csv
     df1 = pd.read_csv(csv)
     # Convert wide to long
-    df2 = pd.wide_to_long(df1, i='caseNum', j='year', stubnames=['cost', 'emis'], sep='_')
+    df2 = pd.wide_to_long(df1, i='caseNum', j='year', stubnames=['cost', 'emis'], sep='-')
     # Add Column for caseName
     df2 = df2.assign(caseName=caseName)
     # Add Column for scenario
@@ -39,9 +39,9 @@ for caseName, csv,scenario in zip(caseNames, csvs,scenarios):
     # Convert emissions from kton/year to Mton/year
     df2.emis = df2.emis / 1000.0
     # Remove null values, use cost as indicator
-    df2 = df2.dropna()
+    df2 = df2.fillna(0.0)
     # Add to df
-    df = pd.concat([df, df2])
+    df = pd.concat([df, df2],sort=False)
 # Return to original directory
 os.chdir(workDir)
 

@@ -30,8 +30,8 @@ def evaluateMonteCarlo(modelInputs, scenarioXLSX, scenarioName, temoa_paths, cas
     yearlyEmissions, avgEmissions = tt.getEmissions(folder, db)
 
     # Capacity and Activity by Fuel By Year
-    createPlots = 'Y'  # Create default plots
-    saveData = 'Y'  # Do not save data as a csv or xls
+    createPlots = 'N'  # Create default plots
+    saveData = 'N'  # Do not save data as a csv or xls
     sectorName = 'electric'  # Name of sector to be analyzed
     switch = 'fuel'
     capacityByFuel = tt.getCapacity(folder, db, switch=switch, sectorName=sectorName, saveData=saveData,
@@ -108,8 +108,8 @@ if __name__ == '__main__':
     
     for scenarioName in scenarioNames:
     
-        # Create sensitivity cases
-        n_cases = 7
+        # Create monte carlo cases
+        n_cases = 1000
         cases = tt.createMonteCarloCases(scenarioInputs, scenarioName, sensitivityInputs,sensitivityMultiplier,n_cases=n_cases,path='data')
         
         # Save cases
