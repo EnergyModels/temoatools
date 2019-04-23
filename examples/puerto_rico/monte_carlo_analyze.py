@@ -27,7 +27,7 @@ for caseName,csv in zip(caseNames,csvs):
     # Read-in csv
     df1 = pd.read_csv(csv)
     # Convert wide to long
-    df2 = pd.wide_to_long(df1,i='caseNum',j='year',stubnames=['cost','emis'],sep='_')
+    df2 = pd.wide_to_long(df1,i='caseNum',j='year',stubnames=['cost','emis'],sep='-')
     
     # Add Column for caseName
     df2 = df2.assign(caseName=caseName)

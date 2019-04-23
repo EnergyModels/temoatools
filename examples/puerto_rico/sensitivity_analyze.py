@@ -130,10 +130,10 @@ for case,label in zip(cases,labels):
         f, ax = plt.subplots(figsize=(4, 3))
         
         # Plot the low side
-        sns.barplot(x="low", y="name", data=results[var].loc[:n_cases], orient="h",label="Low", color="blue")
+        sns.barplot(x="low", y="name", data=results[var].loc[:n_cases], orient="h",label="-10%", color="blue")
         
         # Plot the crashes where alcohol was involved
-        sns.barplot(x="high", y="name", data=results[var].loc[:n_cases], label="High", color="orange")
+        sns.barplot(x="high", y="name", data=results[var].loc[:n_cases], label="+10%", color="orange")
         
         # Remove spines
         sns.despine(left=True, bottom=True)
