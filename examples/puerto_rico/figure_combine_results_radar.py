@@ -9,14 +9,15 @@ sns.set_style('white')
 # Set data
 df = pd.DataFrame({
 
-'Build-back Time': [97.70, 100.0, 31.80, 45.16],
-'Initial People without Power': [100.0, 100.0, 58.38, 60.99],
+    'Build-back Time': [97.70, 100.0, 31.80, 45.16],
+    'Initial People without Power': [100.0, 100.0, 58.38, 60.99],
     '2052 Emissions': [93.09, 49.80, 100.0, 44.81],
-'Average Emissions': [96.35, 75.34, 100.0, 72.74],
-'LCOE': [98.70, 97.93, 100.0, 98.04],
+    'Average Emissions': [96.35, 75.34, 100.0, 72.74],
+    'LCOE': [98.70, 97.93, 100.0, 98.04],
+    '2052 COE': [94.48, 94.65, 100.00, 96.69],
 })
 
-order = [ 'Initial People without Power',  '2052 Emissions', 'Average Emissions', 'LCOE', 'Build-back Time']
+order = [ 'Initial People without Power',  '2052 Emissions', 'Average Emissions', 'LCOE', '2052 COE', 'Build-back Time']
 
 custom_palette = [(0.380,0.380,0.380),(0.957,0.451,0.125),(.047, 0.149, 0.361),(0.847,0.000,0.067)]
 # ------- PART 1: Create background
@@ -50,33 +51,79 @@ plt.ylim(0, 100)
 # Plot each individual = each line of the data
 # I don't do a loop, because plotting more than 3 groups makes the chart unreadable
 
+linewidth = 4
+
 # Ind1
 values = df.loc[0,order].tolist()#.drop('group').values.flatten().tolist()
 values.append(values[0])# += values[:0]
-ax.plot(angles, values, linewidth=1, linestyle='solid', label="Centralized - Natural Gas", color=custom_palette[0])
+ax.plot(angles, values, linewidth=linewidth, linestyle='solid', label="Centralized - Natural Gas", color=custom_palette[0])
 # ax.fill(angles, values, 'b', alpha=0.1)
 
 # Ind2
 values = df.loc[1,order].tolist()#.drop('group').values.flatten().tolist()
 values.append(values[0])# += values[:0]
-ax.plot(angles, values, linewidth=1, linestyle='solid', label="Centralized - Hybrid", color=custom_palette[1])
+ax.plot(angles, values, linewidth=linewidth, linestyle='solid', label="Centralized - Hybrid", color=custom_palette[1])
 # ax.fill(angles, values, 'r', alpha=0.1)
 
 # Ind3
 values = df.loc[2, order].tolist()#.drop('group').values.flatten().tolist()
 values.append(values[0])# += values[:0]
-ax.plot(angles, values, linewidth=1, linestyle='solid', label="Distributed - Natural Gas", color=custom_palette[2])
+ax.plot(angles, values, linewidth=linewidth, linestyle='solid', label="Distributed - Natural Gas", color=custom_palette[2])
 # ax.fill(angles, values, 'g', alpha=0.1)
 
 # Ind4
 values = df.loc[3, order].tolist()#.drop('group').values.flatten().tolist()
 values.append(values[0])# += values[:0]
-ax.plot(angles, values, linewidth=1, linestyle='solid', label="Distributed - Hybrid", color=custom_palette[3])
-ax.set_rlabel_position(-50)
+ax.plot(angles, values, linewidth=linewidth, linestyle='solid', label="Distributed - Hybrid", color=custom_palette[3])
+# ax.set_rlabel_position(-50)
 # ax.fill(angles, values, 'k', alpha=0.1)
 
-# Add legend
-plt.legend(loc='upper right', bbox_to_anchor=(0.1, 0.1))
 
-savename = 'combined_results.png'
-plt.savefig(savename, dpi=1000, bbox_inches="tight") #  bbox_inches="tight" is used to include the legend
+# Manually add all theta tick labels
+ax.set_xticklabels([])
+r_position = 110
+inc = 2*pi/len(order)
+
+for i,variable in enumerate(order):
+
+    angle = i*inc
+    if angle == 0 or angle == pi:
+        horz_align = 'center'
+    elif angle < pi:
+        horz_align = 'left'
+    else:
+        horz_align = 'right'
+
+    ax.text(angle,r_position,variable,horizontalalignment=horz_align,fontsize=15)
+
+
+# Add legend
+# plt.legend(loc='upper right', bbox_to_anchor=(0.1, 0.1))
+
+leg = plt.legend(bbox_to_anchor=(0.5, -0.2), loc='center', ncol=2, frameon = False)
+
+savename = 'combined_results_v3.png'
+# plt.savefig(savename, dpi=1000, bbox_inches="tight") #  bbox_inches="tight" is used to include the legend
+plt.savefig(savename, dpi=1000, bbox_inches="tight")
+
+#===============================================
+# Additional Labels
+
+for i,variable in enumerate(order):
+
+    angle = i*inc
+    if angle == 0 or angle == pi:
+        horz_align = 'center'
+    elif angle < pi:
+        horz_align = 'left'
+    else:
+        horz_align = 'right'
+
+ax.text(pi/2,r_position,"Environment",horizontalalignment='left',fontsize=15, fontweight='bold')
+ax.text(pi/2+2*pi/3, r_position, "Economics", horizontalalignment='right', fontsize=15, fontweight='bold')
+ax.text(pi / 2 + 4 * pi / 3, r_position, "Resilience", horizontalalignment='right', fontsize=15, fontweight='bold')
+
+
+
+savename = 'combined_results_v4.png'
+plt.savefig(savename, dpi=1000, bbox_inches="tight")

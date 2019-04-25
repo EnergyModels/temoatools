@@ -6,24 +6,32 @@ import os
 #=====================================================
 # User Inputs
 #=====================================================
-figure_name = "figure_MC_yearly_emissions" # png extension automatically added later
-
+figure_name = "figure_combine_results_bar" # png extension automatically added later
 
 #-----------------------------------------------------
 # Process Data
 #-----------------------------------------------------
-folder = os.getcwd() + '\\MonteCarlo'
-caseNames = ['A','B','C','D']
-csvs = ['MonteCarloResults_A.csv','MonteCarloResults_B.csv','MonteCarloResults_C.csv','MonteCarloResults_D.csv']
+
 scenarios = ['Centralized - Natural Gas','Centralized - Hybrid','Distributed - Natural Gas','Distributed - Hybrid']
 
-# Set data
+# Normalized
+# df = pd.DataFrame({
+#
+# 'Build-back Time': [97.70, 100.0, 31.80, 45.16],
+# 'Initial People without Power': [100.0, 100.0, 58.38, 60.99],
+# '2052 Emissions': [93.09, 49.80, 100.0, 44.81],
+# 'Average Emissions': [96.35, 75.34, 100.0, 72.74],
+# 'LCOE': [98.70, 97.93, 100.0, 98.04],
+# })
+
+# Raw
 df = pd.DataFrame({
-'Build-back Time': [97.70, 100.0, 31.80, 45.16],
-'Initial People without Power': [100.0, 100.0, 58.38, 60.99],
-    '2052 Emissions': [93.09, 49.80, 100.0, 44.81],
-'Average Emissions': [96.35, 75.34, 100.0, 72.74],
-'LCOE': [98.70, 97.93, 100.0, 98.04],
+
+'Build-back Time': [212.0, 217.0, 69.0, 98.0],
+'Initial People without Power': [91.7, 91.7, 53.5, 55.9],
+'2052 Emissions': [5964, 3191, 6407, 2871],
+'Average Emissions': [7672, 5999, 7963, 5792],
+'LCOE': [9.08, 9.01, 9.2, 9.02],
 })
 
 #-----------------------------------------------------
@@ -42,31 +50,8 @@ custom_palette = [(0.380,0.380,0.380),(0.957,0.451,0.125),(.047, 0.149, 0.361),(
 #-----------------------------------------------------
 # Plotting Inputs
 #-----------------------------------------------------
-# x variables, all lists are expected to the same length
-x_var = "year"                     # Need to be columns in DataFrame
-x_label = "Year (-)"     # Note: keep short
-x_convert = 1.0                  # Multiplier to convert to display units
-x_tick = []                       # Ok to leave empty
-x_lim = []                        # Ok to leave empty
-
-# y variables, all lists are expected to the same length
-y_var = "emis"
-y_label = "Emissions (Mton CO$_2$eq/year)"
-y_convert = 1E-3
-y_tick = [5,10,15]
-y_lim = []
-
-# series variables, all lists are expected to the same length
-nrows = 2
-ncols = 2
-row_labels = ['Centralized','Distributed']
-col_labels = ['Natural Gas','Hybrid']
-series_var = 'caseName'
-series_vals = ['A','B','C','D']
-series_labels = ['Case 1','Case 2','Case 3',' Case 4']
-series_colors = custom_palette # Use a palette listed above
-series_markers = ['x', '+', 'o', '*']
-series_marker_sizes = [40,40,40,40]
+variables = [['LCOE','2052 Emissions' ],['Initial People without Power', 'Build-back Time']]
+labels = [['LCOE (cents/kWh)','2052 Emissions (Mton/yr)' ],['Initial People without Power (%)', 'Build-back Time (days)']]
 
 #=====================================================
 # Set figure parameters based on experience for each context
@@ -96,6 +81,10 @@ elif context == 'poster':
 # Begin plotting
 #=====================================================
 
+# series variables, all lists are expected to the same length
+nrows = len(variables)
+ncols = len(variables[0])
+
 # Set style and context using seaborn
 sns.set_style(style)
 sns.set_context(context)
@@ -110,6 +99,9 @@ for i in range(nrows):
     # Iterate Columns (X variables)
     for j in range(ncols):
 
+
+        variable = variables[i][j]
+
         series_val = series_vals[count]
         label = series_labels[count]
         color = series_colors[count]
@@ -118,57 +110,60 @@ for i in range(nrows):
         count = count + 1
 
         # Select entries of interest
-        df2 = df[(df.loc[:,series_var] == series_val)]
+
+
+        ax[i,j].bar(df.index, df[variable], label=variable)
+
 
         # Plot
-        x = df2.loc[:, x_var] * x_convert
-        y = df2.loc[:, y_var] * y_convert
-        # ax[i,j].scatter(x.values, y.values, c=color, s=size, marker=marker, label=label,edgecolors='none')
-        sns.boxplot(x=x_var,y=y_var,data=df2,ax=ax[i,j],color=color)
+        # x = df2.loc[:, x_var] * x_convert
+        # y = df2.loc[:, y_var] * y_convert
+        # # ax[i,j].scatter(x.values, y.values, c=color, s=size, marker=marker, label=label,edgecolors='none')
+        # sns.boxplot(x=x_var,y=y_var,data=df2,ax=ax[i,j],color=color)
 
         # X-axis Labels (Only bottom)
-        if i == nrows-1:
-            ax[i,j].set_xlabel(x_label)
-        else:
-            ax[i,j].get_xaxis().set_visible(False)
+        # if i == nrows-1:
+        #     ax[i,j].set_xlabel(x_label)
+        # else:
+        #     ax[i,j].get_xaxis().set_visible(False)
 
         # Y-axis labels (Only left side)
-        if j == 0:
-            ax[i,j].set_ylabel(y_label)
-            ax[i,j].yaxis.set_label_coords(-0.25, 0.5)
-        else:
-            ax[i,j].get_yaxis().set_visible(False)
+        # if j == 0:
+        ax[i,j].set_ylabel(variable)
+        ax[i,j].yaxis.set_label_coords(-0.25, 0.5)
+        # else:
+        #     ax[i,j].get_yaxis().set_visible(False)
 
         # Set X and Y Limits
-        if len(x_lim)== 2:
-            ax[i,j].set_xlim(left=x_lim[0], right=x_lim[1])
-        if len(y_lim) ==2 :
-            ax[i,j].set_ylim(bottom=y_lim[0],top=y_lim[1])
+        # if len(x_lim)== 2:
+        #     ax[i,j].set_xlim(left=x_lim[0], right=x_lim[1])
+        # if len(y_lim) ==2 :
+        #     ax[i,j].set_ylim(bottom=y_lim[0],top=y_lim[1])
 
         # Set X ticks
-        if len(x_tick) > 2:
-            ax[i,j].xaxis.set_ticks(x_tick)
-        else:
-            n_ticks = 4
-            ax[i, j].locator_params(axis='x', nbins=n_ticks)
+        # if len(x_tick) > 2:
+        #     ax[i,j].xaxis.set_ticks(x_tick)
+        # else:
+        #     n_ticks = 4
+        #     ax[i, j].locator_params(axis='x', nbins=n_ticks)
 
         # Set Y ticks (either specified values, or limits number of ticks used)
-        if len(y_tick) > 2:
-            ax[i,j].yaxis.set_ticks(y_tick)
-        else:
-            n_ticks = 4
-            ax[i, j].locator_params(axis='y', nbins=n_ticks)
+        # if len(y_tick) > 2:
+        #     ax[i,j].yaxis.set_ticks(y_tick)
+        # else:
+        #     n_ticks = 4
+        #     ax[i, j].locator_params(axis='y', nbins=n_ticks)
 
         # Column Labels
-        if i == 0:
-            text = col_labels[j]
-            ax[i,j].text(0.5, 1.1, text, horizontalalignment='center', verticalalignment='top',
-                    transform=ax[i,j].transAxes)
+        # if i == 0:
+        #     text = col_labels[j]
+        #     ax[i,j].text(0.5, 1.1, text, horizontalalignment='center', verticalalignment='top',
+        #             transform=ax[i,j].transAxes)
         # Row Labels
-        if j == ncols-1:
-            text = row_labels[i]
-            ax[i,j].text(1.05, 0.5, text, horizontalalignment='center', verticalalignment='center',
-                    rotation=270, transform=ax[i,j].transAxes)
+        # if j == ncols-1:
+        #     text = row_labels[i]
+        #     ax[i,j].text(1.05, 0.5, text, horizontalalignment='center', verticalalignment='center',
+        #             rotation=270, transform=ax[i,j].transAxes)
 
 
 # Custom
@@ -197,6 +192,6 @@ ax.set_ylabel(y_label)
 
 # Save Figure
 
-savename = figure_name + "_" + context + 'V2.png'
-plt.savefig(savename, dpi=resolution, bbox_inches="tight") #  bbox_inches="tight" is used to include the legend
+# savename = figure_name + "_" + context + 'V2.png'
+# plt.savefig(savename, dpi=resolution, bbox_inches="tight") #  bbox_inches="tight" is used to include the legend
 # plt.close()
