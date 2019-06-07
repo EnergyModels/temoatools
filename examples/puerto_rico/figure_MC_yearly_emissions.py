@@ -26,6 +26,38 @@ df = pd.DataFrame({
 'LCOE': [98.70, 97.93, 100.0, 98.04],
 })
 
+# Move to directory of interest (store current folder to return)
+workDir = os.getcwd()
+os.chdir(folder)
+
+# Process data
+df = pd.DataFrame()
+for caseName, csv,scenario in zip(caseNames, csvs,scenarios):
+    # Read-in csv
+    df1 = pd.read_csv(csv)
+    # Convert wide to long
+    df2 = pd.wide_to_long(df1, i='caseNum', j='year', stubnames=['cost', 'emis'], sep='-')
+    # Add Column for caseName
+    df2 = df2.assign(caseName=caseName)
+    # Add Column for scenario
+    df2 = df2.assign(Scenario=scenario)
+    # Flatten indices (remove layers of indexing)
+    df2 = df2.reset_index()
+    # Coonvert year to numeric
+    df2.year = pd.to_numeric(df2.year)
+    # Convert emissions from kton/year to Mton/year
+    df2.emis = df2.emis / 1000.0
+    # Remove null values, use cost as indicator
+    df2 = df2.fillna(0.0)
+    # Add to df
+    df = pd.concat([df, df2],sort=False)
+# Return to original directory
+os.chdir(workDir)
+
+# Only show certain years
+years2show = [2016,2028,2040,2052]
+df = df[df['year'].isin(years2show)]
+
 #-----------------------------------------------------
 # Aesthetics (style + context)
 # https://seaborn.pydata.org/tutorial/aesthetics.html
@@ -51,7 +83,7 @@ x_lim = []                        # Ok to leave empty
 
 # y variables, all lists are expected to the same length
 y_var = "emis"
-y_label = "Emissions (Mton CO$_2$eq/year)"
+y_label = "Emissions (Mton CO$_2$/year)"
 y_convert = 1E-3
 y_tick = [5,10,15]
 y_lim = []

@@ -10,11 +10,11 @@ sns.set_style('white')
 df = pd.DataFrame({
 
     'Build-back Time': [97.70, 100.0, 31.80, 45.16],
-    'Initial People without Power': [100.0, 100.0, 58.38, 60.99],
-    '2052 Emissions': [93.09, 49.80, 100.0, 44.81],
-    'Average Emissions': [96.35, 75.34, 100.0, 72.74],
-    'LCOE': [98.70, 97.93, 100.0, 98.04],
-    '2052 COE': [94.48, 94.65, 100.00, 96.69],
+    'Initial People without Power': [100.0, 100.0, 58.41, 61.03],
+    '2052 Emissions': [92.28,	48.12,	100.00,	42.61],
+    'Average Emissions': [96.61,	75.77,	100.00,	73.01],
+    'LCOE': [98.59,	97.93,	100.00,	98.26],
+    '2052 COE': [94.14,	94.74,	100.00,	97.45],
 })
 
 order = [ 'Initial People without Power',  '2052 Emissions', 'Average Emissions', 'LCOE', '2052 COE', 'Build-back Time']

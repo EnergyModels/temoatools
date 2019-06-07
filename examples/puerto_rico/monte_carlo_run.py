@@ -81,7 +81,8 @@ if __name__ == '__main__':
     #=======================================================
     modelInputs_XLSX        = 'data.xlsx'
     scenarioInputs          = 'scenarios.xlsx'
-    scenarioNames           = ['A','B','C','D'] 
+    scenarioNames           = ['A','B','C','D']
+    scenarioNames = ['D']
     paths                   = 'paths.csv'
     sensitivityInputs       = 'sensitivityVariables.xlsx'
     sensitivityMultiplier   = 10.0 # percent perturbation
