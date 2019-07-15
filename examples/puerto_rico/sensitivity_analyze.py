@@ -115,10 +115,14 @@ for case,label in zip(cases,labels):
     #--------
     
     # Do something!
-        
+
     #--------
     # Create Plots
     #--------
+
+    custom_palette = [(0.380, 0.380, 0.380), (0.957, 0.451, 0.125), (.047, 0.149, 0.361),
+                      (0.847, 0.000, 0.067)]  # Custom palette
+
     for var,varLabel in zip(variables,varLabels):
         savename = case[:-4] + '_'+ var +'.png'
         
@@ -130,10 +134,10 @@ for case,label in zip(cases,labels):
         f, ax = plt.subplots(figsize=(4, 3))
         
         # Plot the low side
-        sns.barplot(x="low", y="name", data=results[var].loc[:n_cases], orient="h",label="-10%", color="blue")
+        sns.barplot(x="low", y="name", data=results[var].loc[:n_cases], orient="h",label="-10%", color=custom_palette[2]) #Blue
         
         # Plot the crashes where alcohol was involved
-        sns.barplot(x="high", y="name", data=results[var].loc[:n_cases], label="+10%", color="orange")
+        sns.barplot(x="high", y="name", data=results[var].loc[:n_cases], label="+10%", color=custom_palette[1]) # Orange
         
         # Remove spines
         sns.despine(left=True, bottom=True)
