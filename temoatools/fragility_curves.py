@@ -1,19 +1,19 @@
+import numpy as np
 # =============================================================================#
 # Fragility Curves
 # Written by Claire Trevisan and Jeff Bennett
 # =============================================================================#
 
-import numpy as np
-import math
-import seaborn as sns
-import matplotlib.pyplot as plt
 
 
-# ================================#
-# Fragility Curves
-# ================================#
+
+# =====================================#
+# Fragility Curves based on literature #
+# =====================================#
 
 # Transmission (per 0.23 km)
+# Transmission line fragility curves were based on a computational analysis of UK transmission towers [64]
+# Panteli M, Pickering C, Wilkinson S, Dawson R, Mancarella P. Power System Resilience to Extreme Weather: Fragility Modelling, Probabilistic Impact Assessment, and Adaptation Measures. IEEE Trans Power Syst 2017;32:1–1. doi:10.1109/TPWRS.2016.2641463.
 def trans_damage(wind_mph):
     wind_ms = wind_mph * 0.44704
     trans_x = [43.4483, 47.5884, 50.6947, 53.8032, 56.1365, 58.7298, 60.8059, 62.882, 64.6994, 66.2582, 68.0778,
@@ -41,6 +41,8 @@ def trans_damage(wind_mph):
 
 
 # Substation:
+# Substation fragility curves were based on data published for the grid in Mexico [66]
+# López López A, E. PRL, Escobedo D de L, Sesma JS. Reliability and Vulnerability Analysis of Electrical Substations and Transmission Towers for Definition of Wind and Seismic Damage Maps for Mexico. 11er Am Conf Wind Eng 2009;4:22–6.
 def sub_damage(wind_mph):
     wind_kmph = wind_mph * 1.60934
     sub_x = [40.1487, 60.223, 80.2974, 100.372, 119.703, 139.777, 159.851, 179.926, 200.0, 220.074, 240.149, 260.223,
@@ -53,6 +55,8 @@ def sub_damage(wind_mph):
 
 
 # Distribution:
+# Distribution lines were modeled assuming sixty year old wooden poles [65]
+# Salman AM, Li Y, Stewart MG. Evaluating system reliability and targeted hardening strategies of power distribution systems subjected to hurricanes. Reliab Eng Syst Saf 2015;144:319–33. doi:10.1016/j.ress.2015.07.028.
 def dist_damage(wind_mph):
     wind_ms = wind_mph * 0.44704
     dist_x = [34.375, 38.1855, 40.3024, 42.2782, 45.3831, 48.3468, 50.4637, 52.0161, 53.7097, 55.2621, 57.379, 59.2137,
@@ -67,7 +71,13 @@ def dist_damage(wind_mph):
     return p_failure
 
 
-# Solar Energy:
+#-----------------------------------------------------
+# Solar PV:
+#-----------------------------------------------------
+# Solar panel fragility cures are based on a performance based approach by Goodman of a residential system [67] with a modification proposed by Watson [68] to better represent utility scale solar installations.
+# Goodman JN. Performance Measures for Residential PV Structural Response to Wind Effects 2015.
+# Watson E. Modeling Electrical Grid Resilience under Hurricane Wind Conditions with Increased Solar Photovoltaic and Wind Turbine Power Generation. George Washington University, 2018.
+
 def solar_damage(wind_mph):
     solar_x = np.array([90.0, 110.2020202, 130.0, 150.0, 170]) + 30.0
     solar_y = [0.0, 0.106145251, 0.525139665, 0.865921788, 1.0]
@@ -75,20 +85,43 @@ def solar_damage(wind_mph):
     return p_failure
 
 
-# Wind Energy (Non-Yawing): https://www.pnas.org/content/pnas/suppl/2012/02/07/1111769109.DCSupplemental/pnas.1111769109_SI.pdf?targetid=STXT
-def wind_damage(wind_mph):
+def fc_solar_utility(wind_mph):
+    x = []
+    y = []
+
+#-----------------------------------------------------
+# Wind Turbines:
+#-----------------------------------------------------
+# Rose S, Jaramillo P, Small MJ, Grossmann I, Apt J. Quantifying the hurricane risk to offshore wind turbines. Proc Natl Acad Sci 2012;109:3247–52. doi:10.1073/pnas.1111769109.
+# https://www.pnas.org/content/pnas/suppl/2012/02/07/1111769109.DCSupplemental/pnas.1111769109_SI.pdf?targetid=STXT
+
+# Yawing Offshore Wind Turbine
+def frag_wind_rose_yaw(wind_mph):
     wind_knots = wind_mph * 0.868976
-    wind_x = [97.38019084, 101.0869454, 108.7957023, 116.0578022, 120.2056744, 123.7586193, 128.1954614, 131.2997183,
+    x = []
+    y = []
+    p_failure = np.interp(wind_knots, x, y)
+    return p_failure
+
+# Non-Yawing Offshore Wind Turbine
+def frag_wind_rose_nonyaw(wind_mph):
+    wind_knots = wind_mph * 0.868976
+    x = [97.38019084, 101.0869454, 108.7957023, 116.0578022, 120.2056744, 123.7586193, 128.1954614, 131.2997183,
               133.5139848, 135.5818276, 137.2039366, 139.5655501, 141.0403122, 142.6635291, 144.1390297, 145.9107014,
               147.9785442, 149.8997786, 151.9694679, 154.3364361, 157.1482148, 160.4059119, 164.7018696, 169.4437458,
               175.0759815, 180.8574107, 188.5670909, 194.7940692]
-    wind_y = [0, 0.00124533, 0.00996264, 0.03113325, 0.056039851, 0.093399751, 0.169364882, 0.232876712, 0.298879203,
+    y = [0, 0.00124533, 0.00996264, 0.03113325, 0.056039851, 0.093399751, 0.169364882, 0.232876712, 0.298879203,
               0.352428394, 0.412204234, 0.484433375, 0.537982565, 0.590286426, 0.638854296, 0.689912827, 0.743462017,
               0.785803238, 0.826899128, 0.863013699, 0.899128269, 0.927770859, 0.95392279, 0.97260274, 0.98630137,
               0.99377335, 0.99626401, 1]
-    p_failure = np.interp(wind_knots, wind_x, wind_y)
+    p_failure = np.interp(wind_knots, x, y)
     return p_failure
 
+
+# =====================================#
+# Fragility Curves based on HAZUS      #
+# =====================================#
+# Source:
 
 # ================
 # HAZUS Functions - Moderate
