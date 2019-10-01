@@ -1,40 +1,32 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Dec 10 12:15:47 2018
-
-@author: benne
-"""
 from __future__ import print_function
 import os
 import sqlite3
 import pandas as pd
 import matplotlib.pyplot as plt
+from help_functions import create_results_dir
 
 
 debug = False
 resolution = 1000 #DPI
 
 #==============================================================================
-# Remove filetype from filename
-def name(db):
-    return db[:db.find('.')]
-#==============================================================================
-def getCosts(folders, dbs, elc_dmd='ELC_DMD', conversion=0.359971, saveData='N', createPlots ='N'):
-#    inputs:
-#    1) folders         - paths containing dbs (list or single string if all in the same path)
-#    2) dbs             - names of databases (list)
-#    3) elc_dmd         - quantity that represents electricity demand
-#    4) conversion      - converts from cost units per activity to cents/kWH
-#           default is conversion from M$/PJ to cents/KWh (1E6*100 / (2.778E8))
-#    5) saveData         - 'Y' or 'N', default is 'N' 
-#    6) createPlots     - 'Y' or 'N', default is 'N' 
-#
-#    outputs:
-#    1) yearlyCosts     - pandas DataFrame holding yearly_costs
-#    2) LCOE            - dictionary holding LCOE, calculated wrt first model year
-#==============================================================================
+def getCosts(folders, dbs, elc_dmd='ELC_DMD', conversion=0.359971, save_data='N', create_plots ='N', run_name=''):
+    #    inputs:
+    #    1) folders         - paths containing dbs (list or single string if all in the same path)
+    #    2) dbs             - names of databases (list)
+    #    3) elc_dmd         - quantity that represents electricity demand
+    #    4) conversion      - converts from cost units per activity to cents/kWH
+    #           default is conversion from M$/PJ to cents/KWh (1E6*100 / (2.778E8))
+    #    5) save_data         - 'Y' or 'N', default is 'N'
+    #    6) create_plots     - 'Y' or 'N', default is 'N'
+    #    7) run_name         - Used for saving results in dedicated folder
+    #
+    #    outputs:
+    #    1) yearlyCosts     - pandas DataFrame holding yearly_costs
+    #    2) LCOE            - dictionary holding LCOE, calculated wrt first model year
+    #==============================================================================
     # Save original directory
-    origDir = os.getcwd()
+    wrkdir = os.getcwd()
     
     # If only a single db and folder provided, change to a list
     if type(dbs) == str and type(folders) == str:
@@ -60,10 +52,6 @@ def getCosts(folders, dbs, elc_dmd='ELC_DMD', conversion=0.359971, saveData='N',
         
         # Access costs
         yearlyCosts_single, LCOE_single = SingleDB(folder, db, elc_dmd=elc_dmd, conversion=conversion)
-    
-        # Store costs
-        # yearlyCosts[name(db)] = yearlyCosts_single
-        # LCOE[name(db)] = LCOE_single
 
         yearlyCosts = pd.concat([yearlyCosts, yearlyCosts_single])
         LCOE = pd.concat([LCOE, LCOE_single])
@@ -73,34 +61,31 @@ def getCosts(folders, dbs, elc_dmd='ELC_DMD', conversion=0.359971, saveData='N',
     LCOE = LCOE.reset_index()
         
     # Directory to hold results
-    if saveData == 'Y' or createPlots == 'Y':
-        resultsDir = origDir + "\\results"
-        try:
-            os.stat(resultsDir)
-        except:
-            os.mkdir(resultsDir)
-        os.chdir(resultsDir)
+    if save_data == 'Y' or create_plots == 'Y':
+        create_results_dir(wrkdir=wrkdir, run_name=run_name)
 
-    # Save results to Excel
-    if saveData == 'Y':
-        savename = 'Results_Costs.xls'
+    # Save results to CSV
+    if save_data == 'Y':
+        # savename = 'Results_Costs.xls'
         # Create connection to excel
-        writer = pd.ExcelWriter(savename)
+        # writer = pd.ExcelWriter(savename)
         # Write data
-        yearlyCosts.to_excel(writer, 'yearlyCosts')
-        LCOE.to_excel(writer, 'LCOE')
+        # yearlyCosts.to_excel(writer, 'yearlyCosts')
+        # LCOE.to_excel(writer, 'LCOE')
+        yearlyCosts.to_csv('costs_yearly.csv')
+        LCOE.to_csv('LCOE.csv')
         # Save
-        writer.save()
+        # writer.save()
 
     # Plot Results
-    if createPlots == 'Y':
+    if create_plots == 'Y':
         # yearlyCosts
         titlename = 'Yearly Costs'
         ax = yearlyCosts.plot(stacked=False, title=titlename)
         ax.set_xlabel("Year [-]")
         ax.set_ylabel("Costs [cents/kWh]")
         fig = ax.get_figure()
-        fig.savefig('Results_yearlyCosts.png',dpi=resolution)
+        fig.savefig('costs_yearly.png',dpi=resolution)
         
         # LCOE
         titlename = 'LCOE'
@@ -109,26 +94,25 @@ def getCosts(folders, dbs, elc_dmd='ELC_DMD', conversion=0.359971, saveData='N',
         ax.set_xlabel("Scenario [-]")
         ax.set_ylabel("Levelized Cost of Electricity [cents/kWh]")
         fig = ax.get_figure()
-        fig.savefig('Results_LCOE.png',dpi=resolution)
+        fig.savefig('LCOE.png',dpi=resolution)
 
     # Return to original directory
-    os.chdir(origDir)
+    os.chdir(wrkdir)
         
     return yearlyCosts, LCOE
 
-#==============================================================================
-def SingleDB(folder, db, elc_dmd='ELC_DMD', conversion=0.359971, saveCSV='N', createPlots='N'):
-#    inputs:
-#    1) folder          - path containing db
-#    2) db              - names of databases
-#    3) elc_dmd         - quantity that represents electricity demand
-#    4) conversion      - converts from cost units per activity to cents/kWH
-#    5) saveCSV - 'Y' or 'N' to save results to csv
-#
-#    outputs:
-#    1) yearlyCosts     - pandas Series holding yearly costs
-#    2) LCOE            - LCOE (float), calculated wrt first model year
-#==============================================================================
+    #==============================================================================
+def SingleDB(folder, db, elc_dmd='ELC_DMD', conversion=0.359971):
+    #    inputs:
+    #    1) folder          - path containing db
+    #    2) db              - names of databases
+    #    3) elc_dmd         - quantity that represents electricity demand
+    #    4) conversion      - converts from cost units per activity to cents/kWH
+    #
+    #    outputs:
+    #    1) yearlyCosts     - pandas Series holding yearly costs
+    #    2) LCOE            - LCOE (float), calculated wrt first model year
+    #==============================================================================
     print("Analyzing db: ",db)
 
     # Save original directory
@@ -142,7 +126,7 @@ def SingleDB(folder, db, elc_dmd='ELC_DMD', conversion=0.359971, saveCSV='N', cr
     cur = con.cursor()
 
     #   Identify Unique Scenarios
-    qry = "SELECT * FROM Output_Objective"
+    qry = 'SELECT * FROM Output_Objective'
     cur.execute(qry)
     db_objective = cur.fetchall()
     scenarios = []
@@ -151,7 +135,7 @@ def SingleDB(folder, db, elc_dmd='ELC_DMD', conversion=0.359971, saveCSV='N', cr
             scenarios.append(scenario)
 
     # Review time_periods, only interested in future periods
-    qry = "SELECT * FROM time_periods"
+    qry = 'SELECT * FROM time_periods'
     cur.execute(qry)
     db_t_periods = cur.fetchall()
     
@@ -415,35 +399,6 @@ def SingleDB(folder, db, elc_dmd='ELC_DMD', conversion=0.359971, saveCSV='N', cr
             yearlyCosts.loc[(db, s),year] = df.loc[year,'ELC_Cost']
         LCOE.loc[(db, s),year] = LCOE_single
 
-    # # Directory to hold results
-    # if saveCSV == 'Y' or createPlots == 'Y':
-    #     resultsDir = origDir + "\\results"
-    #     try:
-    #         os.stat(resultsDir)
-    #     except:
-    #         os.mkdir(resultsDir)
-    #     os.chdir(resultsDir)
-    #
-    # #------------
-    # # Save Results to CSV
-    # #------------
-    # if saveCSV == 'Y':
-    #     savename = 'Results_Costs_' + name(db) + '.csv'
-    #     df.to_csv(savename,columns=['ELC_Cost','LCOE'])
-    #
-    # #------------
-    # # Create Plot
-    # #------------
-    # if createPlots == 'Y':
-    #     savename = 'Results_yearlyCosts_' + name(db) + '.png'
-    #
-    #     titlename = 'Yearly Costs: ' + name(db)
-    #     ax = yearlyCosts.plot(stacked=False, title=titlename)
-    #     ax.set_xlabel("Year [-]")
-    #     ax.set_ylabel("Costs [cents/kWh]")
-    #     fig = ax.get_figure()
-    #     fig.savefig(savename,dpi=resolution)
-    
     # Return to original directory
     os.chdir(origDir)
     
