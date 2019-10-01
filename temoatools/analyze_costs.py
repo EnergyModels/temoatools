@@ -4,11 +4,12 @@ Created on Mon Dec 10 12:15:47 2018
 
 @author: benne
 """
-
+from __future__ import print_function
 import os
 import sqlite3
 import pandas as pd
 import matplotlib.pyplot as plt
+
 
 debug = False
 resolution = 1000 #DPI
@@ -52,7 +53,7 @@ def getCosts(folders, dbs, elc_dmd='ELC_DMD', conversion=0.359971, saveData='N',
 
     # Create a dataframe
     yearlyCosts = pd.DataFrame()
-    LCOE = {}
+    LCOE = pd.DataFrame()
         
     # Iterate through each db
     for folder,db in zip(folders,dbs):
@@ -61,8 +62,15 @@ def getCosts(folders, dbs, elc_dmd='ELC_DMD', conversion=0.359971, saveData='N',
         yearlyCosts_single, LCOE_single = SingleDB(folder, db, elc_dmd=elc_dmd, conversion=conversion)
     
         # Store costs
-        yearlyCosts[name(db)] = yearlyCosts_single
-        LCOE[name(db)] = LCOE_single
+        # yearlyCosts[name(db)] = yearlyCosts_single
+        # LCOE[name(db)] = LCOE_single
+
+        yearlyCosts = pd.concat([yearlyCosts, yearlyCosts_single])
+        LCOE = pd.concat([LCOE, LCOE_single])
+
+    # Reset index (remove multi-level indexing, easier to use in Excel)
+    yearlyCosts = yearlyCosts.reset_index()
+    LCOE = LCOE.reset_index()
         
     # Directory to hold results
     if saveData == 'Y' or createPlots == 'Y':
@@ -72,7 +80,18 @@ def getCosts(folders, dbs, elc_dmd='ELC_DMD', conversion=0.359971, saveData='N',
         except:
             os.mkdir(resultsDir)
         os.chdir(resultsDir)
-        
+
+    # Save results to Excel
+    if saveData == 'Y':
+        savename = 'Results_Costs.xls'
+        # Create connection to excel
+        writer = pd.ExcelWriter(savename)
+        # Write data
+        yearlyCosts.to_excel(writer, 'yearlyCosts')
+        LCOE.to_excel(writer, 'LCOE')
+        # Save
+        writer.save()
+
     # Plot Results
     if createPlots == 'Y':
         # yearlyCosts
@@ -85,25 +104,13 @@ def getCosts(folders, dbs, elc_dmd='ELC_DMD', conversion=0.359971, saveData='N',
         
         # LCOE
         titlename = 'LCOE'
-        df_LCOE = pd.DataFrame.from_dict(LCOE,orient='index')
-        ax = df_LCOE.plot.bar(stacked=False, title=titlename)
+        # df_LCOE = pd.DataFrame.from_dict(LCOE,orient='index')
+        ax = LCOE.plot.bar(stacked=False, title=titlename)
         ax.set_xlabel("Scenario [-]")
         ax.set_ylabel("Levelized Cost of Electricity [cents/kWh]")
         fig = ax.get_figure()
         fig.savefig('Results_LCOE.png',dpi=resolution)
-        
-        
-    # Save results to Excel
-    if saveData == 'Y':
-        savename  = 'Results_Costs.xls'
-        # Create connection to excel
-        writer = pd.ExcelWriter(savename)
-        # Write data
-        yearlyCosts.to_excel(writer,'yearlyCosts')
-        df_LCOE.to_excel(writer,'LCOE')
-        # Save
-        writer.save()
-        
+
     # Return to original directory
     os.chdir(origDir)
         
@@ -122,6 +129,8 @@ def SingleDB(folder, db, elc_dmd='ELC_DMD', conversion=0.359971, saveCSV='N', cr
 #    1) yearlyCosts     - pandas Series holding yearly costs
 #    2) LCOE            - LCOE (float), calculated wrt first model year
 #==============================================================================
+    print("Analyzing db: ",db)
+
     # Save original directory
     origDir = os.getcwd()
     
@@ -131,7 +140,16 @@ def SingleDB(folder, db, elc_dmd='ELC_DMD', conversion=0.359971, saveCSV='N', cr
     # Connect to Database
     con = sqlite3.connect(db)
     cur = con.cursor()
-        
+
+    #   Identify Unique Scenarios
+    qry = "SELECT * FROM Output_Objective"
+    cur.execute(qry)
+    db_objective = cur.fetchall()
+    scenarios = []
+    for scenario, objective_name, total_system_cost in db_objective:
+        if scenario not in scenarios:
+            scenarios.append(scenario)
+
     # Review time_periods, only interested in future periods
     qry = "SELECT * FROM time_periods"
     cur.execute(qry)
@@ -153,12 +171,7 @@ def SingleDB(folder, db, elc_dmd='ELC_DMD', conversion=0.359971, saveCSV='N', cr
     techs =[]
     for tech, flag, sector, tech_desc, tech_category in db_tech:  
         techs.append(tech)
-        
-    # Create dataframe to hold yearly costs (initialized to zero)
-    rows = t_periods
-    cols = ['CostInvest','CostFixed','CostVariable','CostTotal','ELC_DMD','ELC_Cost']
-    df = pd.DataFrame(data=0.0,index=rows,columns = cols)
-        
+
     #------------
     # CostInvest
     #------------
@@ -211,200 +224,225 @@ def SingleDB(folder, db, elc_dmd='ELC_DMD', conversion=0.359971, saveCSV='N', cr
     # Store Data
     for periods, tech, vintage, cost_variable, cost_variable_units, cost_variable_notes in db_CostVariable:
         if periods in t_periods and tech in techs:
-            df_CostVariable.loc[periods,tech] = cost_variable  
-    
-    #------------
-    # Activity
-    #------------
-    # Access database
-    qry = "SELECT * FROM Output_VFlow_Out"
-    cur.execute(qry)
-    db_activity = cur.fetchall()  
-    
-    # Create dataframe to hold activity (initialized to zero)
-    rows = t_periods
-    cols = techs
-    df_activity = pd.DataFrame(data=0.0,index=rows,columns = cols)
-    
-    # Store Data
-    for scenario, sector, t_period, t_season, t_day, input_comm, tech, vintage, output_comm, vflow_out in db_activity:
-        # Store Activity for each technology
-        if t_period in t_periods and tech in techs:
-            df_activity.loc[t_period,tech] = df_activity.loc[t_period,tech] + vflow_out
-        # Store electricity demand
-        if output_comm == elc_dmd:
-            df.loc[t_period,'ELC_DMD'] = df.loc[t_period,'ELC_DMD'] + vflow_out
-            
-    #------------
-    # New Capacity
-    #------------
-    # Access database
-    qry = "SELECT * FROM Output_V_Capacity"
-    cur.execute(qry)
-    db_newCapacity = cur.fetchall()  
-    
-    # Create dataframe to hold yearly installs (initialized to zero)
-    rows = t_periods
-    cols = techs
-    df_newCapacity = pd.DataFrame(data=0.0,index=rows,columns = cols)
-    
-    # Store Data
-    for scenario, sector, tech, vintage, capacity, in db_newCapacity:
-        if vintage in t_periods and tech in techs:
-            df_newCapacity.loc[vintage,tech] = capacity  
-            
-            
-    #------------
-    # Active Capacity
-    #------------
-    # Access database
-    qry = "SELECT * FROM Output_CapacityByPeriodAndTech"
-    cur.execute(qry)
-    db_activeCapacity = cur.fetchall()  
-    
-    # Create dataframe to hold yearly installs (initialized to zero)
-    rows = t_periods
-    cols = techs
-    df_activeCapacity = pd.DataFrame(data=0.0,index=rows,columns = cols)
-    
-    # Store Data
-    for scenario, sector, t_period, tech, capacity, in db_activeCapacity:
-        if t_period in t_periods and tech in techs:
-            df_activeCapacity.loc[t_period,tech] = capacity  
-    
-    #------------
+            df_CostVariable.loc[periods,tech] = cost_variable
+
+    # ------------
     # Discount Rate
-    #------------
+    # ------------
     qry = "SELECT * FROM GlobalDiscountRate"
     cur.execute(qry)
-    db_rate = cur.fetchall()  
+    db_rate = cur.fetchall()
     rate = db_rate[0][0]
-    
-    #------------
+
+    # ------------
     # LifetimeLoanTech
-    #------------
+    # ------------
     # Access database
     qry = "SELECT * FROM LifetimeLoanTech"
     cur.execute(qry)
-    db_loanLife = cur.fetchall()  
-    
+    db_loanLife = cur.fetchall()
+
     # Create dataframe to hold yearly installs (initialized to zero)
     rows = techs
     cols = ["loan"]
-    df_loanLife = pd.DataFrame(data=0.0,index=rows,columns = cols)
-    
+    df_loanLife = pd.DataFrame(data=0.0, index=rows, columns=cols)
+
     # Store Data
     for tech, loan, loan_notes, in db_loanLife:
-        df_loanLife.loc[tech,"loan"] = loan 
-    
-    
+        df_loanLife.loc[tech, "loan"] = loan
+
+    # Create pandas DataFrame to hold yearlyEmissions for all scenarios
+    index = pd.MultiIndex.from_product([[db],scenarios], names=['database', 'scenario'])
+    yearlyCosts = pd.DataFrame(index=index,columns=t_periods)
+    yearlyCosts = yearlyCosts.fillna(0.0) # Default value to zero
+    LCOE = pd.DataFrame(index=index,columns=['LCOE'])
+    LCOE = LCOE.fillna(0.0) # Default value to zero
+
     #------------
-    # Investments
+    # Iterate through scenarios
     #------------
-    # Create dataframe (initialized to zero)
-    rows = t_periods
-    cols = techs
-    df_investments = pd.DataFrame(data=0.0,index=rows,columns = cols)
-    
-    for year in t_periods:
+    for s in scenarios:
+        print("\tAnalyzing Scenario: ", s)
+
+        # Create dataframe to hold yearly costs (initialized to zero)
+        rows = t_periods
+        cols = ['CostInvest', 'CostFixed', 'CostVariable', 'CostTotal', 'ELC_DMD', 'ELC_Cost']
+        df = pd.DataFrame(data=0.0, index=rows, columns=cols)
+
+        #------------
+        # Activity
+        #------------
+        # Access database
+        qry = "SELECT * FROM Output_VFlow_Out"
+        cur.execute(qry)
+        db_activity = cur.fetchall()
+
+        # Create dataframe to hold activity (initialized to zero)
+        rows = t_periods
+        cols = techs
+        df_activity = pd.DataFrame(data=0.0,index=rows,columns = cols)
+
+        # Store Data
+        for scenario, sector, t_period, t_season, t_day, input_comm, tech, vintage, output_comm, vflow_out in db_activity:
+            if scenario == s:
+                # Store Activity for each technology
+                if t_period in t_periods and tech in techs:
+                    df_activity.loc[t_period,tech] = df_activity.loc[t_period,tech] + vflow_out
+                # Store electricity demand
+                if output_comm == elc_dmd:
+                    df.loc[t_period,'ELC_DMD'] = df.loc[t_period,'ELC_DMD'] + vflow_out
+
+        #------------
+        # New Capacity
+        #------------
+        # Access database
+        qry = "SELECT * FROM Output_V_Capacity"
+        cur.execute(qry)
+        db_newCapacity = cur.fetchall()
+
+        # Create dataframe to hold yearly installs (initialized to zero)
+        rows = t_periods
+        cols = techs
+        df_newCapacity = pd.DataFrame(data=0.0,index=rows,columns = cols)
+
+        # Store Data
+        for scenario, sector, tech, vintage, capacity, in db_newCapacity:
+            if scenario == s:
+                if vintage in t_periods and tech in techs:
+                    df_newCapacity.loc[vintage,tech] = capacity
+
+        #------------
+        # Active Capacity
+        #------------
+        # Access database
+        qry = "SELECT * FROM Output_CapacityByPeriodAndTech"
+        cur.execute(qry)
+        db_activeCapacity = cur.fetchall()
+
+        # Create dataframe to hold yearly installs (initialized to zero)
+        rows = t_periods
+        cols = techs
+        df_activeCapacity = pd.DataFrame(data=0.0,index=rows,columns = cols)
+
+        # Store Data
+        for scenario, sector, t_period, tech, capacity, in db_activeCapacity:
+            if scenario == s:
+                if t_period in t_periods and tech in techs:
+                    df_activeCapacity.loc[t_period,tech] = capacity
+
+        #------------
+        # Analysis - Investments
+        #------------
+        # Create dataframe (initialized to zero)
+        rows = t_periods
+        cols = techs
+        df_investments = pd.DataFrame(data=0.0,index=rows,columns = cols)
+
+        for year in t_periods:
+            for tech in techs:
+                costInvest = df_newCapacity.loc[year,tech] * df_CostInvest.loc[year,tech]
+                df_investments.loc[year,tech] = df_investments.loc[year,tech] + costInvest
+
+        #------------
+        # Analysis - Translate Investments to Loans
+        #------------
+        # Create dataframe (initialized to zero)
+        rows = t_periods
+        cols = techs
+        df_loanPayments = pd.DataFrame(data=0.0,index=rows,columns = cols)
+
         for tech in techs:
-            costInvest = df_newCapacity.loc[year,tech] * df_CostInvest.loc[year,tech]
-            df_investments.loc[year,tech] = df_investments.loc[year,tech] + costInvest
-    
-    #------------
-    # Translate Investments to Loans
-    #------------
-    # Create dataframe (initialized to zero)
-    rows = t_periods
-    cols = techs
-    df_loanPayments = pd.DataFrame(data=0.0,index=rows,columns = cols)
-    
-    for tech in techs:
-        for buildYear in t_periods:
-            
-            if df_investments.loc[buildYear,tech] > 0:
-                loan = df_investments.loc[buildYear,tech]
-                N = df_loanLife.loc[tech,"loan"]
-                # Assume Fixed-Rate Payment (https://www.investopedia.com/terms/f/fixed-rate-payment.asp)
-                annualPayment = rate/ (1-(1+rate)**-N)*loan
-                if debug == True:
-                    print "Tech: " + tech + ",Year: " + str(buildYear) + ",YearlyPayment: " +str(annualPayment)
-                
-                for year in t_periods:
-                    if buildYear<=year and year<=buildYear+N:
-                        df_loanPayments.loc[year,tech] = df_loanPayments.loc[year,tech] + annualPayment
-            
-    #------------
-    # Translate to yearly costs
-    #------------
-    for year in t_periods:
-        for tech in techs:
-            
-            # CostInvest (loan payments)
-            costInvest = df_loanPayments.loc[year,tech]
-            df.loc[year,'CostInvest'] = df.loc[year,'CostInvest'] + costInvest
-            
-            # CostFixed
-            costFixed = df_activeCapacity.loc[year,tech] * df_CostFixed.loc[year,tech]
-            df.loc[year,'CostFixed'] = df.loc[year,'CostFixed'] + costFixed
-     
-            # CostVariable
-            costVariable = df_activity.loc[year,tech] * df_CostVariable.loc[year,tech]
-            df.loc[year,'CostVariable'] = df.loc[year,'CostVariable'] + costVariable
-            
-            # Sum Costs
-            totalTechCost = costInvest + costFixed + costVariable
-            df.loc[year,'CostTotal'] = df.loc[year,'CostTotal'] + totalTechCost
-            
-        # Calculate Yearly Cost of Electricity
-        df.loc[year,'ELC_Cost'] =df.loc[year,'CostTotal'] / df.loc[year,'ELC_DMD'] * conversion
-        
-    yearlyCosts = df.ELC_Cost
-    
-    #------------
-    # Calculate LCOE (based on initial year)
-    # based on: https://www.energy.gov/sites/prod/files/2015/08/f25/LCOE.pdf
-    #------------
-    num = 0.0
-    denom = 0.0
-    
-    for year in t_periods:
-        t = year - t_periods[0]
-        num = num + df.loc[year,'CostTotal'] / (1.0 + rate)**t
-        denom = denom + df.loc[year,'ELC_DMD'] / (1.0 + rate)**t
-    
-    LCOE = num/denom * conversion
-    
-    df.loc[t_periods[0],'LCOE'] = LCOE
-       
-    # Directory to hold results
-    if saveCSV == 'Y' or createPlots == 'Y':
-        resultsDir = origDir + "\\results"
-        try:
-            os.stat(resultsDir)
-        except:
-            os.mkdir(resultsDir)
-        os.chdir(resultsDir)
-    
-    #------------
-    # Save Results to CSV
-    #------------
-    if saveCSV == 'Y':
-        savename = 'Results_Costs_' + name(db) + '.csv'
-        df.to_csv(savename,columns=['ELC_Cost','LCOE'])
-    
-    #------------
-    # Create Plot
-    #------------
-    if createPlots == 'Y':
-        savename = 'Results_yearlyCosts_' + name(db) + '.png'
-        
-        titlename = 'Yearly Costs: ' + name(db)
-        ax = yearlyCosts.plot(stacked=False, title=titlename)
-        ax.set_xlabel("Year [-]")
-        ax.set_ylabel("Costs [cents/kWh]")
-        fig = ax.get_figure()
-        fig.savefig(savename,dpi=resolution)
+            for buildYear in t_periods:
+
+                if df_investments.loc[buildYear,tech] > 0:
+                    loan = df_investments.loc[buildYear,tech]
+                    N = df_loanLife.loc[tech,"loan"]
+                    # Assume Fixed-Rate Payment (https://www.investopedia.com/terms/f/fixed-rate-payment.asp)
+                    annualPayment = rate/ (1-(1+rate)**-N)*loan
+                    if debug == True:
+                        print("Tech: " + tech + ",Year: " + str(buildYear) + ",YearlyPayment: " +str(annualPayment))
+
+                    for year in t_periods:
+                        if buildYear<=year and year<=buildYear+N:
+                            df_loanPayments.loc[year,tech] = df_loanPayments.loc[year,tech] + annualPayment
+
+        #------------
+        # Analysis - Translate to yearly costs
+        #------------
+        for year in t_periods:
+            for tech in techs:
+
+                # CostInvest (loan payments)
+                costInvest = df_loanPayments.loc[year,tech]
+                df.loc[year,'CostInvest'] = df.loc[year,'CostInvest'] + costInvest
+
+                # CostFixed
+                costFixed = df_activeCapacity.loc[year,tech] * df_CostFixed.loc[year,tech]
+                df.loc[year,'CostFixed'] = df.loc[year,'CostFixed'] + costFixed
+
+                # CostVariable
+                costVariable = df_activity.loc[year,tech] * df_CostVariable.loc[year,tech]
+                df.loc[year,'CostVariable'] = df.loc[year,'CostVariable'] + costVariable
+
+                # Sum Costs
+                totalTechCost = costInvest + costFixed + costVariable
+                df.loc[year,'CostTotal'] = df.loc[year,'CostTotal'] + totalTechCost
+
+            # Calculate Yearly Cost of Electricity
+            df.loc[year,'ELC_Cost'] =df.loc[year,'CostTotal'] / df.loc[year,'ELC_DMD'] * conversion
+
+        # yearlyCosts_single = df.ELC_Cost
+
+        #------------
+        # Analysis - Calculate LCOE (based on initial year)
+        # based on: https://www.energy.gov/sites/prod/files/2015/08/f25/LCOE.pdf
+        #------------
+        num = 0.0
+        denom = 0.0
+
+        for year in t_periods:
+            t = year - t_periods[0]
+            num = num + df.loc[year,'CostTotal'] / (1.0 + rate)**t
+            denom = denom + df.loc[year,'ELC_DMD'] / (1.0 + rate)**t
+
+        LCOE_single = num/denom * conversion
+
+        # df.loc[t_periods[0],'LCOE'] = LCOE
+
+
+        # Store yearlyCosts_single and LCOE_single
+        for year in df.index:
+            yearlyCosts.loc[(db, s),year] = df.loc[year,'ELC_Cost']
+        LCOE.loc[(db, s),year] = LCOE_single
+
+    # # Directory to hold results
+    # if saveCSV == 'Y' or createPlots == 'Y':
+    #     resultsDir = origDir + "\\results"
+    #     try:
+    #         os.stat(resultsDir)
+    #     except:
+    #         os.mkdir(resultsDir)
+    #     os.chdir(resultsDir)
+    #
+    # #------------
+    # # Save Results to CSV
+    # #------------
+    # if saveCSV == 'Y':
+    #     savename = 'Results_Costs_' + name(db) + '.csv'
+    #     df.to_csv(savename,columns=['ELC_Cost','LCOE'])
+    #
+    # #------------
+    # # Create Plot
+    # #------------
+    # if createPlots == 'Y':
+    #     savename = 'Results_yearlyCosts_' + name(db) + '.png'
+    #
+    #     titlename = 'Yearly Costs: ' + name(db)
+    #     ax = yearlyCosts.plot(stacked=False, title=titlename)
+    #     ax.set_xlabel("Year [-]")
+    #     ax.set_ylabel("Costs [cents/kWh]")
+    #     fig = ax.get_figure()
+    #     fig.savefig(savename,dpi=resolution)
     
     # Return to original directory
     os.chdir(origDir)

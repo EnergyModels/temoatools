@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 import sqlite3
 import pandas as pd
@@ -43,11 +44,15 @@ def getActivity(folders,dbs,switch='fuel',sectorName='electric',saveData='N',cre
         folders = fldrs
     
     # Create dictionary to hold each capacity_single series
-    activity = {}
+    activity = pd.DataFrame()
     
     # Iterate through each db
     for folder,db in zip(folders,dbs):
-        activity[name(db)] = SingleDB(folder,db,switch=switch,sectorName=sectorName,conversion=conversion)
+        activity_single = SingleDB(folder,db,switch=switch,sectorName=sectorName,conversion=conversion)
+        activity = pd.concat([activity, activity_single])
+
+    # Reset index (remove multi-level indexing, easier to use in Excel)
+    activity = activity.reset_index()
       
     # Directory to hold results
     if saveData == 'Y' or createPlots == 'Y':
@@ -57,41 +62,7 @@ def getActivity(folders,dbs,switch='fuel',sectorName='electric',saveData='N',cre
         except:
             os.mkdir(resultsDir)
         os.chdir(resultsDir)
-        
-    if createPlots == 'Y':
-        # Create plots
-        n_subplots = len(dbs)
-        if n_subplots == 1:
-            db = dbs[0]
-            if switch == 'fuel':
-                titlename = name(db) + ' by fuel'
-            elif switch == 'tech':
-                titlename = name(db) + ' by tech'
-            ax = activity[name(db)].plot.bar(stacked=True, title=titlename)
-            ax.set_xlabel("Year [-]")
-            ax.set_ylabel("Activity [GWh]")
-        else:  # With subplots
-            f,a = plt.subplots(n_subplots,1,sharex=True, sharey=True)
-            a = a.ravel()
-            # Create subplots
-            for idx,ax in enumerate(a):
-                db = dbs[idx]
-                if switch == 'fuel':
-                    titlename = name(db) + ' by fuel'
-                elif switch == 'tech':
-                    titlename = name(db) + ' by tech'
-                activity[name(db)].plot.bar(ax=ax,stacked=True, title=titlename)
-                ax.set_xlabel("Year [-]")
-                ax.set_ylabel("Activity [GWh]")
 
-        if switch == 'fuel':
-            savename  = 'Results_yearlyActivity_byFuel.png'
-        elif switch == 'tech':
-            savename  = 'Results_yearlyActivity_byTech.png'
-        fig = ax.get_figure()
-        fig.savefig(savename,dpi=resolution)
-    
-    
     # Save results to Excel
     if saveData == 'Y':
         # Create savename based on switch
@@ -101,11 +72,45 @@ def getActivity(folders,dbs,switch='fuel',sectorName='electric',saveData='N',cre
             savename  = 'Results_yearlyActivity_byTech.xls'
         # Create connection to excel
         writer = pd.ExcelWriter(savename)
-        for db in dbs:
-            activity[name(db)].to_excel(writer,db)
+        activity.to_excel(writer, "Activity")
+        # for db in dbs:
+        #     activity[name(db)].to_excel(writer,db)
         # Save
         writer.save()
-        
+
+    if createPlots == 'Y':
+        # Create plots
+        # n_subplots = len(dbs)
+        # if n_subplots == 1:
+        # db = dbs[0]
+        if switch == 'fuel':
+            titlename = name(db) + ' by fuel'
+        elif switch == 'tech':
+            titlename = name(db) + ' by tech'
+        ax = activity.plot.bar(stacked=True, title=titlename)
+        ax.set_xlabel("Year [-]")
+        ax.set_ylabel("Activity [GWh]")
+        # else:  # With subplots
+        #     f,a = plt.subplots(n_subplots,1,sharex=True, sharey=True)
+        #     a = a.ravel()
+        #     # Create subplots
+        #     for idx,ax in enumerate(a):
+        #         db = dbs[idx]
+        #         if switch == 'fuel':
+        #             titlename = name(db) + ' by fuel'
+        #         elif switch == 'tech':
+        #             titlename = name(db) + ' by tech'
+        #         activity[name(db)].plot.bar(ax=ax,stacked=True, title=titlename)
+        #         ax.set_xlabel("Year [-]")
+        #         ax.set_ylabel("Activity [GWh]")
+
+        if switch == 'fuel':
+            savename  = 'Results_yearlyActivity_byFuel.png'
+        elif switch == 'tech':
+            savename  = 'Results_yearlyActivity_byTech.png'
+        fig = ax.get_figure()
+        fig.savefig(savename,dpi=resolution)
+
     # Return to original directory
     os.chdir(origDir)
     
@@ -126,7 +131,8 @@ def SingleDB(folder,db,switch='fuel',sectorName='electric',saveData='N',createPl
 #    outputs:
 #    1) activity     - pandas DataFrame holding capacity for each model year
 #==============================================================================
-    
+    print("Analyzing db: ",db)
+
     if switch == 'fuel':
         savename = 'Results_yearlyActivity_byFuel_' + name(db)
     elif switch == 'tech':
@@ -191,52 +197,67 @@ def SingleDB(folder,db,switch='fuel',sectorName='electric',saveData='N',createPl
     rows = future_t_periods[:-1] # Last period is not calculated
     
     # Create dataframe initialized to zero
-    df = pd.DataFrame(data=0.0,index=rows,columns = cols)
+    # df = pd.DataFrame(data=0.0,index=rows,columns = cols)
+
+
+    #   Identify Unique Scenarios
+    qry = "SELECT * FROM Output_Objective"
+    cur.execute(qry)
+    db_objective = cur.fetchall()
+    scenarios = []
+    for scenario, objective_name, total_system_cost in db_objective:
+        if scenario not in scenarios:
+            scenarios.append(scenario)
+
+    # Create pandas DataFrame to hold yearlyEmissions for all scenarios
+    index = pd.MultiIndex.from_product([[db],scenarios,cols], names=['database', 'scenario', 'fuelOrTech'])
+    df = pd.DataFrame(index=index,columns=future_t_periods[:-1])
+    df = df.fillna(0.0)  # Default value to zero
     
     ## Review db_Output_VFlow_Out to fill data frame
     for scenario, sector, t_periods, t_season, t_day, input_comm, tech, vintage, output_comm, vflow_out in db_Output_VFlow_Out:    
         if sector == sectorName:
             if switch == 'fuel':
-                df.loc[t_periods,d[tech]] = df.loc[t_periods,d[tech]] + vflow_out*conversion
+                df.loc[(db,scenario,d[tech]),t_periods] = df.loc[(db,scenario,d[tech]),t_periods] + vflow_out*conversion
             elif switch == 'tech':
-                df.loc[t_periods,tech] = df.loc[t_periods,tech] + vflow_out*conversion
+                df.loc[(db,scenario,tech),t_periods] = df.loc[(db,scenario,tech),t_periods] + vflow_out*conversion
             
-    # Find empty columns and then drop from the dataframe
-    empty = []
-    for col in cols:
-        if df[col].sum()==0.0:
-            empty.append(str(col))
-    df2 = df.drop(empty,axis=1)
+    # # Find empty columns and then drop from the dataframe
+    # empty = []
+    # for col in cols:
+    #     if df[col].sum()==0.0:
+    #         empty.append(str(col))
+    # df2 = df.drop(empty,axis=1)
 
     
-    # Directory to hold results
-    if saveData == 'Y' or createPlots == 'Y':
-        resultsDir = origDir + "\\results"
-        try:
-            os.stat(resultsDir)
-        except:
-            os.mkdir(resultsDir)
-        os.chdir(resultsDir)
-    
-    # Plot Results
-    if createPlots == 'Y':
-        if switch == 'fuel':
-            titlename = name(db) + ' by fuel'
-        elif switch == 'tech':
-            titlename = name(db) + ' by tech'
-        ax = df2.plot.bar(stacked=True, title=titlename)
-        ax.set_xlabel("Year [-]")
-        ax.set_ylabel("Activity [GWh]")
-        fig = ax.get_figure()
-        fig.savefig(savename + '.png',dpi=resolution)
-    
-    # Save as CSV (include all technologies in case comparing multiple scenarios)
-    if saveData == 'Y' or saveData == 'y':
-        df.to_csv(savename + '.csv')
+    # # Directory to hold results
+    # if saveData == 'Y' or createPlots == 'Y':
+    #     resultsDir = origDir + "\\results"
+    #     try:
+    #         os.stat(resultsDir)
+    #     except:
+    #         os.mkdir(resultsDir)
+    #     os.chdir(resultsDir)
+    #
+    # # Plot Results
+    # if createPlots == 'Y':
+    #     if switch == 'fuel':
+    #         titlename = name(db) + ' by fuel'
+    #     elif switch == 'tech':
+    #         titlename = name(db) + ' by tech'
+    #     ax = df2.plot.bar(stacked=True, title=titlename)
+    #     ax.set_xlabel("Year [-]")
+    #     ax.set_ylabel("Activity [GWh]")
+    #     fig = ax.get_figure()
+    #     fig.savefig(savename + '.png',dpi=resolution)
+    #
+    # # Save as CSV (include all technologies in case comparing multiple scenarios)
+    # if saveData == 'Y' or saveData == 'y':
+    #     df.to_csv(savename + '.csv')
         
     # return to original folder
     os.chdir(origDir)
         
-    # return capacity as a DataFrame
-    activity = df2
-    return activity
+    # return as a DataFrame
+    # activity = df2
+    return df
