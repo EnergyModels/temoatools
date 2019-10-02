@@ -7,6 +7,8 @@ import numpy as np
 import math
 import seaborn as sns
 import matplotlib.pyplot as plt
+import temoatools as tt
+
 
 from damageFunctions import trans_damage, sub_damage, dist_damage, wind_damage, solar_damage, \
     SECBL_moderate, SECBM_moderate, SECBH_moderate, CECBL_moderate, CECBM_moderate, CECBH_moderate, \

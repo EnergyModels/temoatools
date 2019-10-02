@@ -1,10 +1,65 @@
 import numpy as np
-# =============================================================================#
-# Fragility Curves
-# Written by Claire Trevisan and Jeff Bennett
-# =============================================================================#
 
 
+# =====================================#
+# Overview of Fragility Curves Available #
+# =====================================#
+# Infinitely Stiff - unaffected by wind
+# frag_inf_stiff(wind_mph)
+#
+# Transmission
+# frag_trans(wind_mph)
+#
+# Substation
+# frag_sub(wind_mph)
+#
+# Distribution
+# frag_dist_20yr(wind_mph)
+# frag_dist_40yr(wind_mph)
+# frag_dist_60yr(wind_mph)
+#
+# Solar Power
+# frag_solar_res(wind_mph)
+# frag_solar_utility(wind_mph) #used in Watson dissertation
+#
+# Wind Power
+# frag_wind_yaw(wind_mph)
+# frag_wind_nonyaw(wind_mph) # used in Watson dissertation
+#
+# ---------------
+# HAZUS Curves
+# ---------------
+#
+# CECBL (Concrete Engineered Commercial Building 1 to 2 stories, HAZUS)
+# frag_cecbl_moderate(wind_mph)
+# frag_cecbl_severe(wind_mph)
+#
+# CECBM (Concrete Engineered Commercial Building 3 to 5 stories, HAZUS)
+# frag_cecbm_moderate(wind_mph)
+# frag_cecbm_severe(wind_mph)
+#
+# CECBH (Concrete Engineered Commercial Building 6+ stories, HAZUS)
+# frag_cecbh_moderate(wind_mph)
+# frag_cecbh_severe(wind_mph)
+#
+# SECBL (Steel Engineered Commercial Building 1 to 2 stories, HAZUS)
+# frag_secbl_moderate(wind_mph)
+# frag_secbl_severe(wind_mph)
+#
+# SECBM (Steel Engineered Commercial Building 3 to 5 stories, HAZUS)
+# frag_secbm_moderate(wind_mph) # Used in Watson dissertation to represent Natural Gas Power Plants
+# frag_secbm_severe(wind_mph)
+#
+# SECBH (Steel Engineered Commercial Building 6+ stories, HAZUS)
+# frag_secbh_moderate(wind_mph) # Used in Watson dissertation to represent Coal Power Plants
+# frag_secbh_severe(wind_mph)
+
+# =====================================#
+# General Fragility Curves             #
+# =====================================#
+
+def frag_inf_stiff(wind_mph):
+    return 0.0
 
 
 # =====================================#
@@ -17,103 +72,144 @@ import numpy as np
 def trans_damage(wind_mph):
     wind_ms = wind_mph * 0.44704
     trans_x = [43.4483, 47.5884, 50.6947, 53.8032, 56.1365, 58.7298, 60.8059, 62.882, 64.6994, 66.2582, 68.0778,
-               69.3766,
-               70.9362, 72.2357, 73.5359, 75.0947, 76.3956, 77.4365, 78.7353, 79.7755, 80.8149, 81.595, 82.6352,
-               83.6747,
-               84.9735, 86.0129, 87.0524, 88.0926, 89.1313, 90.4294, 91.7275, 92.7676, 94.0657, 95.6231, 97.1806,
-               99.2552,
-               100.553, 102.109, 103.665, 105.22, 106.775, 108.33, 109.626, 111.181, 112.736, 114.807, 116.621, 118.692,
-               120.504, 122.575, 123.611, 124.904, 126.198, 127.493, 129.304, 131.633, 133.444, 134.996, 136.808,
-               138.619,
-               140.43, 142.758, 145.344, 147.414]
+               69.3766, 70.9362, 72.2357, 73.5359, 75.0947, 76.3956, 77.4365, 78.7353, 79.7755, 80.8149, 81.595,
+               82.6352, 83.6747, 84.9735, 86.0129, 87.0524, 88.0926, 89.1313, 90.4294, 91.7275, 92.7676, 94.0657,
+               95.6231, 97.1806, 99.2552, 100.553, 102.109, 103.665, 105.22, 106.775, 108.33, 109.626, 111.181, 112.736,
+               114.807, 116.621, 118.692, 120.504, 122.575, 123.611, 124.904, 126.198, 127.493, 129.304, 131.633,
+               133.444, 134.996, 136.808, 138.619, 140.43, 142.758, 145.344, 147.414]
     trans_y = [0.00E+00, 0.00837677, 0.0195248, 0.0388921, 0.060952, 0.0885071, 0.116031, 0.143554, 0.171062, 0.198555,
                0.234282, 0.256279, 0.286511, 0.311247, 0.338724, 0.366216, 0.396432, 0.421153, 0.44315, 0.465131,
-               0.484372,
-               0.500858, 0.522839, 0.542081, 0.564078, 0.583319, 0.60256, 0.624541, 0.641043, 0.6603, 0.679557,
-               0.701538,
-               0.720795, 0.742808, 0.764821, 0.786865, 0.806122, 0.819915, 0.836448, 0.850242, 0.864035, 0.875089,
-               0.888866,
-               0.89992, 0.910973, 0.922058, 0.933128, 0.941473, 0.947063, 0.955408, 0.96095, 0.963769, 0.966587,
-               0.972146,
-               0.974996, 0.980617, 0.983467, 0.986301, 0.989151, 0.992001, 0.994851, 0.997733, 0.99789, 1]
-    p_failure = np.interp(wind_ms, trans_x, trans_y)
+               0.484372, 0.500858, 0.522839, 0.542081, 0.564078, 0.583319, 0.60256, 0.624541, 0.641043, 0.6603,
+               0.679557, 0.701538, 0.720795, 0.742808, 0.764821, 0.786865, 0.806122, 0.819915, 0.836448, 0.850242,
+               0.864035, 0.875089, 0.888866, 0.89992, 0.910973, 0.922058, 0.933128, 0.941473, 0.947063, 0.955408,
+               0.96095, 0.963769, 0.966587, 0.972146, 0.974996, 0.980617, 0.983467, 0.986301, 0.989151, 0.992001,
+               0.994851, 0.997733, 0.99789, 1.0]
+    p_failure = np.interp(wind_ms, trans_x, trans_y, left=0.0, right=1.0)
     return p_failure
 
 
 # Substation:
 # Substation fragility curves were based on data published for the grid in Mexico [66]
 # López López A, E. PRL, Escobedo D de L, Sesma JS. Reliability and Vulnerability Analysis of Electrical Substations and Transmission Towers for Definition of Wind and Seismic Damage Maps for Mexico. 11er Am Conf Wind Eng 2009;4:22–6.
-def sub_damage(wind_mph):
+def frag_sub(wind_mph):
     wind_kmph = wind_mph * 1.60934
     sub_x = [40.1487, 60.223, 80.2974, 100.372, 119.703, 139.777, 159.851, 179.926, 200.0, 220.074, 240.149, 260.223,
              281.041, 301.115]
     sub_y = [0.0, 0.0136986, 0.0228311, 0.0273973, 0.0456621, 0.0639269, 0.0913242, 0.13242, 0.214612, 0.424658,
-             0.648402,
-             0.803653, 0.890411, 0.931507]
-    p_failure = np.interp(wind_kmph, sub_x, sub_y)
+             0.648402, 0.803653, 0.890411, 0.931507]
+    p_failure = np.interp(wind_kmph, sub_x, sub_y, left=0.0, right=1.0)
     return p_failure
 
 
 # Distribution:
 # Distribution lines were modeled assuming sixty year old wooden poles [65]
 # Salman AM, Li Y, Stewart MG. Evaluating system reliability and targeted hardening strategies of power distribution systems subjected to hurricanes. Reliab Eng Syst Saf 2015;144:319–33. doi:10.1016/j.ress.2015.07.028.
-def dist_damage(wind_mph):
+def frag_dist_20yr(wind_mph):
     wind_ms = wind_mph * 0.44704
-    dist_x = [34.375, 38.1855, 40.3024, 42.2782, 45.3831, 48.3468, 50.4637, 52.0161, 53.7097, 55.2621, 57.379, 59.2137,
-              60.9073, 62.4597, 63.871, 65.5645, 67.3992, 68.8105, 70.3629, 72.1976, 75.0202, 77.7016, 80.3831, 83.2056,
-              86.1694, 89.2742, 96.8952]
-    dist_y = [0.0, 0.0133333, 0.0311111, 0.0533333, 0.102222, 0.173333, 0.235556, 0.284444, 0.342222, 0.395556,
-              0.471111,
-              0.533333, 0.591111, 0.635556, 0.68, 0.728889, 0.773333, 0.8, 0.831111, 0.862222, 0.902222, 0.937778,
-              0.964444,
-              0.982222, 0.991111, 0.995556, 1.0]
-    p_failure = np.interp(wind_ms, dist_x, dist_y)
+    x = [29.99952442, 49.69039806, 51.54896086, 53.17567889, 55.11128549, 56.6590574, 57.89603843, 59.13254387,
+         60.36881153, 61.37252104, 62.9940077, 64.07476102, 65.38617016, 66.46716127, 67.47134636, 68.86170162,
+         69.86612451, 70.79350359, 71.87544586, 72.8808199, 74.04147049, 75.04732011, 76.36324725, 77.83397537,
+         79.53845056, 81.70732867, 83.79987635, 85.96970562, 87.59761259, 100.0777572]
+    y = [0.0, 0.0, 0.018404908, 0.033742331, 0.064417178, 0.098159509, 0.141104294, 0.190184049, 0.242331288,
+         0.294478528, 0.377300613, 0.435582822, 0.518404908, 0.573619632, 0.619631902, 0.68404908, 0.726993865,
+         0.763803681, 0.806748466, 0.837423313, 0.865030675, 0.889570552, 0.914110429, 0.941717791, 0.95398773,
+         0.975460123, 0.981595092, 0.990797546, 0.990797546, 0.996932515]
+    p_failure = np.interp(wind_ms, x, y, left=0.0, right=1.0)
     return p_failure
 
 
-#-----------------------------------------------------
+def frag_dist_40yr(wind_mph):
+    wind_ms = wind_mph * 0.44704
+    x = [29.99976221, 43.64293527, 46.35587578, 48.13763257, 49.76387502, 52.00884577, 54.25262757, 56.10786132,
+         58.34950302, 60.12626623, 61.82574785, 63.60227327, 65.45655586, 67.466115, 69.55390688, 71.87378133,
+         73.18947068, 74.89156798, 76.59461645, 78.6854996, 80.7002901, 83.41227945, 86.12521996, 100.0777572]
+    y = [0.003067485, 0.006134969, 0.009202454, 0.024539877, 0.04601227, 0.085889571, 0.141104294, 0.208588957,
+         0.291411043, 0.371165644, 0.447852761, 0.530674847, 0.610429448, 0.687116564, 0.754601227, 0.828220859,
+         0.855828221, 0.898773006, 0.929447853, 0.957055215, 0.966257669, 0.981595092, 0.984662577, 0.996932515]
+    p_failure = np.interp(wind_ms, x, y, left=0.0, right=1.0)
+    return p_failure
+
+
+def frag_dist_60yr(wind_mph):
+    wind_ms = wind_mph * 0.44704
+    x = [30.0, 32.86821705, 35.65843915, 37.67322966, 40.92690351, 43.40490798, 45.49483997, 47.27398107, 49.20792315,
+         51.06363247, 52.76358967, 54.619299, 56.24245018, 58.02087792, 59.87634946, 61.88685975, 63.66647644,
+         65.59994293, 67.84467589, 69.93460789, 72.02501546, 74.27093737, 76.36205831, 78.22109669, 80.46749417,
+         82.63708565, 84.80715271, 86.7451372, 89.53583488, 100.0777572]
+    y = [0.0, 0.0, 0.006134969, 0.015337423, 0.042944785, 0.076687117, 0.116564417, 0.165644172, 0.217791411,
+        0.279141104, 0.349693252, 0.411042945, 0.472392638, 0.530674847, 0.595092025, 0.659509202, 0.702453988,
+        0.760736196, 0.803680982, 0.843558282, 0.877300613, 0.904907975, 0.929447853, 0.947852761, 0.969325153,
+        0.981595092, 0.987730061, 0.987730061, 0.987730061, 0.996932515]
+    p_failure = np.interp(wind_ms, x, y, left=0.0, right=1.0)
+    return p_failure
+
+
+# -----------------------------------------------------
 # Solar PV:
-#-----------------------------------------------------
-# Solar panel fragility cures are based on a performance based approach by Goodman of a residential system [67] with a modification proposed by Watson [68] to better represent utility scale solar installations.
+# -----------------------------------------------------
+# Goodman JN. Performance Measures for Residential PV Structural Response to Wind Effects 2015.
+# 90_101_U_30 curve
+def frag_solar_res(wind_mph):
+    solar_x = np.array([90.0, 110.2020202, 130.0, 150.0, 170])
+    solar_y = [0.0, 0.106145251, 0.525139665, 0.865921788, 1.0]
+    p_failure = np.interp(wind_mph, solar_x, solar_y)
+    return p_failure
+
+
+# Solar panel utility fragility cures are based on a performance based approach by Goodman of a residential system with a modification proposed by Watson [68] to better represent utility scale solar installations.
 # Goodman JN. Performance Measures for Residential PV Structural Response to Wind Effects 2015.
 # Watson E. Modeling Electrical Grid Resilience under Hurricane Wind Conditions with Increased Solar Photovoltaic and Wind Turbine Power Generation. George Washington University, 2018.
 
-def solar_damage(wind_mph):
+def frag_solar_utility(wind_mph):
     solar_x = np.array([90.0, 110.2020202, 130.0, 150.0, 170]) + 30.0
     solar_y = [0.0, 0.106145251, 0.525139665, 0.865921788, 1.0]
     p_failure = np.interp(wind_mph, solar_x, solar_y)
     return p_failure
 
 
-def fc_solar_utility(wind_mph):
-    x = []
-    y = []
-
-#-----------------------------------------------------
+# -----------------------------------------------------
 # Wind Turbines:
-#-----------------------------------------------------
+# -----------------------------------------------------
 # Rose S, Jaramillo P, Small MJ, Grossmann I, Apt J. Quantifying the hurricane risk to offshore wind turbines. Proc Natl Acad Sci 2012;109:3247–52. doi:10.1073/pnas.1111769109.
 # https://www.pnas.org/content/pnas/suppl/2012/02/07/1111769109.DCSupplemental/pnas.1111769109_SI.pdf?targetid=STXT
 
 # Yawing Offshore Wind Turbine
-def frag_wind_rose_yaw(wind_mph):
+def frag_wind_yaw(wind_mph):
     wind_knots = wind_mph * 0.868976
-    x = []
-    y = []
+    x = [120.0657132, 124.3653638, 128.6646451, 132.3713997, 136.0777849, 139.7836162, 143.9335195, 147.3418872,
+         150.0079808, 152.6744437, 154.8949881, 156.671276, 160.5181763, 163.1789151, 165.5436676, 168.3517534,
+         171.4532406, 173.2241738, 176.4737465, 179.2785087, 182.9732613, 184.7471488, 187.5563425, 191.404166,
+         193.6245258, 196.1416106, 199.1036906, 202.2151487, 205.1788905, 209.180339, 212.7375308, 216.2950919,
+         219.7045675]
+    y = [0.0, 0.00124533, 0.00498132, 0.00498132, 0.00747198, 0.01369863, 0.0249066, 0.0373599, 0.056039851,
+         0.072229141, 0.095890411, 0.115815691, 0.170610212, 0.225404732, 0.276463263, 0.337484433, 0.419676214,
+         0.475716065, 0.559153176, 0.642590286, 0.723536737, 0.759651308, 0.813200498, 0.861768369, 0.886674969,
+         0.910336239, 0.932752179, 0.947696139, 0.95890411, 0.97135741, 0.98007472, 0.98630137, 1]
     p_failure = np.interp(wind_knots, x, y)
     return p_failure
 
+
 # Non-Yawing Offshore Wind Turbine
-def frag_wind_rose_nonyaw(wind_mph):
+def frag_wind_nonyaw(wind_mph):
     wind_knots = wind_mph * 0.868976
     x = [97.38019084, 101.0869454, 108.7957023, 116.0578022, 120.2056744, 123.7586193, 128.1954614, 131.2997183,
-              133.5139848, 135.5818276, 137.2039366, 139.5655501, 141.0403122, 142.6635291, 144.1390297, 145.9107014,
-              147.9785442, 149.8997786, 151.9694679, 154.3364361, 157.1482148, 160.4059119, 164.7018696, 169.4437458,
-              175.0759815, 180.8574107, 188.5670909, 194.7940692]
+         133.5139848, 135.5818276, 137.2039366, 139.5655501, 141.0403122, 142.6635291, 144.1390297, 145.9107014,
+         147.9785442, 149.8997786, 151.9694679, 154.3364361, 157.1482148, 160.4059119, 164.7018696, 169.4437458,
+         175.0759815, 180.8574107, 188.5670909, 194.7940692]
     y = [0, 0.00124533, 0.00996264, 0.03113325, 0.056039851, 0.093399751, 0.169364882, 0.232876712, 0.298879203,
-              0.352428394, 0.412204234, 0.484433375, 0.537982565, 0.590286426, 0.638854296, 0.689912827, 0.743462017,
-              0.785803238, 0.826899128, 0.863013699, 0.899128269, 0.927770859, 0.95392279, 0.97260274, 0.98630137,
-              0.99377335, 0.99626401, 1]
+         0.352428394, 0.412204234, 0.484433375, 0.537982565, 0.590286426, 0.638854296, 0.689912827, 0.743462017,
+         0.785803238, 0.826899128, 0.863013699, 0.899128269, 0.927770859, 0.95392279, 0.97260274, 0.98630137,
+         0.99377335, 0.99626401, 1]
+    p_failure = np.interp(wind_knots, x, y)
+    return p_failure
+
+
+# Do (2016) - Wind turbine tower fatigue
+# Do, Trung Quang. 2016. Fragility approach for performance-based design in fluid-structure interaction problems, part I: Wind and wind turbines, part II: Waves and elevated coastal structures. Ph.D. diss., Colorado State
+def frag_wind_tower(wind_mph):
+    wind_knots = wind_mph * 0.868976
+    x = []
+    y = []
     p_failure = np.interp(wind_knots, x, y)
     return p_failure
 
@@ -121,14 +217,13 @@ def frag_wind_rose_nonyaw(wind_mph):
 # =====================================#
 # Fragility Curves based on HAZUS      #
 # =====================================#
-# Source:
+# Source: FEMA. HAZUS Hurricane Model User Guidance 2018:201.
 
-# ================
 # HAZUS Functions - Moderate
-# ================
+# --------------------------
 
-# CECBL (Concrete Engineered Commerical Building 1 to 2 stories, HAZUS)
-def CECBL_moderate(wind_mph):
+# CECBL (Concrete Engineered Commercial Building 1 to 2 stories, HAZUS)
+def frag_cecbl_moderate(wind_mph):
     x = [0.0, 62.61246774615756, 67.68295875247745, 72.55843087393887, 77.4339029954003, 82.50439400172019,
          88.0624322201862, 92.4503571295015, 96.74077259638753, 101.03118806327359, 105.32160353015965,
          109.61201899704571, 112.92734003963949, 115.85262331251633, 119.4063007699371, 121.50817097341158,
@@ -151,8 +246,8 @@ def CECBL_moderate(wind_mph):
     return p_failure
 
 
-# CECBM (Concrete Engineered Commerical Building 3 to 5 stories, HAZUS)
-def CECBM_moderate(wind_mph):
+# CECBM (Concrete Engineered Commercial Building 3 to 5 stories, HAZUS)
+def frag_cecbm_moderate(wind_mph):
     x = [0.0, 62.605961807172775, 67.66790870982766, 72.5351653469958, 77.40242198416394, 82.65905915230553,
          86.9422449930135, 91.22543083372145, 95.50861667442942, 99.59711224965065, 102.51746623195154,
          104.85374941779224, 107.19003260363297, 109.13693525850022, 110.88914764788075, 112.44666977177457,
@@ -175,8 +270,8 @@ def CECBM_moderate(wind_mph):
     return p_failure
 
 
-# CECBH (Concrete Engineered Commerical Building 6+ stories, HAZUS)
-def CECBH_moderate(wind_mph):
+# CECBH (Concrete Engineered Commercial Building 6+ stories, HAZUS)
+def frag_cecbh_moderate(wind_mph):
     x = [0.0, 62.972056358684256, 67.36198407710035, 71.65435784621829, 75.94673161533626, 79.65378168866539,
          82.38529226901318, 85.0680258747119, 87.06788183532367, 88.43363712549757, 90.21128686826358,
          92.14068719882673, 93.70155038759688, 95.28409223176664, 97.21349256232975, 98.77435575109993,
@@ -199,8 +294,8 @@ def CECBH_moderate(wind_mph):
     return p_failure
 
 
-# SECBL (Steel Engineered Commerical Building 1 to 2 stories, HAZUS)
-def SECBL_moderate(wind_mph):
+# SECBL (Steel Engineered Commercial Building 1 to 2 stories, HAZUS)
+def frag_secbl_moderate(wind_mph):
     x = [0.0, 62.64249633, 67.71453079, 72.59148701, 77.46844322, 82.54047769, 88.10020777, 92.48946837, 96.78118984,
          101.0729113, 105.3646328, 109.6563542, 113.7529975, 116.6791712, 119.0851363, 120.7758144, 122.7265969,
          124.8236881, 126.6281619, 128.3838661, 130.4809573, 132.4805093, 134.4312918, 135.3509464, 137.5525438,
@@ -217,8 +312,8 @@ def SECBL_moderate(wind_mph):
     return p_failure
 
 
-# SECBM (Steel Engineered Commerical Building 3 to 5 stories, HAZUS)
-def SECBM_moderate(wind_mph):
+# SECBM (Steel Engineered Commercial Building 3 to 5 stories, HAZUS)
+def frag_secbm_moderate(wind_mph):
     x = [0.0, 62.24836782800065, 67.31943873738524, 72.19546845794733, 77.55884612809075, 81.94739806944796,
          86.23949123724407, 90.53329073723606, 94.8298352064127, 98.9744967387536, 101.3488217194303,
          102.65514884498509, 104.61344619005362, 106.9647430460422, 109.25088767767818, 110.68714824146355,
@@ -242,8 +337,8 @@ def SECBM_moderate(wind_mph):
     return p_failure
 
 
-# SECBH (Steek Engineered Commerical Building 6+ stories, HAZUS)
-def SECBH_moderate(wind_mph):
+# SECBH (Steel Engineered Commercial Building 6+ stories, HAZUS)
+def frag_secbh_moderate(wind_mph):
     x = [0.0, 62.916122584943366, 67.30219853431046, 71.59080612924717, 75.87941372418388, 79.5832111925383,
          82.31232511658894, 84.9927048634244, 86.99080612924718, 88.3553630912725, 90.06105929380413, 92.05916055962692,
          93.42371752165224, 95.19980753571693, 97.12751499000669, 98.68700866089276, 100.26816196609667,
@@ -266,12 +361,11 @@ def SECBH_moderate(wind_mph):
     return p_failure
 
 
-# ================
 # HAZUS Functions - Severe
-# ================
+# --------------------------
 
-# CECBL (Concrete Engineered Commerical Building 1 to 2 stories, HAZUS)
-def CECBL_severe(wind_mph):
+# CECBL (Concrete Engineered Commercial Building 1 to 2 stories, HAZUS)
+def frag_cecbl_severe(wind_mph):
     x = [0.0, 62.1834262, 65.53775102, 70.21820426, 74.89865749, 79.9691485, 85.0396395, 90.11013051, 95.18062152,
          100.8145004, 105.3216035, 109.612019, 113.9024345, 118.527168, 122.4832654, 126.578662, 130.4790397,
          133.9893796, 136.5246251, 138.474814, 141.0100595, 144.1303616, 146.4705882, 148.0307393, 150.3709659,
@@ -288,8 +382,8 @@ def CECBL_severe(wind_mph):
     return p_failure
 
 
-# CECBM (Concrete Engineered Commerical Building 3 to 5 stories, HAZUS)
-def CECBM_severe(wind_mph):
+# CECBM (Concrete Engineered Commercial Building 3 to 5 stories, HAZUS)
+def frag_cecbm_severe(wind_mph):
     x = [0.0, 60.0, 149.8947368, 155.0526316, 159.8421053, 165.0, 169.7894737, 174.9473684, 180.1052632, 185.2631579,
          189.6842105, 194.8421053, 199.6315789]
     y = [0.0, 0.0, 0.0, 0.010840108, 0.01897019, 0.035230352, 0.067750678, 0.113821138, 0.165311653, 0.203252033,
@@ -298,8 +392,8 @@ def CECBM_severe(wind_mph):
     return p_failure
 
 
-# CECBH (Concrete Engineered Commerical Building 6+ stories, HAZUS)
-def CECBH_severe(wind_mph):
+# CECBH (Concrete Engineered Commercial Building 6+ stories, HAZUS)
+def frag_cecbh_severe(wind_mph):
     x = [0.0, 62.05504924, 65.41090509, 70.09349466, 74.77608422, 79.84888959, 84.92169495, 89.99450031, 95.06730568,
          100.140111, 104.8227006, 109.895506, 114.9683113, 120.0411167, 125.1139221, 130.1867274, 134.869317,
          139.9421224, 145.0149277, 150.0877331, 155.94097, 160.2333438, 164.5257176, 168.9481633, 173.4449358,
@@ -314,15 +408,14 @@ def CECBH_severe(wind_mph):
     return p_failure
 
 
-# SECBL (Steel Engineered Commerical Building 1 to 2 stories, HAZUS)
-def SECBL_severe(wind_mph):
-    x = [0.0, 62.19394765,
-         65.54485344, 70.21940776, 74.8942074, 79.95857369, 85.02293998, 90.08730626, 95.15167255, 100.7785597,
-         105.2804971, 109.5663053, 113.8528598, 118.1429066, 122.4345489, 126.5330245, 130.2447046, 133.1778573,
-         135.7179296, 138.0672023, 140.6083338, 143.3471635, 145.8313932, 147.8481721, 150.0033994, 152.3517492,
-         153.9203349, 155.8744023, 157.6406662, 159.9918299, 162.1475952, 163.6775782, 165.6729071, 167.6324855,
-         170.1772567, 174.0845238, 177.4038141, 180.7243301, 185.0205122, 189.3166464, 193.6101511, 197.3177345,
-         199.4667157]
+# SECBL (Steel Engineered Commercial Building 1 to 2 stories, HAZUS)
+def frag_secbl_severe(wind_mph):
+    x = [0.0, 62.19394765, 65.54485344, 70.21940776, 74.8942074, 79.95857369, 85.02293998, 90.08730626, 95.15167255,
+         100.7785597, 105.2804971, 109.5663053, 113.8528598, 118.1429066, 122.4345489, 126.5330245, 130.2447046,
+         133.1778573, 135.7179296, 138.0672023, 140.6083338, 143.3471635, 145.8313932, 147.8481721, 150.0033994,
+         152.3517492, 153.9203349, 155.8744023, 157.6406662, 159.9918299, 162.1475952, 163.6775782, 165.6729071,
+         167.6324855, 170.1772567, 174.0845238, 177.4038141, 180.7243301, 185.0205122, 189.3166464, 193.6101511,
+         197.3177345, 199.4667157]
     y = [0.0, 0.00521718, 0.007168241, 0.006312703, 0.006235229, 0.006151298, 0.006067368, 0.005983437, 0.005899507,
          0.005214741, 0.006023265, 0.007776414, 0.011896639, 0.027092167, 0.04734759, 0.072733455, 0.106914115,
          0.143029337, 0.168007115, 0.20562255, 0.233959424, 0.27153769, 0.295913505, 0.338039053, 0.377997879,
@@ -333,8 +426,8 @@ def SECBL_severe(wind_mph):
     return p_failure
 
 
-# SECBM (Steel Engineered Commerical Building 3 to 5 stories, HAZUS)
-def SECBM_severe(wind_mph):
+# SECBM (Steel Engineered Commercial Building 3 to 5 stories, HAZUS)
+def frag_SECBM_severe(wind_mph):
     x = [0.0, 60.36842105, 130.7368421, 135.1578947, 139.9473684, 145.1052632, 150.2631579, 155.4210526, 160.2105263,
          165.0, 170.1578947, 175.3157895, 180.4736842, 185.6315789, 190.0526316, 195.2105263, 200]
     y = [0.0, 0.0, 0.0, 0.005420054, 0.013550136, 0.029810298, 0.059620596, 0.097560976, 0.157181572, 0.230352304,
@@ -343,8 +436,8 @@ def SECBM_severe(wind_mph):
     return p_failure
 
 
-# SECBH (Steek Engineered Commerical Building 6+ stories, HAZUS)
-def SECBH_severe(wind_mph):
+# SECBH (Steel Engineered Commercial Building 6+ stories, HAZUS)
+def frag_secbh_severe(wind_mph):
     x = [0.0, 60.0, 114.8947368, 119.6842105, 124.8421053, 130.0, 134.7894737, 139.9473684, 145.1052632, 149.8947368,
          155.0526316, 159.8421053, 165.0, 169.7894737, 174.9473684, 180.1052632, 184.8947368, 189.6842105, 194.8421053,
          199.6315789]
