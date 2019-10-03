@@ -10,7 +10,7 @@ def remove_ext(filename):
     """
     ind = filename.find('.')
     if not ind == -1:
-        return filename[ind]
+        return filename[:ind]
     else:
         return filename
 
