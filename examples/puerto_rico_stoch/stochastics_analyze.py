@@ -6,7 +6,6 @@ import temoatools as tt
 # ===============
 db_folder = os.getcwd() + '\\stochastic_databases'
 run_names = ["2019_09_25_HAZUS_moderate", "2019_09_27_HAZUS_severe"]
-# run_names = ["2019_09_27_HAZUS_severe"]
 dbs = ["A.sqlite", "B.sqlite", "C.sqlite", "D.sqlite"]
 
 create_plots = 'Y'  # Create default plots

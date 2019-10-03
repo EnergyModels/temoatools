@@ -13,6 +13,7 @@ from .analyze_activity_year import getActivity
 from .analyze_capacity import getCapacity
 from .analyze_costs import getCosts
 from .analyze_emissions import getEmissions
+from .fragility_curves import fragility
 
 # storing where resources folder is
 resource_path = os.path.join(os.path.split(__file__)[0], "resources")

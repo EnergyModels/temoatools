@@ -1,157 +1,63 @@
-# =============================================================================#
-# Fragility Curves
-# Written by Claire Trevisan and Jeff Bennett
-# =============================================================================#
-
+from __future__ import print_function
 import numpy as np
-import math
+import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import temoatools as tt
+# Questions:
+# Does wind need correlation from 90m height to ground height?
 
+# =============================================================================#
+# Compare Fragility Curves
+# =============================================================================#
 
-from damageFunctions import trans_damage, sub_damage, dist_damage, wind_damage, solar_damage, \
-    SECBL_moderate, SECBM_moderate, SECBH_moderate, CECBL_moderate, CECBM_moderate, CECBH_moderate, \
-    SECBL_severe, SECBM_severe, SECBH_severe, CECBL_severe, CECBM_severe, CECBH_severe
+# Fragility Curves to compare
+curves = {"trans": ["trans"], "sub": ["sub"], "dist": ["dist_20yr", "dist_40yr", "dist_60yr"],
+    "wind": ["wind_yaw", "wind_nonyaw"], "solar": ["solar_res", "solar_utility"],
+    "coal_biomass": ["secbh_moderate", "secbh_severe", "inf_stiff"],
+    "natgas_petrol": ["secbm_moderate", "secbm_severe", "inf_stiff"],
+    "battery": ["secbl_moderate", "secbl_severe", "inf_stiff"],
+    "hydro": ["cecbl_moderate", "cecbl_severe", "inf_stiff"], }
+
+group1 = "T&D"
+group2 = "Renew"
+group3 = "Other"
+
+groups = {"trans":group1, "sub":group1, "dist": group1,
+    "wind":group2 , "solar":group2 ,
+    "coal_biomass":group1 ,
+    "natgas_petrol":group3 ,
+    "battery": group3,
+    "hydro":group2, }
 
 # ================================#
 # Calculate damage across a range of windspeeds
 # ================================#
 
-mph = np.arange(0, 160, 2)
-dist = dist_damage(mph)
-sub = sub_damage(mph)
-trans = trans_damage(mph)
-solar = solar_damage(mph)
-wind = wind_damage(mph)
-CECBL = CECBL_moderate(mph)
-CECBM = CECBM_moderate(mph)
-CECBH = CECBH_moderate(mph)
-SECBL = SECBL_moderate(mph)
-SECBM = SECBM_moderate(mph)
-SECBH = SECBH_moderate(mph)
+cols = ["tech","type","group","wind_mph","p_failure"]
+df = pd.DataFrame(columns=cols)
+wind_mph = np.arange(0, 200, 2)
 
-# Add substations to Temoa? And number of miles of dist, trans?
+for tech in curves.keys():
+    for type in curves[tech]:
+        print(type)
+        p_failure = tt.fragility(wind_mph,type=type)
 
-# ================================#
-# Plot 1 - Compare Used Damage Functions
-# ================================#
-plt.figure(1)
-sns.set_style("darkgrid")
-plt.plot(mph, dist, label="dist")
-plt.plot(mph, sub, label="sub")
-plt.plot(mph, trans, label="trans")
-plt.plot(mph, solar, label="solar")
-plt.plot(mph, wind, label="wind")
-plt.plot(mph, CECBM, '--', label="CECBM - Hydro?")
-plt.plot(mph, SECBM, '--', label="SECBM - NG")
-plt.plot(mph, SECBH, '--', label="SECBH - Coal")
-plt.legend(bbox_to_anchor=(0.5, -0.2), loc='upper center', ncol=4)
-plt.ylabel("Probability of Damage (-)")
-
-# Add vertical lines for category cases
-y = [0, 0.8]
-TD = 32
-TS = 57
-H1 = 67
-H3 = 120
-H5 = 155
-plt.plot([TD, TD], y, color="black", label="TD")
-plt.plot([TS, TS], y, color="black", label="TS")
-plt.plot([H1, H1], y, color="black", label="H1")
-plt.plot([H3, H3], y, color="black", label="H3")
-plt.plot([H5, H5], y, color="black", label="H5")
-
-y_txt = 0.8
-plt.text(TD, y_txt, "TD")
-plt.text(TS, y_txt, "TS")
-plt.text(H1, y_txt, "H1")
-plt.text(H3, y_txt, "H3")
-plt.text(H5, y_txt, "H5")
-
-# Save
-plt.savefig("DamageFunctionComparison_Original.png", dpi=1000, bbox_inches="tight")
-
-# ================================#
-# Plot 2 - Compare HAZUS Damage Functions Available - Moderate
-# ================================#
-plt.figure(2)
-sns.set_style("darkgrid")
-plt.plot(mph, CECBL, color = "green", label="CECBL - Concrete, Eng. Comm. Bldg 1 to 2 stories")
-plt.plot(mph, CECBM, color = "blue", label="CECBM - Concrete, Eng. Comm. Bldg 3 to 5 stories")
-plt.plot(mph, CECBH, color = "orange", label="CECBH - Concrete, Eng. Comm. Bldg 6+ stories")
-plt.plot(mph, SECBL, color = "green", linestyle='--', label="SECBL - Steel, Eng. Comm. Bldg 1 to 2 stories")
-plt.plot(mph, SECBM, color = "blue", linestyle='--', label="SECBM - Steel, Eng. Comm. Bldg 3 to 5 stories")
-plt.plot(mph, SECBH, color = "orange", linestyle='--', label="SECBH - Steel, Eng. Comm. Bldg 6+ stories")
-plt.legend(bbox_to_anchor=(0.5, -0.2), loc='upper center', ncol=2)
-plt.xlabel("Windspeed (mph)")
-plt.ylabel("Probability of Damage (-)")
-
-# Add vertical lines for category cases
-y = [0, 1.0]
-TD = 32
-TS = 57
-H1 = 67
-H3 = 120
-H5 = 155
-plt.plot([TD, TD], y, color="black", label="TD")
-plt.plot([TS, TS], y, color="black", label="TS")
-plt.plot([H1, H1], y, color="black", label="H1")
-plt.plot([H3, H3], y, color="black", label="H3")
-plt.plot([H5, H5], y, color="black", label="H5")
-
-y_txt = 0.8
-plt.text(TD, y_txt, "TD")
-plt.text(TS, y_txt, "TS")
-plt.text(H1, y_txt, "H1")
-plt.text(H3, y_txt, "H3")
-plt.text(H5, y_txt, "H5")
-
-# Save
-plt.savefig("DamageFunctionComparison_HAZUS_moderate.png", dpi=1000, bbox_inches="tight")
+        for w,p in zip(wind_mph,p_failure):
+            s = pd.Series()
+            s["tech"] = tech
+            s["type"] = type
+            s["group"] = groups[tech]
+            s["wind_mph"] = w
+            s["p_failure"] = p
+            df = df.append(s,ignore_index=True)
 
 
-# ================================#
-# Plot 3 - Compare HAZUS Damage Functions Available - Severe
-# ================================#
-CECBL = CECBL_severe(mph)
-CECBM = CECBM_severe(mph)
-CECBH = CECBH_severe(mph)
-SECBL = SECBL_severe(mph)
-SECBM = SECBM_severe(mph)
-SECBH = SECBH_severe(mph)
+sns.lineplot(x="wind_mph",y="p_failure",hue="tech",data=df)
+plt.savefig("compare_all.png",  DPI=1000)
 
-plt.figure(3)
-sns.set_style("darkgrid")
-plt.plot(mph, CECBL, color = "green", label="CECBL - Concrete, Eng. Comm. Bldg 1 to 2 stories")
-plt.plot(mph, CECBM, color = "blue", label="CECBM - Concrete, Eng. Comm. Bldg 3 to 5 stories")
-plt.plot(mph, CECBH, color = "orange", label="CECBH - Concrete, Eng. Comm. Bldg 6+ stories")
-plt.plot(mph, SECBL, color = "green", linestyle='--', label="SECBL - Steel, Eng. Comm. Bldg 1 to 2 stories")
-plt.plot(mph, SECBM, color = "blue", linestyle='--', label="SECBM - Steel, Eng. Comm. Bldg 3 to 5 stories")
-plt.plot(mph, SECBH, color = "orange", linestyle='--', label="SECBH - Steel, Eng. Comm. Bldg 6+ stories")
-plt.legend(bbox_to_anchor=(0.5, -0.2), loc='upper center', ncol=2)
-plt.xlabel("Windspeed (mph)")
-plt.ylabel("Probability of Damage (-)")
+sns.relplot(x="wind_mph",y="p_failure",hue="tech",col="group",col_wrap=3,data=df,kind="line")
+plt.savefig("compare_by_group.png",  DPI=1000)
 
-# Add vertical lines for category cases
-y = [0, 1.0]
-TD = 32
-TS = 57
-H1 = 67
-H3 = 120
-H5 = 155
-plt.plot([TD, TD], y, color="black", label="TD")
-plt.plot([TS, TS], y, color="black", label="TS")
-plt.plot([H1, H1], y, color="black", label="H1")
-plt.plot([H3, H3], y, color="black", label="H3")
-plt.plot([H5, H5], y, color="black", label="H5")
-
-y_txt = 0.8
-plt.text(TD, y_txt, "TD")
-plt.text(TS, y_txt, "TS")
-plt.text(H1, y_txt, "H1")
-plt.text(H3, y_txt, "H3")
-plt.text(H5, y_txt, "H5")
-
-# Save
-plt.savefig("DamageFunctionComparison_HAZUS_severe.png", dpi=1000, bbox_inches="tight")
+sns.relplot(x="wind_mph",y="p_failure",hue="type",col="tech",col_wrap=3,data=df,kind="line")
+plt.savefig("compare_by_tech.png",  DPI=1000)
