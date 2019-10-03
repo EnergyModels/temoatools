@@ -10,14 +10,11 @@ import temoatools as tt
 # =============================================================================#
 
 # Fragility Curves to compare
-curves = {"trans": ["trans_UK_base", "trans_UK_robust","trans_TX"],
-          "sub": ["sub_MX", "sub_HAZUS_severe_k1", "sub_HAZUS_severe_k2", "sub_HAZUS_severe_k3", "sub_HAZUS_severe_k4",
-                  "sub_HAZUS_severe_k5"], "dist": ["dist_TX", "dist_20yr", "dist_40yr", "dist_60yr"],
-          "wind": ["wind_yaw", "wind_nonyaw"], "solar": ["solar_res", "solar_utility"],
-          "coal_biomass": ["secbh_moderate", "secbh_severe", "secbh_destr"],
-          "natgas_petrol": ["secbm_moderate", "secbm_severe", "secbm_destr"],
-          "battery": ["secbl_moderate", "secbl_severe", "secbl_destr"],
-          "hydro": ["cecbl_moderate", "cecbl_severe", "cecbl_destr"], }
+curves = {"trans": ["trans_UK_base", "trans_TX"], "sub": ["sub_HAZUS_severe_k1", "sub_HAZUS_severe_k5"],
+          "dist": ["dist_TX", "dist_60yr"], "wind": ["wind_yaw", "wind_nonyaw"],
+          "solar": ["solar_res", "solar_utility"], "coal_biomass": ["secbh_severe", "inf_stiff"],
+          "natgas_petrol": ["secbm_severe", "inf_stiff"], "battery": ["secbl_severe", "inf_stiff"],
+          "hydro": ["cecbl_severe", "inf_stiff"], }
 
 group1 = "T&D"
 group2 = "Renew"
@@ -49,10 +46,10 @@ for tech in curves.keys():
             df = df.append(s, ignore_index=True)
 
 sns.lineplot(x="wind_mph", y="p_failure", hue="tech", data=df)
-plt.savefig("compare_all.png", DPI=1000)
+plt.savefig("fragility_curves_all.png", DPI=1000)
 
 sns.relplot(x="wind_mph", y="p_failure", hue="tech", col="group", col_wrap=3, data=df, kind="line")
-plt.savefig("compare_by_group.png", DPI=1000)
+plt.savefig("fragility_curves_by_group.png", DPI=1000)
 
 sns.relplot(x="wind_mph", y="p_failure", hue="type", col="tech", col_wrap=3, data=df, kind="line")
-plt.savefig("compare_by_tech.png", DPI=1000)
+plt.savefig("fragility_curves_by_tech.png", DPI=1000)

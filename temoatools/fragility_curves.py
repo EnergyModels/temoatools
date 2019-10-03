@@ -1,5 +1,6 @@
 from __future__ import print_function
 import numpy as np
+from scipy.stats import norm
 
 
 # =====================================#
@@ -34,76 +35,129 @@ import numpy as np
 # CECBL (Concrete Engineered Commercial Building 1 to 2 stories, HAZUS)
 # cecbl_moderate
 # cecbl_severe
+# cecbl_destr
 #
 # CECBM (Concrete Engineered Commercial Building 3 to 5 stories, HAZUS)
 # cecbm_moderate
 # cecbm_severe
+# cecbm_destr
 #
 # CECBH (Concrete Engineered Commercial Building 6+ stories, HAZUS)
 # cecbh_moderate
 # cecbh_severe
+# cecbh_destr
 #
 # SECBL (Steel Engineered Commercial Building 1 to 2 stories, HAZUS)
 # secbl_moderate
 # secbl_severe
+# secbl_destr
 #
 # SECBM (Steel Engineered Commercial Building 3 to 5 stories, HAZUS)
 # secbm_moderate # Used in Watson dissertation to represent Natural Gas Power Plants
 # secbm_severe
+# secbm_destr
 #
 # SECBH (Steel Engineered Commercial Building 6+ stories, HAZUS)
 # secbh_moderate # Used in Watson dissertation to represent Coal Power Plants
 # secbh_severe
+# secbh_destr
+
 
 def fragility(wind_mph, type="inf_stiff"):
     # =====================================#
     # General Fragility Curves             #
     # =====================================#
 
-    if type == "inf_stiff":
+    if type == "inf_stiff" or type == "cecbl_destr" or type == "cecbm_destr" or type == "cecbh_destr" or type == "secbh_destr":
         p_failure = np.zeros(len(wind_mph))
 
     # =====================================#
     # Fragility Curves based on literature #
     # =====================================#
 
-    # Transmission (per 0.23 km)
+    # Transmission Towers (per 0.23 km)
     # Transmission line fragility curves were based on a computational analysis of UK transmission towers [64]
     # Panteli M, Pickering C, Wilkinson S, Dawson R, Mancarella P. Power System Resilience to Extreme Weather: Fragility Modelling, Probabilistic
     # Impact Assessment, and Adaptation Measures. IEEE Trans Power Syst 2017 32:1-1. doi:10.1109/TPWRS.2016.2641463.
 
-    elif type == "trans":
+    elif type == "trans_UK_base":
         wind_ms = wind_mph * 0.44704
-        trans_x = [43.4483, 47.5884, 50.6947, 53.8032, 56.1365, 58.7298, 60.8059, 62.882, 64.6994, 66.2582, 68.0778,
-                   69.3766, 70.9362, 72.2357, 73.5359, 75.0947, 76.3956, 77.4365, 78.7353, 79.7755, 80.8149, 81.595,
-                   82.6352, 83.6747, 84.9735, 86.0129, 87.0524, 88.0926, 89.1313, 90.4294, 91.7275, 92.7676, 94.0657,
-                   95.6231, 97.1806, 99.2552, 100.553, 102.109, 103.665, 105.22, 106.775, 108.33, 109.626, 111.181,
-                   112.736, 114.807, 116.621, 118.692, 120.504, 122.575, 123.611, 124.904, 126.198, 127.493, 129.304,
-                   131.633, 133.444, 134.996, 136.808, 138.619, 140.43, 142.758, 145.344, 147.414]
-        trans_y = [0.00E+00, 0.00837677, 0.0195248, 0.0388921, 0.060952, 0.0885071, 0.116031, 0.143554, 0.171062,
-                   0.198555, 0.234282, 0.256279, 0.286511, 0.311247, 0.338724, 0.366216, 0.396432, 0.421153, 0.44315,
-                   0.465131, 0.484372, 0.500858, 0.522839, 0.542081, 0.564078, 0.583319, 0.60256, 0.624541, 0.641043,
-                   0.6603, 0.679557, 0.701538, 0.720795, 0.742808, 0.764821, 0.786865, 0.806122, 0.819915, 0.836448,
-                   0.850242, 0.864035, 0.875089, 0.888866, 0.89992, 0.910973, 0.922058, 0.933128, 0.941473, 0.947063,
-                   0.955408, 0.96095, 0.963769, 0.966587, 0.972146, 0.974996, 0.980617, 0.983467, 0.986301, 0.989151,
-                   0.992001, 0.994851, 0.997733, 0.99789, 1.0]
-        p_failure = np.interp(wind_ms, trans_x, trans_y, left=0.0, right=1.0)
+        x = [41.16350883, 45.27810213, 50.51352572, 55.18578793, 59.48053428, 62.46734014, 66.01144875, 68.9942268,
+             73.09673666, 76.82465998, 81.48447258, 86.51887172, 91.3679915, 96.21967444, 101.8216289, 107.6117921,
+             114.3393371, 121.4440317, 127.8021164, 136.0327677, 142.0180967, 149.688882, 157.1725572]
+        y = [0.003913894, 0.01369863, 0.033268102, 0.062622309, 0.109589041, 0.146771037, 0.205479452, 0.264187867,
+             0.338551859, 0.414872798, 0.510763209, 0.604696673, 0.688845401, 0.759295499, 0.819960861, 0.874755382,
+             0.919765166, 0.949119374, 0.968688845, 0.980430528, 0.992172211, 0.996086106, 1.0]
+        p_failure = np.interp(wind_ms, x, y, left=0.0, right=1.0)
+
+    elif type == "trans_UK_robust":
+        wind_ms = wind_mph * 0.44704
+        x = [46.40296024, 51.82805717, 58.55999609, 62.29817202, 66.59584769, 70.3310943, 73.50427802, 76.11649735,
+             79.10257088, 81.52658153, 84.51155657, 86.56281149, 88.9871883, 91.78505315, 94.21016229, 96.6345391,
+             99.24565993, 102.2317335, 105.4041849, 108.3902584, 111.1899541, 114.7380905, 118.2869592, 122.2107807,
+             125.9471258, 130.4330102, 135.2945795, 139.407342, 144.0828997, 149.5068981, 154.3702983, 158.6720018,
+             162.9755361, 167.6507277]
+        y = [0.001956947, 0.007827789, 0.029354207, 0.050880626, 0.082191781, 0.119373777, 0.160469667, 0.199608611,
+             0.240704501, 0.285714286, 0.332681018, 0.369863014, 0.412915851, 0.459882583, 0.499021526, 0.542074364,
+             0.587084149, 0.628180039, 0.673189824, 0.714285714, 0.75146771, 0.788649706, 0.821917808, 0.851272016,
+             0.88258317, 0.908023483, 0.925636008, 0.945205479, 0.956947162, 0.968688845, 0.976516634, 0.98630137,
+             0.98630137, 1.0]
+        p_failure = np.interp(wind_ms, x, y, left=0.0, right=1.0)
+
+    # Used in Watson Dissertation and Ouyang et al 2014, based on Quanta 2009 study
+    # Quanta Technology, 2009, "Cost benefit analysis of the deployment of utility infrastructure upgrades and
+    # storm hardening programs", Final report, prepared for the Public Utility Commission of Texas, Project No.36375, Raleigh, NC.
+    elif type == "trans_TX":
+        p_failure = 2.0 * 10 ** (-7.0) * np.exp(0.0834 * wind_mph)
+        np.clip(p_failure, 0.0, 1.0, out=p_failure)
 
     # Substation:
     # Substation fragility curves were based on data published for the grid in Mexico [66]
 
     # Lopez, Lopez A, E. PRL, Esobedo D de L, Sesma JS. Reliability and Vulnerability Analysis of Electrical Substations and Transmission Towers for Definition of Wind and Seismic Damage Maps for Mexico. 11er Am Conf Wind Eng 2009, 4:22-6
-
-    elif type == "sub":
+    elif type == "sub_MX":
         wind_kmph = wind_mph * 1.60934
-        sub_x = [40.1487, 60.223, 80.2974, 100.372, 119.703, 139.777, 159.851, 179.926, 200.0, 220.074, 240.149,
-                 260.223, 281.041, 301.115]
-        sub_y = [0.0, 0.0136986, 0.0228311, 0.0273973, 0.0456621, 0.0639269, 0.0913242, 0.13242, 0.214612, 0.424658,
-                 0.648402, 0.803653, 0.890411, 0.931507]
-        p_failure = np.interp(wind_kmph, sub_x, sub_y, left=0.0, right=1.0)
+        x = [40.1487, 60.223, 80.2974, 100.372, 119.703, 139.777, 159.851, 179.926, 200.0, 220.074, 240.149, 260.223,
+             281.041, 301.115]
+        y = [0.0, 0.0136986, 0.0228311, 0.0273973, 0.0456621, 0.0639269, 0.0913242, 0.13242, 0.214612, 0.424658,
+             0.648402, 0.803653, 0.890411, 0.931507]
+        p_failure = np.interp(wind_kmph, x, y, left=0.0, right=1.0)
 
-    # Distribution:
-    # Distribution lines were modeled assuming sixty year old wooden poles [65]
+
+    # HAZUS functions, documented in Watson Dissertation (all are severe curves, for different terrains (k 1-5))
+    elif type == "sub_HAZUS_severe_k1":
+        mu = 5.060
+        sigma = 0.15
+        p_failure = norm.cdf((np.log(wind_mph) - mu) / sigma)
+
+    elif type == "sub_HAZUS_severe_k2":
+        mu = 5.094
+        sigma = 0.124
+        p_failure = norm.cdf((np.log(wind_mph) - mu) / sigma)
+
+    elif type == "sub_HAZUS_severe_k3":
+        mu = 5.141
+        sigma = 0.132
+        p_failure = norm.cdf((np.log(wind_mph) - mu) / sigma)
+
+    elif type == "sub_HAZUS_severe_k4":
+        mu = 5.185
+        sigma = 0.139
+        p_failure = norm.cdf((np.log(wind_mph) - mu) / sigma)
+
+    elif type == "sub_HAZUS_severe_k5":
+        mu = 5.204
+        sigma = 0.147
+        p_failure = norm.cdf((np.log(wind_mph) - mu) / sigma)
+
+
+    # Distribution Towers:
+    # Quanta Technology, 2009, "Cost benefit analysis of the deployment of utility infrastructure upgrades and
+    # storm hardening programs", Final report, prepared for the Public Utility Commission of Texas, Project No.36375, Raleigh, NC.
+    elif type == "dist_TX":
+        p_failure = 0.0001 * np.exp(0.0421 * wind_mph)
+        np.clip(p_failure, 0.0, 1.0, out=p_failure)
+
     # Salman AM, Li Y, Stewart MG. Evaluating system reliability and targeted
     # hardening strategies of power distribution systems subjected to hurricanes. Reliab Eng Syst Saf 2015;144: 319-33 doi:10.1016/j.ress.2015.07.028.
     elif type == "dist_20yr":
@@ -163,11 +217,13 @@ def fragility(wind_mph, type="inf_stiff"):
     # Wind Turbines:
     # -----------------------------------------------------
     # Rose S, Jaramillo P, Small MJ, Grossmann I, Apt J. Quantifying the hurricane risk to offshore wind turbines. Proc Natl Acad Sci 2012: 109:3247-52 doi:10.1073/pnas.1111769109.
+    # Curves are for windspeed at a hub height of 90m
     # https://www.pnas.org/content/pnas/suppl/2012/02/07/1111769109.DCSupplemental/pnas.1111769109_SI.pdf?targetid=STXT
 
     # Yawing Offshore Wind Turbine
     elif type == "wind_yaw":
-        wind_knots = wind_mph * 0.868976
+        wind_knots = wind_mph * 0.868976  # ground wind speed
+        wind_knots_HH = wind_knots * 0.9 / 0.8  # hub height windspeed, based on Figure 1 of https://www.nhc.noaa.gov/aboutwindprofile.shtml
         x = [120.0657132, 124.3653638, 128.6646451, 132.3713997, 136.0777849, 139.7836162, 143.9335195, 147.3418872,
              150.0079808, 152.6744437, 154.8949881, 156.671276, 160.5181763, 163.1789151, 165.5436676, 168.3517534,
              171.4532406, 173.2241738, 176.4737465, 179.2785087, 182.9732613, 184.7471488, 187.5563425, 191.404166,
@@ -182,7 +238,8 @@ def fragility(wind_mph, type="inf_stiff"):
 
     # Non-Yawing Offshore Wind Turbine
     elif type == "wind_nonyaw":
-        wind_knots = wind_mph * 0.868976
+        wind_knots = wind_mph * 0.868976  # ground wind speed
+        wind_knots_HH = wind_knots * 0.9 / 0.8  # hub height windspeed, based on Figure 1 of https://www.nhc.noaa.gov/aboutwindprofile.shtml
         x = [97.38019084, 101.0869454, 108.7957023, 116.0578022, 120.2056744, 123.7586193, 128.1954614, 131.2997183,
              133.5139848, 135.5818276, 137.2039366, 139.5655501, 141.0403122, 142.6635291, 144.1390297, 145.9107014,
              147.9785442, 149.8997786, 151.9694679, 154.3364361, 157.1482148, 160.4059119, 164.7018696, 169.4437458,
@@ -191,17 +248,9 @@ def fragility(wind_mph, type="inf_stiff"):
              0.352428394, 0.412204234, 0.484433375, 0.537982565, 0.590286426, 0.638854296, 0.689912827, 0.743462017,
              0.785803238, 0.826899128, 0.863013699, 0.899128269, 0.927770859, 0.95392279, 0.97260274, 0.98630137,
              0.99377335, 0.99626401, 1]
-        p_failure = np.interp(wind_knots, x, y, left=0.0, right=1.0)
+        p_failure = np.interp(wind_knots_HH, x, y, left=0.0, right=1.0)
         return p_failure
 
-
-    # Do (2016) - Wind turbine tower fatigue
-    # Do, Trung Quang. 2016. Fragility approach for performance-based design in fluid-structure interaction problems, part I: Wind and wind turbines, part II: Waves and elevated coastal structures. Ph.D. diss., Colorado State
-    elif type == "wind_tower":
-        wind_knots = wind_mph * 0.868976
-        x = []
-        y = []
-        p_failure = np.interp(wind_knots, x, y, left=0.0, right=1.0)
 
     # =====================================#
     # Fragility Curves based on HAZUS      #
@@ -363,7 +412,7 @@ def fragility(wind_mph, type="inf_stiff"):
              185.2631579, 189.6842105, 194.8421053, 199.6315789]
         y = [0.0, 0.0, 0.0, 0.010840108, 0.01897019, 0.035230352, 0.067750678, 0.113821138, 0.165311653, 0.203252033,
              0.281842818, 0.363143631, 0.471544715]
-        p_failure = np.interp(wind_mph, x, y)
+        p_failure = np.interp(wind_mph, x, y, left=0.0, right=1.0)
 
     # CECBH (Concrete Engineered Commercial Building 6+ stories, HAZUS)
     elif type == "cecbh_severe":
@@ -413,6 +462,34 @@ def fragility(wind_mph, type="inf_stiff"):
              0.954054054, 0.962162162]
         p_failure = np.interp(wind_mph, x, y, left=0.0, right=1.0)
 
+    # HAZUS Functions - Destruction (only 2 of the 6 building types of destruction curve that is not infinitely stiff)
+    # --------------------------
+
+    # SECBL (Steel Engineered Commercial Building 1 to 2 stories, HAZUS)
+    elif type == "secbl_destr":
+        x = [140.3411247, 144.626522, 148.9131862, 153.2018429, 157.4909037, 161.7803753, 166.0710041, 170.3639131,
+             174.4649887, 177.9807636, 181.6897079, 185.5934215, 189.0138903, 191.5218888, 194.3889741, 196.7357948,
+             198.3024975, 199.4783153]
+        y = [0.004269528, 0.004719701, 0.009187386, 0.019974509, 0.032042893, 0.045414254, 0.062455667, 0.086728602,
+             0.120360139, 0.150986056, 0.176490216, 0.201947112, 0.239188939, 0.265404308, 0.297906232, 0.3277453,
+             0.354473935, 0.377028643]
+        p_failure = np.interp(wind_mph, x, y, left=0.0)
+
+    # SECBM (Steel Engineered Commercial Building 3 to 5 stories, HAZUS)
+    elif type == "secbm_destr":
+        x = [120.1751521, 125.1971465, 129.9269617, 134.2183378, 138.5101638, 143.0732199, 146.9340585, 150.3124673,
+             152.4817256, 156.0746232, 160.3736159, 164.4772144, 167.607469, 170.15148, 172.5028261, 174.8541838,
+             177.399176, 179.9442459, 182.4894926, 185.0345605, 186.8002225, 188.1740728, 190.1338831, 192.4842654,
+             194.8346672, 196.9909206, 198.5608049, 199.5420634]
+        y = [0.005789853, 0.004678538, 0.004912099, 0.006563319, 0.009796236, 0.017151188, 0.026020567, 0.044282351,
+             0.033034997, 0.047583122, 0.076001501, 0.103179293, 0.136901133, 0.166686426, 0.204822799, 0.243000143,
+             0.276233755, 0.309740503, 0.34386863, 0.377368549, 0.413534941, 0.443624096, 0.476652858, 0.511402366,
+             0.546220158, 0.58417558, 0.617754025, 0.639024356]
+        p_failure = np.interp(wind_mph, x, y, left=0.0)
+
+    # =====================================#
+    # Catch #
+    # =====================================#
     else:
         print("Invalid fragility curve type")
         p_failure = np.zeros(len(wind_mph))
