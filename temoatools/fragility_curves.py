@@ -500,7 +500,7 @@ def fragility(wind_mph, curve="inf_stiff"):
     # Catch #
     # =====================================#
     else:
-        print("Invalid fragility curve type")
+        print("Invalid fragility curve type:"+curve)
 
         if type(wind_mph) is np.ndarray:
 

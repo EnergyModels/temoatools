@@ -30,7 +30,7 @@ groups = {"trans": group1, "sub": group1, "dist": group1, "wind": group2, "solar
 # Calculate damage across a range of windspeeds
 # ================================#
 
-cols = ["tech", "type", "group", "wind_mph", "p_failure"]
+cols = ["tech", "curve", "group", "wind_mph", "p_failure"]
 df = pd.DataFrame(columns=cols)
 wind_mph = np.arange(0, 200, 2)
 
