@@ -19,8 +19,6 @@ for year in np.arange(1979,2016,1):
         df = df.append(s,ignore_index=True)
         print year
 
-
-
 # Storm Category Analysis
 
 starts = np.arange(1979,1997,1)

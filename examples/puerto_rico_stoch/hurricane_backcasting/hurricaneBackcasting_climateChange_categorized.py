@@ -4,7 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 # Read Data
-df = pd.read_csv("hurricaneData.csv")
+df = pd.read_csv("hurricaneData_climateChange.csv")
 
 # Add-in 'None' Category
 
@@ -92,7 +92,7 @@ probs2 = pd.melt(probs,id_vars=["Years"],var_name="Category",value_vars=["Low", 
 ax = sns.catplot(x="Category",y="value",hue="Years",kind="bar", data=probs2)
 ax.set_xlabels('Storm Category (-)')
 ax.set_ylabels('Probability (-)')
-plt.savefig("Hurricane_Probabilities_categorized.png",dpi=1000)
+plt.savefig("Hurricane_Probabilities_climateChange_categorized.png",dpi=1000)
 
 # Storm Wind Speed Analysis V2
 
@@ -111,4 +111,4 @@ for year in years:
 ax = sns.catplot(x="Category", y="MaxWind_mph", hue="Years",kind="bar", data=comb_data,order = ["Low", "Medium", "High"])
 ax.set_xlabels('Storm Category (-)')
 ax.set_ylabels('Maximum Windspeed (mph)')
-plt.savefig("Hurricane_Windspeeds_Comparison_categorized.png", dpi=1000)
+plt.savefig("Hurricane_Windspeeds_Comparison_climateChange_categorized.png", dpi=1000)

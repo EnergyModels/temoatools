@@ -35,14 +35,13 @@ df = pd.DataFrame(columns=cols)
 wind_mph = np.arange(0, 200, 2)
 
 for tech in curves.keys():
-    for type in curves[tech]:
-        print(type)
-        p_failure = tt.fragility(wind_mph, type=type)
+    for curve in curves[tech]:
+        p_failure = tt.fragility(wind_mph, curve=curve)
 
         for w, p in zip(wind_mph, p_failure):
             s = pd.Series()
             s["tech"] = tech
-            s["type"] = type
+            s["curve"] = curve
             s["group"] = groups[tech]
             s["wind_mph"] = w
             s["p_failure"] = p
@@ -54,5 +53,5 @@ plt.savefig("compare_all.png", DPI=1000)
 sns.relplot(x="wind_mph", y="p_failure", hue="tech", col="group", col_wrap=3, data=df, kind="line")
 plt.savefig("compare_by_group.png", DPI=1000)
 
-sns.relplot(x="wind_mph", y="p_failure", hue="type", col="tech", col_wrap=3, data=df, kind="line")
+sns.relplot(x="wind_mph", y="p_failure", hue="curve", col="tech", col_wrap=3, data=df, kind="line")
 plt.savefig("compare_by_tech.png", DPI=1000)
