@@ -58,7 +58,7 @@ for db in dbs:
     filename = "stoch_" + db_name + ".txt"
     # Open File
     f = open(filename, "w")
-    f.write("# Automatically generated stochastic input file from temoatools github.com/EnergyModels\n")
+    f.write("# Automatically generated stochastic input file from temoatools github.com/EnergyModels/temoatools\n\n")
     f.write("verbose = True\n")
     f.write("force = True\n")
     f.write("\n")
