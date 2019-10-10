@@ -65,15 +65,8 @@ def getActivity(folders, dbs, switch='fuel', sector_name='electric', save_data='
             savename = 'activity_by_fuel.csv'
         else:
             savename = 'activity_by_tech.csv'
-        activity.to_csv(savename)
-        # Create connection to excel
-        # writer = pd.ExcelWriter(savename)
-        # activity.to_excel(writer, "Activity")
-        # for db in dbs:
-        #     activity[name(db)].to_excel(writer,db)
-        # Save
-        # writer.save()
-        # activity.to_csv('activity.csv')
+        activity.to_csv(
+            savename)  # Create connection to excel  # writer = pd.ExcelWriter(savename)  # activity.to_excel(writer, "Activity")  # for db in dbs:  #     activity[name(db)].to_excel(writer,db)  # Save  # writer.save()  # activity.to_csv('activity.csv')
 
     if create_plots == 'Y':
         # Create plots
@@ -166,7 +159,7 @@ def SingleDB(folder, db, switch='fuel', sector_name='electric', conversion=277.7
     # Review db_technologies to select related sector
     techs = []
     for tech, flag, sector, tech_desc, tech_category in db_technologies:
-        if sector == sector_name:
+        if sector == sector_name or sector_name == "all":
             if tech not in techs:
                 techs.append(tech)
 
@@ -205,7 +198,7 @@ def SingleDB(folder, db, switch='fuel', sector_name='electric', conversion=277.7
 
     ## Review db_Output_VFlow_Out to fill data frame
     for scenario, sector, t_periods, t_season, t_day, input_comm, tech, vintage, output_comm, vflow_out in db_Output_VFlow_Out:
-        if sector == sector_name:
+        if sector == sector_name or sector_name == "all":
             if switch == 'fuel':
                 df.loc[(db, scenario, d[tech]), t_periods] = df.loc[(db, scenario,
                                                                      d[tech]), t_periods] + vflow_out * conversion
