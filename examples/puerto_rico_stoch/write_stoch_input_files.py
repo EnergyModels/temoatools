@@ -17,22 +17,23 @@ windspeeds = [20.0, 50.0, 150.0]  # mph
 
 # temoa model technologies and corresponding fragility curve groups
 techs = {'LOCAL': "inf_stiff", 'UGND_TRANS': "inf_stiff", 'UGND_DIST': "inf_stiff", 'TRANS': "trans", 'SUB': "sub",
-         'DIST': "dist", 'EX_SOLPV': "solar", 'EC_SOLPV': "solar", 'ED_SOLPV': "solar", 'EX_WIND': "wind",
-         'EC_WIND': "wind", 'ED_WIND': "wind", 'EX_COAL': "coal_biomass", 'EC_BIO': "coal_biomass",
-         'ED_BIO': "coal_biomass", 'EX_NG_CC': "natgas_petrol", 'EC_NG_CC': "natgas_petrol",
+         'DIST_COND': "dist_cond", 'DIST_TWR': "dist_twr", 'EX_SOLPV': "solar", 'EC_SOLPV': "solar",
+         'ED_SOLPV': "solar", 'EX_WIND': "wind", 'EC_WIND': "wind", 'ED_WIND': "wind", 'EX_COAL': "coal_biomass",
+         'EC_BIO': "coal_biomass", 'ED_BIO': "coal_biomass", 'EX_NG_CC': "natgas_petrol", 'EC_NG_CC': "natgas_petrol",
          'EC_NG_OC': "natgas_petrol", 'ED_NG_CC': "natgas_petrol", 'ED_NG_OC': "natgas_petrol",
          'EX_DSL_SIMP': "natgas_petrol", 'EX_DSL_CC': "natgas_petrol", 'EX_OIL_TYPE1': "natgas_petrol",
          'EX_OIL_TYPE2': "natgas_petrol", 'EX_OIL_TYPE3': "natgas_petrol", 'EX_MSW_LF': "natgas_petrol",
          'EX_HYDRO': "hydro", 'EC_BATT': "battery", 'ED_BATT': "battery"}
 
 # best and worst case fragility curves for each group
-curves_best = {"inf_stiff": "inf_stiff", "trans": "trans_TX", "sub": "sub_HAZUS_severe_k5", "dist": "dist_TX",
-               "wind": "wind_yaw", "solar": "solar_utility", "coal_biomass": "inf_stiff", "natgas_petrol": "inf_stiff",
-               "battery": "inf_stiff", "hydro": "inf_stiff", }
+curves_best = {"inf_stiff": "inf_stiff", "trans": "trans_TX", "sub": "sub_HAZUS_severe_k5", "dist_cond": "dist_cond_TX",
+               "dist_twr": "dist_TX", "wind": "wind_yaw", "solar": "solar_utility", "coal_biomass": "inf_stiff",
+               "natgas_petrol": "inf_stiff", "battery": "inf_stiff", "hydro": "inf_stiff", }
 
-curves_worst = {"inf_stiff": "inf_stiff", "trans": "trans_UK_base", "sub": "sub_HAZUS_severe_k1", "dist": "dist_60yr",
-                "wind": "wind_nonyaw", "solar": "solar_res", "coal_biomass": "secbh_severe",
-                "natgas_petrol": "secbm_severe", "battery": "secbl_severe", "hydro": "cecbl_severe", }
+curves_worst = {"inf_stiff": "inf_stiff", "trans": "trans_UK_base", "sub": "sub_HAZUS_severe_k1",
+                "dist_cond": "dist_cond_TX", "dist_twr": "dist_60yr", "wind": "wind_nonyaw", "solar": "solar_res",
+                "coal_biomass": "secbh_severe", "natgas_petrol": "secbm_severe", "battery": "secbl_severe",
+                "hydro": "cecbl_severe", }
 
 # Create directory to store outputs
 wrkdir = os.getcwd()

@@ -94,7 +94,8 @@ EC_NG_CC
 EC_NG_OC
 TRANS
 SUB
-DIST
+DIST_TWR
+DIST_COND
 LOCAL
 UGND_TRANS
 UGND_DIST
@@ -127,6 +128,7 @@ WIND
 ELC_CENTRAL
 ELC_SUB
 ELC_DIST
+ELC_DIST_MID
 ELC_LOCAL
 ;
 
@@ -265,7 +267,8 @@ param CapacityToActivity :=
     IMPWIND         31.54    
     TRANS         31.54    
     SUB         31.54    
-    DIST         31.54    
+    DIST_TWR         31.54    
+    DIST_COND         31.54    
     LOCAL         31.54    
     UGND_TRANS         31.54    
     UGND_DIST         31.54    
@@ -344,7 +347,8 @@ param LifetimeTech :=
     IMPWIND         40.0    
     TRANS         30.0    
     SUB         30.0    
-    DIST         30.0    
+    DIST_TWR         30.0    
+    DIST_COND         30.0    
     LOCAL         30.0    
     UGND_TRANS         30.0    
     UGND_DIST         30.0    
@@ -375,7 +379,8 @@ param LifetimeLoanTech :=
     IMPWIND         30.0    
     TRANS         30.0    
     SUB         30.0    
-    DIST         30.0    
+    DIST_TWR         30.0    
+    DIST_COND         30.0    
     LOCAL         30.0    
     UGND_TRANS         30.0    
     UGND_DIST         30.0    
@@ -1149,12 +1154,18 @@ param Efficiency :=
     ELC_SUB             SUB         2026         ELC_DIST         0.996    
     ELC_SUB             SUB         2031         ELC_DIST         0.996    
     ELC_SUB             SUB         2036         ELC_DIST         0.996    
-    ELC_DIST             DIST         2015         ELC_LOCAL         0.9299999999999999    
-    ELC_DIST             DIST         2016         ELC_LOCAL         0.9299999999999999    
-    ELC_DIST             DIST         2021         ELC_LOCAL         0.9299999999999999    
-    ELC_DIST             DIST         2026         ELC_LOCAL         0.9299999999999999    
-    ELC_DIST             DIST         2031         ELC_LOCAL         0.9299999999999999    
-    ELC_DIST             DIST         2036         ELC_LOCAL         0.9299999999999999    
+    ELC_DIST_MID             DIST_TWR         2015         ELC_LOCAL         1.0    
+    ELC_DIST_MID             DIST_TWR         2016         ELC_LOCAL         1.0    
+    ELC_DIST_MID             DIST_TWR         2021         ELC_LOCAL         1.0    
+    ELC_DIST_MID             DIST_TWR         2026         ELC_LOCAL         1.0    
+    ELC_DIST_MID             DIST_TWR         2031         ELC_LOCAL         1.0    
+    ELC_DIST_MID             DIST_TWR         2036         ELC_LOCAL         1.0    
+    ELC_DIST             DIST_COND         2015         ELC_DIST_MID         0.9299999999999999    
+    ELC_DIST             DIST_COND         2016         ELC_DIST_MID         0.9299999999999999    
+    ELC_DIST             DIST_COND         2021         ELC_DIST_MID         0.9299999999999999    
+    ELC_DIST             DIST_COND         2026         ELC_DIST_MID         0.9299999999999999    
+    ELC_DIST             DIST_COND         2031         ELC_DIST_MID         0.9299999999999999    
+    ELC_DIST             DIST_COND         2036         ELC_DIST_MID         0.9299999999999999    
     ELC_LOCAL             LOCAL         2016         ELC_DMD         1.0    
     ELC_LOCAL             LOCAL         2021         ELC_DMD         1.0    
     ELC_LOCAL             LOCAL         2026         ELC_DMD         1.0    
@@ -1199,7 +1210,8 @@ param ExistingCapacity :=
     EX_WIND         2012     0.102    
     TRANS         2015     3.08    
     SUB         2015     3.068    
-    DIST         2015     2.853    
+    DIST_TWR         2015     2.853    
+    DIST_COND         2015     2.853    
 ;
 
 param CostInvest := 
@@ -1229,11 +1241,16 @@ param CostInvest :=
     SUB         2026     688.3963494132986    
     SUB         2031     688.3963494132986    
     SUB         2036     688.3963494132986    
-    DIST         2016     539.8035484786272    
-    DIST         2021     539.8035484786272    
-    DIST         2026     539.8035484786272    
-    DIST         2031     539.8035484786272    
-    DIST         2036     539.8035484786272    
+    DIST_TWR         2016     539.8035484786272    
+    DIST_TWR         2021     539.8035484786272    
+    DIST_TWR         2026     539.8035484786272    
+    DIST_TWR         2031     539.8035484786272    
+    DIST_TWR         2036     539.8035484786272    
+    DIST_COND         2016     323.88212908717634    
+    DIST_COND         2021     323.88212908717634    
+    DIST_COND         2026     323.88212908717634    
+    DIST_COND         2031     323.88212908717634    
+    DIST_COND         2036     323.88212908717634    
     UGND_TRANS         2016     4531.362    
     UGND_TRANS         2021     4531.362    
     UGND_TRANS         2026     4531.362    
@@ -1648,26 +1665,46 @@ param CostVariable :=
 2036         TRANS         2026     0.86    
 2036         TRANS         2031     0.86    
 2036         TRANS         2036     0.86    
-2016         DIST         2015     1.15    
-2016         DIST         2016     1.15    
-2021         DIST         2015     1.15    
-2021         DIST         2016     1.15    
-2021         DIST         2021     1.15    
-2026         DIST         2015     1.15    
-2026         DIST         2016     1.15    
-2026         DIST         2021     1.15    
-2026         DIST         2026     1.15    
-2031         DIST         2015     1.15    
-2031         DIST         2016     1.15    
-2031         DIST         2021     1.15    
-2031         DIST         2026     1.15    
-2031         DIST         2031     1.15    
-2036         DIST         2015     1.15    
-2036         DIST         2016     1.15    
-2036         DIST         2021     1.15    
-2036         DIST         2026     1.15    
-2036         DIST         2031     1.15    
-2036         DIST         2036     1.15    
+2016         DIST_TWR         2015     0.0    
+2016         DIST_TWR         2016     0.0    
+2021         DIST_TWR         2015     0.0    
+2021         DIST_TWR         2016     0.0    
+2021         DIST_TWR         2021     0.0    
+2026         DIST_TWR         2015     0.0    
+2026         DIST_TWR         2016     0.0    
+2026         DIST_TWR         2021     0.0    
+2026         DIST_TWR         2026     0.0    
+2031         DIST_TWR         2015     0.0    
+2031         DIST_TWR         2016     0.0    
+2031         DIST_TWR         2021     0.0    
+2031         DIST_TWR         2026     0.0    
+2031         DIST_TWR         2031     0.0    
+2036         DIST_TWR         2015     0.0    
+2036         DIST_TWR         2016     0.0    
+2036         DIST_TWR         2021     0.0    
+2036         DIST_TWR         2026     0.0    
+2036         DIST_TWR         2031     0.0    
+2036         DIST_TWR         2036     0.0    
+2016         DIST_COND         2015     1.15    
+2016         DIST_COND         2016     1.15    
+2021         DIST_COND         2015     1.15    
+2021         DIST_COND         2016     1.15    
+2021         DIST_COND         2021     1.15    
+2026         DIST_COND         2015     1.15    
+2026         DIST_COND         2016     1.15    
+2026         DIST_COND         2021     1.15    
+2026         DIST_COND         2026     1.15    
+2031         DIST_COND         2015     1.15    
+2031         DIST_COND         2016     1.15    
+2031         DIST_COND         2021     1.15    
+2031         DIST_COND         2026     1.15    
+2031         DIST_COND         2031     1.15    
+2036         DIST_COND         2015     1.15    
+2036         DIST_COND         2016     1.15    
+2036         DIST_COND         2021     1.15    
+2036         DIST_COND         2026     1.15    
+2036         DIST_COND         2031     1.15    
+2036         DIST_COND         2036     1.15    
 2016         UGND_TRANS         2016     0.0    
 2021         UGND_TRANS         2016     0.0    
 2021         UGND_TRANS         2021     0.0    

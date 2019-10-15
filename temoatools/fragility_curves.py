@@ -160,6 +160,13 @@ def fragility(wind_mph, curve="inf_stiff"):
         p_failure = norm.cdf((np.log(wind_mph) - mu) / sigma)
 
 
+    # Distribution Conductors:
+    # Quanta Technology, 2009, "Cost benefit analysis of the deployment of utility infrastructure upgrades and
+    # storm hardening programs", Final report, prepared for the Public Utility Commission of Texas, Project No.36375, Raleigh, NC.
+    elif curve == "dist_cond_TX":
+        p_failure = 8.0 * 10 ** -12.0 * wind_mph ** 5.1731
+        p_failure = np.clip(p_failure, 0.0, 1.0)
+
     # Distribution Towers:
     # Quanta Technology, 2009, "Cost benefit analysis of the deployment of utility infrastructure upgrades and
     # storm hardening programs", Final report, prepared for the Public Utility Commission of Texas, Project No.36375, Raleigh, NC.
@@ -500,14 +507,13 @@ def fragility(wind_mph, curve="inf_stiff"):
     # Catch #
     # =====================================#
     else:
-        print("Invalid fragility curve type:"+curve)
+        print("Invalid fragility curve type:" + curve)
 
         if type(wind_mph) is np.ndarray:
 
             p_failure = np.zeros(len(wind_mph))
         else:
             p_failure = 0.0
-
 
     # Common return function
     return p_failure

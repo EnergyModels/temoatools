@@ -12,7 +12,7 @@ import temoatools as tt
 # Fragility Curves to compare
 curves = {"trans": ["trans_UK_base", "trans_UK_robust","trans_TX"],
           "sub": ["sub_MX", "sub_HAZUS_severe_k1", "sub_HAZUS_severe_k2", "sub_HAZUS_severe_k3", "sub_HAZUS_severe_k4",
-                  "sub_HAZUS_severe_k5"], "dist": ["dist_TX", "dist_20yr", "dist_40yr", "dist_60yr"],
+                  "sub_HAZUS_severe_k5"], "dist": ["dist_cond_TX","dist_TX", "dist_20yr", "dist_40yr", "dist_60yr"],
           "wind": ["wind_yaw", "wind_nonyaw"], "solar": ["solar_res", "solar_utility"],
           "coal_biomass": ["secbh_moderate", "secbh_severe", "secbh_destr"],
           "natgas_petrol": ["secbm_moderate", "secbm_severe", "secbm_destr"],

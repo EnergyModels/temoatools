@@ -9,10 +9,12 @@ import time
 p = {"0": [0.56, 0.24, 0.2],  # Node probabilities (H1, H3, H5) by case (0,1,2,3)
      "1": [0.56, 0.24, 0.2], "2": [0.16, 0.24, 0.6], "3": [0.16, 0.24, 0.6]}
 # Model runs to analyze (by folder)
-folders = ['2019_10_08', ]
+folders = ['2019_10_13', ]
 # Result files to resample
-# filenames = ["activity_by_fuel"]
-filenames = ["activity_by_tech"]
+# filenames = ["costs_yearly"]
+# filenames = ["emissions_yearly"]
+filenames = ["activity_by_fuel"]
+# filenames = ["activity_by_tech"]
 # filenames = ["costs_yearly", "emissions_yearly", "activity_by_fuel","activity_by_tech"]
 
 # ====================

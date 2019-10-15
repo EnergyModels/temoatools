@@ -11,7 +11,8 @@ import temoatools as tt
 
 # Fragility Curves to compare
 curves = {"trans": ["trans_UK_base", "trans_TX"], "sub": ["sub_HAZUS_severe_k1", "sub_HAZUS_severe_k5"],
-          "dist": ["dist_TX", "dist_60yr"], "wind": ["wind_yaw", "wind_nonyaw"],
+        "dist_cond": ["dist_cond_TX"],
+          "dist_twr": ["dist_TX", "dist_60yr"], "wind": ["wind_yaw", "wind_nonyaw"],
           "solar": ["solar_res", "solar_utility"], "coal_biomass": ["secbh_severe", "inf_stiff"],
           "natgas_petrol": ["secbm_severe", "inf_stiff"], "battery": ["secbl_severe", "inf_stiff"],
           "hydro": ["cecbl_severe", "inf_stiff"], }
@@ -20,7 +21,7 @@ group1 = "T&D"
 group2 = "Renew"
 group3 = "Other"
 
-groups = {"trans": group1, "sub": group1, "dist": group1, "wind": group2, "solar": group2, "coal_biomass": group3,
+groups = {"trans": group1, "sub": group1, "dist_twr": group1, "dist_cond": group1, "wind": group2, "solar": group2, "coal_biomass": group3,
           "natgas_petrol": group3, "battery": group3, "hydro": group2, }
 
 # ================================#
@@ -58,12 +59,12 @@ plt.savefig("fragility_curves_by_tech.png", DPI=1000)
 # ================================#
 
 # best and worst case fragility curves for each group
-curves_best = {"trans": "trans_TX", "sub": "sub_HAZUS_severe_k5",
-               "dist": "dist_TX", "wind": "wind_yaw", "solar": "solar_utility", "coal_biomass": "inf_stiff",
+curves_best = {"trans": "trans_TX", "sub": "sub_HAZUS_severe_k5", "dist_cond": "dist_cond_TX",
+               "dist_twr": "dist_TX", "wind": "wind_yaw", "solar": "solar_utility", "coal_biomass": "inf_stiff",
                "natgas_petrol": "inf_stiff", "battery": "inf_stiff", "hydro": "inf_stiff", }
 
 curves_worst = {"trans": "trans_UK_base",
-                "sub": "sub_HAZUS_severe_k1", "dist": "dist_60yr", "wind": "wind_nonyaw",
+                "sub": "sub_HAZUS_severe_k1", "dist_cond": "dist_cond_TX", "dist_twr": "dist_60yr", "wind": "wind_nonyaw",
                 "solar": "solar_res", "coal_biomass": "secbh_severe", "natgas_petrol": "secbm_severe",
                 "battery": "secbl_severe", "hydro": "cecbl_severe", }
 
