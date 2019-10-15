@@ -13,16 +13,16 @@ import temoatools as tt
 curves = {"trans": ["trans_UK_base", "trans_TX"], "sub": ["sub_HAZUS_severe_k1", "sub_HAZUS_severe_k5"],
         "dist_cond": ["dist_cond_TX"],
           "dist_twr": ["dist_TX", "dist_60yr"], "wind": ["wind_yaw", "wind_nonyaw"],
-          "solar": ["solar_res", "solar_utility"], "coal_biomass": ["secbh_severe", "inf_stiff"],
-          "natgas_petrol": ["secbm_severe", "inf_stiff"], "battery": ["secbl_severe", "inf_stiff"],
-          "hydro": ["cecbl_severe", "inf_stiff"], }
+          "solar": ["solar_res", "solar_utility"], "coal_biomass": ["secbh_moderate", "secbh_severe"],
+          "natgas_petrol": ["secbm_moderate", "secbm_severe"], "battery": ["secbl_moderate", "secbl_severe"],
+          "hydro": ["cecbl_moderate", "cecbl_severe"], "UGND":["secbl_destr","secbl_destr"]}
 
 group1 = "T&D"
 group2 = "Renew"
 group3 = "Other"
 
 groups = {"trans": group1, "sub": group1, "dist_twr": group1, "dist_cond": group1, "wind": group2, "solar": group2, "coal_biomass": group3,
-          "natgas_petrol": group3, "battery": group3, "hydro": group2, }
+          "natgas_petrol": group3, "battery": group3, "hydro": group2, "UGND": group1}
 
 # ================================#
 # Calculate damage across a range of windspeeds
@@ -30,7 +30,7 @@ groups = {"trans": group1, "sub": group1, "dist_twr": group1, "dist_cond": group
 
 cols = ["tech", "curve", "group", "wind_mph", "p_failure"]
 df = pd.DataFrame(columns=cols)
-wind_mph = np.arange(0, 200, 2)
+wind_mph = np.arange(0, 160, 2)
 
 for tech in curves.keys():
     for curve in curves[tech]:
@@ -60,19 +60,26 @@ plt.savefig("fragility_curves_by_tech.png", DPI=1000)
 
 # best and worst case fragility curves for each group
 curves_best = {"trans": "trans_TX", "sub": "sub_HAZUS_severe_k5", "dist_cond": "dist_cond_TX",
-               "dist_twr": "dist_TX", "wind": "wind_yaw", "solar": "solar_utility", "coal_biomass": "inf_stiff",
-               "natgas_petrol": "inf_stiff", "battery": "inf_stiff", "hydro": "inf_stiff", }
+               "dist_twr": "dist_TX", "wind": "wind_yaw", "solar": "solar_utility",
+               "coal_biomass": "secbh_severe",
+               "natgas_petrol": "secbm_severe",
+               "battery": "secbl_severe",
+               "hydro": "cecbl_severe", "UGND":"secbl_severe"}
 
 curves_worst = {"trans": "trans_UK_base",
                 "sub": "sub_HAZUS_severe_k1", "dist_cond": "dist_cond_TX", "dist_twr": "dist_60yr", "wind": "wind_nonyaw",
-                "solar": "solar_res", "coal_biomass": "secbh_severe", "natgas_petrol": "secbm_severe",
-                "battery": "secbl_severe", "hydro": "cecbl_severe", }
+                "solar": "solar_res",
+                "coal_biomass": "secbh_moderate",
+                "natgas_petrol": "secbm_moderate",
+                "battery": "secbl_moderate",
+                "hydro": "cecbl_moderate",
+                "UGND":"secbl_severe"}
 
 
 cols = ["tech", "curve", "group", "wind_mph", "p_failure"]
 df_best = pd.DataFrame(columns=cols)
 df_worst = pd.DataFrame(columns=cols)
-wind_mph = np.arange(0, 200, 2)
+wind_mph = np.arange(0, 160, 2)
 
 # for curve_best_key,curve_worst_key in zip(curves_best, curves_worst):
 #     p_failure_best = tt.fragility(wind_mph, curve=curves_best[curve_best_key])
