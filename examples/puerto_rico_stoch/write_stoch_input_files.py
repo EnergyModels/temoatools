@@ -35,10 +35,10 @@ curves = {"inf_stiff": "inf_stiff",
                 "dist_twr": "dist_60yr",
                 "wind": "wind_nonyaw",
                 "solar": "solar_utility",
-                "coal_biomass": "secbh_moderate",
-                "natgas_petrol": "secbm_moderate",
-                "battery": "secbl_moderate",
-                "hydro": "cecbl_moderate",
+                "coal_biomass": "secbh_severe",
+                "natgas_petrol": "secbm_severe",
+                "battery": "secbl_severe",
+                "hydro": "cecbl_severe",
                 "UGND":"secbl_severe"}
 
 # Create directory to store outputs

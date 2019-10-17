@@ -66,13 +66,22 @@ plt.savefig("fragility_curves_by_tech.png", DPI=1000)
 #                "battery": "secbl_severe",
 #                "hydro": "cecbl_severe", "UGND":"secbl_severe"}
 
+# curves = {"trans": "trans_UK_base",
+#                 "sub": "sub_HAZUS_severe_k3", "dist_cond": "dist_cond_TX", "dist_twr": "dist_60yr", "wind": "wind_nonyaw",
+#                 "solar": "solar_utility",
+#                 "coal_biomass": "secbh_moderate",
+#                 "natgas_petrol": "secbm_moderate",
+#                 "battery": "secbl_moderate",
+#                 "hydro": "cecbl_moderate",
+#                 "UGND":"secbl_severe"}
+
 curves = {"trans": "trans_UK_base",
                 "sub": "sub_HAZUS_severe_k3", "dist_cond": "dist_cond_TX", "dist_twr": "dist_60yr", "wind": "wind_nonyaw",
                 "solar": "solar_utility",
-                "coal_biomass": "secbh_moderate",
-                "natgas_petrol": "secbm_moderate",
-                "battery": "secbl_moderate",
-                "hydro": "cecbl_moderate",
+                "coal_biomass": "secbh_severe",
+                "natgas_petrol": "secbm_severe",
+                "battery": "secbl_severe",
+                "hydro": "cecbl_severe",
                 "UGND":"secbl_severe"}
 
 
