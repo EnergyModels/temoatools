@@ -33,10 +33,10 @@ col_order = [ "Historical + Worst Curves", "Historical + Best Curves",
 
 aspect = 1.5
 
-plotCosts = False
-plotEmissions = False
+plotCosts = True
+plotEmissions = True
 plotActivityFuel = False
-plotActivityTech = True
+plotActivityTech = False
 
 # Naming conventions
 filename_costs_yearly = "costs_yearly_resampled.csv"
@@ -60,30 +60,6 @@ for folder in folders:
     context = 'talk'  # options "paper", "notebook", "talk", "poster" (smallest -> largest)
     custom_palette = [(0.380, 0.380, 0.380), (0.957, 0.451, 0.125), (.047, 0.149, 0.361), (0.847, 0.000, 0.067),
                       (0.0, 0.0, 0.0)]  # Custom palette
-
-    # =====================================================
-    # Set figure parameters based on experience for each context
-    # =====================================================
-    if context == 'paper':
-        fig_size = [8, 6]  # (width followed by height, in inches) Note: OK to leave as an empty list
-        leg_coord = [1.6, -0.3]  # Legend coordinates (x,y)
-        hspace = 0.15  # vertical space between figures
-        wspace = 0.15  # horizontal space between figures
-    elif context == 'notebook':
-        fig_size = [8, 6]
-        leg_coord = [1.75, -0.3]
-        hspace = 0.2
-        wspace = 0.2
-    elif context == 'talk':
-        fig_size = [12, 8]
-        leg_coord = [1.75, -0.4]
-        hspace = 0.3
-        wspace = 0.35
-    else:  # context == 'poster':
-        fig_size = [12, 8]
-        leg_coord = [1.8, -0.5]
-        hspace = 0.3
-        wspace = 0.35
 
     # =================================================
     # Costs
@@ -110,64 +86,6 @@ for folder in folders:
 
         x_label = "Year (-)"
         y_label = "Cost of Electricity (cents/kWh)"
-
-        # --------------------------
-        # Box and Whisker Plot
-        # --------------------------
-        # f = plt.figure(figsize=fig_size)
-        g = sns.catplot(x="Year", y="Value", data=df2, hue='Scenario', palette=custom_palette, kind="box", col="case",
-                        col_wrap=2, col_order=col_order, legend=False, aspect=aspect)
-        g.set_axis_labels(x_label, y_label)
-        # Additional Labels
-        g.set_titles(" ")
-        ax = g.axes[0]
-        ax.text(0.5, 1.1, 'Current Infrastructure', horizontalalignment='center', verticalalignment='top',
-                transform=ax.transAxes)
-        ax = g.axes[1]
-        ax.text(0.5, 1.1, 'Hardened Infrastructure', horizontalalignment='center', verticalalignment='top',
-                transform=ax.transAxes)
-        ax.text(1.1, 0.5, 'Historical', horizontalalignment='center', verticalalignment='center', rotation=270,
-                transform=ax.transAxes)
-        ax = g.axes[3]
-        ax.text(1.1, 0.5, 'Climate Change', horizontalalignment='center', verticalalignment='center', rotation=270,
-                transform=ax.transAxes)
-        # Legend
-        ax = g.axes[2]
-        plt.legend(loc='center', bbox_to_anchor=(0.0, -0.3), frameon=False, fontsize=16, ncol=4)
-
-        # Save
-        savename = figure_name + "_box_" + context + '.pdf'
-        plt.savefig(savename, dpi=resolution, bbox_inches="tight")  # bbox_inches="tight" is used to include the legend
-        plt.close()
-
-        # --------------------------
-        # Boxen Plot
-        # --------------------------
-        # f = plt.figure(figsize=fig_size)
-        g = sns.catplot(x="Year", y="Value", data=df2, hue='Scenario', palette=custom_palette, kind="boxen", col="case",
-                        col_wrap=2, col_order=col_order, legend=False, aspect=aspect)
-        g.set_axis_labels(x_label, y_label)
-        # Additional Labels
-        g.set_titles(" ")
-        ax = g.axes[0]
-        ax.text(0.5, 1.1, 'Current Infrastructure', horizontalalignment='center', verticalalignment='top',
-                transform=ax.transAxes)
-        ax = g.axes[1]
-        ax.text(0.5, 1.1, 'Hardened Infrastructure', horizontalalignment='center', verticalalignment='top',
-                transform=ax.transAxes)
-        ax.text(1.1, 0.5, 'Historical', horizontalalignment='center', verticalalignment='center', rotation=270,
-                transform=ax.transAxes)
-        ax = g.axes[3]
-        ax.text(1.1, 0.5, 'Climate Change', horizontalalignment='center', verticalalignment='center', rotation=270,
-                transform=ax.transAxes)
-        # Legend
-        ax = g.axes[2]
-        plt.legend(loc='center', bbox_to_anchor=(0.0, -0.3), frameon=False, fontsize=16, ncol=4)
-
-        # Save
-        savename = figure_name + "_boxen_" + context + '.pdf'
-        plt.savefig(savename, dpi=resolution, bbox_inches="tight")  # bbox_inches="tight" is used to include the legend
-        plt.close()
 
         # --------------------------
         # Violin Plot
@@ -224,66 +142,6 @@ for folder in folders:
 
         x_label = "Year (-)"
         y_label = "Emissions (kton/yr)"
-
-        # --------------------------
-        # Box and Whisker Plot
-        # --------------------------
-        # f = plt.figure(figsize=fig_size)
-        g = sns.catplot(x="Year", y="Value", data=df2, hue='Scenario', palette=custom_palette, kind="box", col="case",
-                        col_wrap=2, col_order=col_order, legend=False, aspect=aspect)
-        g.set_axis_labels(x_label, y_label)
-        # Additional Labels
-        g.set_titles(" ")
-        ax = g.axes[0]
-        ax.text(0.5, 1.1, 'Current Infrastructure', horizontalalignment='center', verticalalignment='top',
-                transform=ax.transAxes)
-        ax = g.axes[1]
-        ax.text(0.5, 1.1, 'Hardened Infrastructure', horizontalalignment='center', verticalalignment='top',
-                transform=ax.transAxes)
-        ax.text(1.1, 0.5, 'Historical', horizontalalignment='center', verticalalignment='center', rotation=270,
-                transform=ax.transAxes)
-        ax = g.axes[3]
-        ax.text(1.1, 0.5, 'Climate Change', horizontalalignment='center', verticalalignment='center', rotation=270,
-                transform=ax.transAxes)
-
-        # Legend
-        ax = g.axes[2]
-        plt.legend(loc='center', bbox_to_anchor=(0.0, -0.3), frameon=False, fontsize=16, ncol=4)
-
-        # Save
-        savename = figure_name + "_box_" + context + '.pdf'
-        plt.savefig(savename, dpi=resolution, bbox_inches="tight")
-        plt.close()
-
-        # --------------------------
-        # Boxen Plot
-        # --------------------------
-        # f = plt.figure(figsize=fig_size)
-        g = sns.catplot(x="Year", y="Value", data=df2, hue='Scenario', palette=custom_palette, kind="boxen", col="case",
-                        col_wrap=2, col_order=col_order, legend=False, aspect=aspect)
-        g.set_axis_labels(x_label, y_label)
-        # Additional Labels
-        g.set_titles(" ")
-        ax = g.axes[0]
-        ax.text(0.5, 1.1, 'Current Infrastructure', horizontalalignment='center', verticalalignment='top',
-                transform=ax.transAxes)
-        ax = g.axes[1]
-        ax.text(0.5, 1.1, 'Hardened Infrastructure', horizontalalignment='center', verticalalignment='top',
-                transform=ax.transAxes)
-        ax.text(1.1, 0.5, 'Historical', horizontalalignment='center', verticalalignment='center', rotation=270,
-                transform=ax.transAxes)
-        ax = g.axes[3]
-        ax.text(1.1, 0.5, 'Climate Change', horizontalalignment='center', verticalalignment='center', rotation=270,
-                transform=ax.transAxes)
-
-        # Legend
-        ax = g.axes[2]
-        plt.legend(loc='center', bbox_to_anchor=(0.0, -0.3), frameon=False, fontsize=16, ncol=4)
-
-        # Save
-        savename = figure_name + "_boxen_" + context + '.pdf'
-        plt.savefig(savename, dpi=resolution, bbox_inches="tight")
-        plt.close()
 
         # --------------------------
         # Violin Plot
