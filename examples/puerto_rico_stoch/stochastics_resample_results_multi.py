@@ -13,11 +13,10 @@ p = {"0": [0.56, 0.24, 0.2],  # Node probabilities (H1, H3, H5) by case (0,1,2,3
 folders = ['2019_10_17', ]
 
 # Result files to resample
-filenames = ["costs_yearly_exp"]
 # filenames = ["emissions_yearly_exp"]
+filenames = ["costs_yearly_exp"]
 # filenames = ["activity_by_fuel_exp"]
 # filenames = ["activity_by_tech_exp"]
-
 
 # ====================
 # Process files

@@ -7,8 +7,8 @@ db_shift = {"A_0": "A_2", "A_1": "A_3", "B_0": "B_2", "B_1": "B_3", "C_0": "C_2"
 folders = ['2019_10_17', ]
 
 # Filenames to analyze
-filenames = ['costs_yearly']
 # filenames = ['emissions_yearly']
+filenames = ['costs_yearly']
 # filenames = ['costs_yearly','emissions_yearly','activity_by_fuel','activity_by_tech"]
 
 for folder in folders:
