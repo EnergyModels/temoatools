@@ -4,7 +4,10 @@ import shutil
 import temoatools as tt
 
 # Baseline databases to use
-dbs = ["A.sqlite", "B.sqlite", "C.sqlite", "D.sqlite"]
+dbs = ["WA.sqlite", "WB.sqlite", "WC.sqlite", "WD.sqlite",
+       "XA.sqlite", "XB.sqlite", "XC.sqlite", "XD.sqlite",
+       "YA.sqlite", "YB.sqlite", "YC.sqlite", "YD.sqlite",
+       "ZA.sqlite", "ZB.sqlite", "ZC.sqlite", "ZD.sqlite"]
 
 # model years
 years = [2016, 2021, 2026, 2031, 2036]
@@ -25,17 +28,13 @@ techs = {'LOCAL': "inf_stiff", 'UGND_TRANS': "UGND", 'UGND_DIST': "UGND", 'TRANS
          'EX_OIL_TYPE2': "natgas_petrol", 'EX_OIL_TYPE3': "natgas_petrol", 'EX_MSW_LF': "natgas_petrol",
          'EX_HYDRO': "hydro", 'EC_BATT': "battery", 'ED_BATT': "battery"}
 
-# best and worst case fragility curves for each group
-curves_best = {"inf_stiff": "inf_stiff","trans": "trans_TX", "sub": "sub_HAZUS_severe_k5", "dist_cond": "dist_cond_TX",
-               "dist_twr": "dist_TX", "wind": "wind_yaw", "solar": "solar_utility",
-               "coal_biomass": "secbh_severe",
-               "natgas_petrol": "secbm_severe",
-               "battery": "secbl_severe",
-               "hydro": "cecbl_severe", "UGND":"secbl_severe"}
-
-curves_worst = {"inf_stiff": "inf_stiff","trans": "trans_UK_base",
-                "sub": "sub_HAZUS_severe_k1", "dist_cond": "dist_cond_TX", "dist_twr": "dist_60yr", "wind": "wind_nonyaw",
-                "solar": "solar_res",
+curves = {"inf_stiff": "inf_stiff",
+                "trans": "trans_UK_base",
+                "sub": "sub_HAZUS_severe_k3",
+                "dist_cond": "dist_cond_TX",
+                "dist_twr": "dist_60yr",
+                "wind": "wind_nonyaw",
+                "solar": "solar_utility",
                 "coal_biomass": "secbh_moderate",
                 "natgas_petrol": "secbm_moderate",
                 "battery": "secbl_moderate",
@@ -51,28 +50,15 @@ except:
     os.mkdir(stochdir)
 os.chdir(stochdir)
 
-n_cases = 2#4
+n_cases = 1
 for case in range(n_cases):
-
-    # historical + 'best" fragility curves
+    # historical probabilities
     if case == 0:
         probabilities = probabilities_hist
-        curves = curves_best
 
-    # historical + 'worst" fragility curves
+    # climate change probabilities
     elif case == 1:
-        probabilities = probabilities_hist
-        curves = curves_worst
-
-    # climate change + 'best" fragility curves
-    elif case == 2:
         probabilities = probabilities_climate_change
-        curves = curves_best
-
-    # climate change + 'worst" fragility curves
-    else:  # (case==3)
-        probabilities = probabilities_climate_change
-        curves = curves_worst
 
     # Iterate through each database for each case
     for db in dbs:
