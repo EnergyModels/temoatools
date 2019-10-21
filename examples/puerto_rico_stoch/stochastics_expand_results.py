@@ -1,10 +1,16 @@
 import os
 
-db_shift = {"A_0": "A_2", "A_1": "A_3", "B_0": "B_2", "B_1": "B_3", "C_0": "C_2", "C_1": "C_3", "D_0": "D_2",
-            "D_1": "D_3"}
+db_shift = {"WA_0": "WA_1", "WB_0": "WB_1",
+            "WC_0": "WC_1", "WD_0": "WD_1",
+            "XA_0": "XA_1", "XB_0": "XB_1",
+            "XC_0": "XC_1", "XD_0": "XD_1",
+            "YA_0": "YA_1", "YB_0": "YB_1",
+            "YC_0": "YC_1", "YD_0": "YD_1",
+            "ZA_0": "ZA_1", "ZB_0": "ZB_1",
+            "ZC_0": "ZC_1", "ZD_0": "ZD_1"}
 
 # Model runs to analyze (by folder)
-folders = ['2019_10_17', ]
+folders = ['2019_10_21', ]
 
 # Filenames to analyze
 # filenames = ['emissions_yearly']

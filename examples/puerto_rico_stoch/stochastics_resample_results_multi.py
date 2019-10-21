@@ -7,10 +7,10 @@ import time
 
 # Node probabilities
 p = {"0": [0.56, 0.24, 0.2],  # Node probabilities (H1, H3, H5) by case (0,1,2,3)
-     "1": [0.56, 0.24, 0.2], "2": [0.16, 0.24, 0.6], "3": [0.16, 0.24, 0.6]}
+     "1": [0.16, 0.24, 0.6]}
 
 # Model runs to analyze (by folder)
-folders = ['2019_10_17', ]
+folders = ['2019_10_21', ]
 
 # Result files to resample
 # filenames = ["emissions_yearly_exp"]

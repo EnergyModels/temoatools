@@ -3,6 +3,12 @@ import os
 import shutil
 import temoatools as tt
 
+#===================================
+# Inputs
+#===================================
+
+cutoff = 0.05 # cutoff^n<1e-6, where n is # of model years excluding the first time step
+
 # Baseline databases to use
 dbs = ["WA.sqlite", "WB.sqlite", "WC.sqlite", "WD.sqlite",
        "XA.sqlite", "XB.sqlite", "XC.sqlite", "XD.sqlite",
@@ -40,6 +46,17 @@ curves = {"inf_stiff": "inf_stiff",
                 "battery": "secbl_severe",
                 "hydro": "cecbl_severe",
                 "UGND":"secbl_severe"}
+
+#===================================
+# Begin input file preparation
+#===================================
+
+# Check for appropriate cutoff number
+n_years = len(years)-1
+if cutoff**n_years < 1e-6:
+    print("Warning: cutoff^n<1e-6, where n is # of model years excluding the first time step")
+else:
+    print("Verified: Appropraite value for cutoff")
 
 # Create directory to store outputs
 wrkdir = os.getcwd()
@@ -103,6 +120,11 @@ for case in range(n_cases):
                 curve = curves[tech_cat]
                 fragility = tt.fragility(windspeed, curve=curve)
                 capReduction = round(1.0 - fragility, 3)
+                # Check for unallowed values of capReduction
+                if capReduction >1.0:
+                    capReduction = 1.0
+                elif capReduction<cutoff: # Zero values will crash
+                    capReduction = cutoff
                 f.write("\t\t\t('" + tech + "', " + str(capReduction) + "),\n")
             f.write("\t\t),\n\n")
         f.write("\t),\n")

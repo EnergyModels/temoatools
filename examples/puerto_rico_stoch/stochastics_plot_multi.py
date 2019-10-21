@@ -5,31 +5,43 @@ import matplotlib.pyplot as plt
 
 # Note: Need to resample results before plotting
 
-folders = ['2019_10_17']
+folders = ['2019_10_21']
 
-dbs = ["A_0.sqlite", "A_1.sqlite", "A_2.sqlite", "A_3.sqlite", "B_0.sqlite", "B_1.sqlite", "B_2.sqlite", "B_3.sqlite",
-       "C_0.sqlite", "C_1.sqlite", "C_2.sqlite", "C_3.sqlite", "D_0.sqlite", "D_1.sqlite", "D_2.sqlite", "D_3.sqlite"]
+dbs = ["WA_0.sqlite", "WA_1.sqlite", "WB_0.sqlite", "WB_1.sqlite", "WC_0.sqlite", "WC_1.sqlite", "WD_0.sqlite", "WD_1.sqlite",
+       "XA_0.sqlite", "XA_1.sqlite", "XB_0.sqlite", "XB_1.sqlite", "XC_0.sqlite", "XC_1.sqlite", "XD_0.sqlite", "XD_1.sqlite",
+       "YA_0.sqlite", "YA_1.sqlite", "YB_0.sqlite", "YB_1.sqlite", "YC_0.sqlite", "YC_1.sqlite", "YD_0.sqlite", "YD_1.sqlite",
+       "ZA_0.sqlite", "ZA_1.sqlite", "ZB_0.sqlite", "ZB_1.sqlite", "ZC_0.sqlite", "ZC_1.sqlite", "ZD_0.sqlite", "ZD_1.sqlite"]
 
-scenarios = ['Centralized - Natural Gas', 'Centralized - Hybrid', 'Distributed - Natural Gas', 'Distributed - Hybrid']
-scenario_dict = {"A.sqlite": scenarios[0], "A_0.sqlite": scenarios[0], "A_1.sqlite": scenarios[0],
-                 "A_2.sqlite": scenarios[0], "A_3.sqlite": scenarios[0], "B.sqlite": scenarios[1],
-                 "B_0.sqlite": scenarios[1], "B_1.sqlite": scenarios[1], "B_2.sqlite": scenarios[1],
-                 "B_3.sqlite": scenarios[1], "C.sqlite": scenarios[2], "C_0.sqlite": scenarios[2],
-                 "C_1.sqlite": scenarios[2], "C_2.sqlite": scenarios[2], "C_3.sqlite": scenarios[2],
-                 "D.sqlite": scenarios[3], "D_0.sqlite": scenarios[3], "D_1.sqlite": scenarios[3],
-                 "D_2.sqlite": scenarios[3], "D_3.sqlite": scenarios[3]}
+# Technology Groups
+tech_group = ['Centralized - Natural Gas', 'Centralized - Hybrid', 'Distributed - Natural Gas', 'Distributed - Hybrid']
+tech_group_dict = {"WA_0.sqlite":tech_group[0], "WA_1.sqlite":tech_group[0], "WB_0.sqlite":tech_group[1], "WB_1.sqlite":tech_group[1], "WC_0.sqlite":tech_group[2], "WC_1.sqlite":tech_group[2], "WD_0.sqlite":tech_group[3], "WD_1.sqlite":tech_group[3],
+       "XA_0.sqlite":tech_group[0], "XA_1.sqlite":tech_group[0], "XB_0.sqlite":tech_group[1], "XB_1.sqlite":tech_group[1], "XC_0.sqlite":tech_group[2], "XC_1.sqlite":tech_group[2], "XD_0.sqlite":tech_group[3], "XD_1.sqlite":tech_group[3],
+       "YA_0.sqlite":tech_group[0], "YA_1.sqlite":tech_group[0], "YB_0.sqlite":tech_group[1], "YB_1.sqlite":tech_group[1], "YC_0.sqlite":tech_group[2], "YC_1.sqlite":tech_group[2], "YD_0.sqlite":tech_group[3], "YD_1.sqlite":tech_group[3],
+       "ZA_0.sqlite":tech_group[0], "ZA_1.sqlite":tech_group[0], "ZB_0.sqlite":tech_group[1], "ZB_1.sqlite":tech_group[1], "ZC_0.sqlite":tech_group[2], "ZC_1.sqlite":tech_group[2], "ZD_0.sqlite":tech_group[3], "ZD_1.sqlite":tech_group[3]}
 
-case_names = ["Historical + Best Curves", "Historical + Worst Curves", "Climate Change + Best Curves",
-              "Climate Change + Worst Curves"]
-case_dict = {"A.sqlite": "n/a", "A_0.sqlite": case_names[0], "A_1.sqlite": case_names[1], "A_2.sqlite": case_names[2],
-             "A_3.sqlite": case_names[3], "B.sqlite": "n/a", "B_0.sqlite": case_names[0], "B_1.sqlite": case_names[1],
-             "B_2.sqlite": case_names[2], "B_3.sqlite": case_names[3], "C.sqlite": "n/a", "C_0.sqlite": case_names[0],
-             "C_1.sqlite": case_names[1], "C_2.sqlite": case_names[2], "C_3.sqlite": case_names[3], "D.sqlite": "n/a",
-             "D_0.sqlite": case_names[0], "D_1.sqlite": case_names[1], "D_2.sqlite": case_names[2],
-             "D_3.sqlite": case_names[3], "s": "Baseline"}
+# Historical or Climate Change Probabilities
+prob = ["Historical","Climate Change"]
+prob_type_dict = {"WA_0.sqlite":prob[0], "WA_1.sqlite":prob[1], "WB_0.sqlite":prob[0], "WB_1.sqlite":prob[1], "WC_0.sqlite":prob[0], "WC_1.sqlite":prob[1], "WD_0.sqlite":prob[0], "WD_1.sqlite":prob[1],
+       "XA_0.sqlite":prob[0], "XA_1.sqlite":prob[1], "XB_0.sqlite":prob[0], "XB_1.sqlite":prob[1], "XC_0.sqlite":prob[0], "XC_1.sqlite":prob[1], "XD_0.sqlite":prob[0], "XD_1.sqlite":prob[1],
+       "YA_0.sqlite":prob[0], "YA_1.sqlite":prob[1], "YB_0.sqlite":prob[0], "YB_1.sqlite":prob[1], "YC_0.sqlite":prob[0], "YC_1.sqlite":prob[1], "YD_0.sqlite":prob[0], "YD_1.sqlite":prob[1],
+       "ZA_0.sqlite":prob[0], "ZA_1.sqlite":prob[1], "ZB_0.sqlite":prob[0], "ZB_1.sqlite":prob[1], "ZC_0.sqlite":prob[0], "ZC_1.sqlite":prob[1], "ZD_0.sqlite":prob[0], "ZD_1.sqlite":prob[1]}
 
-col_order = [ "Historical + Worst Curves", "Historical + Best Curves",
-              "Climate Change + Worst Curves", "Climate Change + Best Curves",]
+# Infrastructure Type
+infra = ["Current","Hardened"]
+infra_dict = {"WA_0.sqlite":infra[0], "WA_1.sqlite":infra[0], "WB_0.sqlite":infra[0], "WB_1.sqlite":infra[0], "WC_0.sqlite":infra[0], "WC_1.sqlite":infra[0], "WD_0.sqlite":infra[0], "WD_1.sqlite":infra[0],
+       "XA_0.sqlite":infra[1], "XA_1.sqlite":infra[1], "XB_0.sqlite":infra[1], "XB_1.sqlite":infra[1], "XC_0.sqlite":infra[1], "XC_1.sqlite":infra[1], "XD_0.sqlite":infra[1], "XD_1.sqlite":infra[1],
+       "YA_0.sqlite":infra[0], "YA_1.sqlite":infra[0], "YB_0.sqlite":infra[0], "YB_1.sqlite":infra[0], "YC_0.sqlite":infra[0], "YC_1.sqlite":infra[0], "YD_0.sqlite":infra[0], "YD_1.sqlite":infra[0],
+       "ZA_0.sqlite":infra[1], "ZA_1.sqlite":infra[1], "ZB_0.sqlite":infra[1], "ZB_1.sqlite":infra[1], "ZC_0.sqlite":infra[1], "ZC_1.sqlite":infra[1], "ZD_0.sqlite":infra[1], "ZD_1.sqlite":infra[1]}
+
+# Carbon Tax
+carbon_tax = ["No", "Yes"]
+carbon_tax_dict = {"WA_0.sqlite":carbon_tax[0], "WA_1.sqlite":carbon_tax[0], "WB_0.sqlite":carbon_tax[0], "WB_1.sqlite":carbon_tax[0], "WC_0.sqlite":carbon_tax[0], "WC_1.sqlite":carbon_tax[0], "WD_0.sqlite":carbon_tax[0], "WD_1.sqlite":carbon_tax[0],
+       "XA_0.sqlite":carbon_tax[0], "XA_1.sqlite":carbon_tax[0], "XB_0.sqlite":carbon_tax[0], "XB_1.sqlite":carbon_tax[0], "XC_0.sqlite":carbon_tax[0], "XC_1.sqlite":carbon_tax[0], "XD_0.sqlite":carbon_tax[0], "XD_1.sqlite":carbon_tax[0],
+       "YA_0.sqlite":carbon_tax[1], "YA_1.sqlite":carbon_tax[1], "YB_0.sqlite":carbon_tax[1], "YB_1.sqlite":carbon_tax[1], "YC_0.sqlite":carbon_tax[1], "YC_1.sqlite":carbon_tax[1], "YD_0.sqlite":carbon_tax[1], "YD_1.sqlite":carbon_tax[1],
+       "ZA_0.sqlite":carbon_tax[1], "ZA_1.sqlite":carbon_tax[1], "ZB_0.sqlite":carbon_tax[1], "ZB_1.sqlite":carbon_tax[1], "ZC_0.sqlite":carbon_tax[1], "ZC_1.sqlite":carbon_tax[1], "ZD_0.sqlite":carbon_tax[1], "ZD_1.sqlite":carbon_tax[1]}
+
+# col_order = [ "Historical + Worst Curves", "Historical + Best Curves",
+#               "Climate Change + Worst Curves", "Climate Change + Best Curves",]
 
 aspect = 1.5
 
