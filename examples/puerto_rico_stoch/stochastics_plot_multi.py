@@ -88,8 +88,11 @@ for folder in folders:
         df2.case = "unknown"
         for db in dbs:
             ind = df2.loc[:, "database"] == db
-            df2.loc[ind, "database"] = scenario_dict[db]
-            df2.loc[ind, "case"] = case_dict[db]
+            df2.loc[ind, "case"] = tech_group[db]+prob_type_dict[db]+infra_dict[db]+carbon_tax_dict[db]
+            df2.loc[ind, "database"] = tech_group[db]
+            df2.loc[ind, "prob_type"] = prob_type_dict[db]
+            df2.loc[ind, "infra"] = infra_dict[db]
+            df2.loc[ind, "carbon_tax"] = carbon_tax_dict[db]
         df2 = df2.rename(columns={"scenario": "s", "database": "Scenario"})
 
         # Set style and context using seaborn
@@ -103,6 +106,10 @@ for folder in folders:
         # Violin Plot
         # --------------------------
         # f = plt.figure(figsize=fig_size)
+        # g = sns.catplot(x="Year", y="Value", data=df2, hue='Scenario', palette=custom_palette, kind="violin",
+        #                 col="case", col_wrap=2, col_order=col_order, inner=None, scale="area", cut=0, linewidth=1.0,
+        #                 legend=False, aspect=aspect, saturation=1.0)  # , scale_hue=False)
+
         g = sns.catplot(x="Year", y="Value", data=df2, hue='Scenario', palette=custom_palette, kind="violin",
                         col="case", col_wrap=2, col_order=col_order, inner=None, scale="area", cut=0, linewidth=1.0,
                         legend=False, aspect=aspect, saturation=1.0)  # , scale_hue=False)
@@ -134,105 +141,105 @@ for folder in folders:
         plt.savefig(savename, dpi=resolution, bbox_inches="tight")
         plt.close()
 
-        # --------------------------
-        # Violin Plot
-        # --------------------------
-        # f = plt.figure(figsize=fig_size)
-        g = sns.catplot(x="Year", y="Value", data=df2, hue='Scenario', palette=custom_palette, kind="violin",
-                        col="case", col_wrap=2, col_order=col_order, inner=None, scale="area", cut=0, linewidth=1.0, legend=False, aspect=aspect, saturation=1.0)  # , scale_hue=False)
-        g.set_axis_labels(x_label, y_label)
-
-        plt.ylim(0, 200)
-        # sns.plt.xlim(0, None)
-
-        # Additional Labels
-        g.set_titles(" ")
-        ax = g.axes[0]
-        ax.text(0.5, 1.1, 'Current Infrastructure', horizontalalignment='center', verticalalignment='top',
-                transform=ax.transAxes)
-        ax = g.axes[1]
-        ax.text(0.5, 1.1, 'Hardened Infrastructure', horizontalalignment='center', verticalalignment='top',
-                transform=ax.transAxes)
-        ax.text(1.1, 0.5, 'Historical', horizontalalignment='center', verticalalignment='center', rotation=270,
-                transform=ax.transAxes)
-        ax = g.axes[3]
-        ax.text(1.1, 0.5, 'Climate Change', horizontalalignment='center', verticalalignment='center', rotation=270,
-                transform=ax.transAxes)
-        # Legend
-        ax = g.axes[2]
-        plt.legend(loc='center', bbox_to_anchor=(0.0, -0.3), frameon=False, fontsize=16, ncol=4)
-
-        # Save
-        savename = figure_name + "_violin200_" + context + '.png'
-        plt.savefig(savename, dpi=resolution, bbox_inches="tight")
-        plt.close()
-
-        # --------------------------
-        # Violin Plot
-        # --------------------------
-        # f = plt.figure(figsize=fig_size)
-        g = sns.catplot(x="Year", y="Value", data=df2, hue='Scenario', palette=custom_palette, kind="violin",
-                        col="case", col_wrap=2, col_order=col_order, inner=None, scale="area", cut=0, linewidth=1.0, legend=False, aspect=aspect, saturation=1.0)  # , scale_hue=False)
-        g.set_axis_labels(x_label, y_label)
-
-        plt.ylim(0, 500)
-        # sns.plt.xlim(0, None)
-
-        # Additional Labels
-        g.set_titles(" ")
-        ax = g.axes[0]
-        ax.text(0.5, 1.1, 'Current Infrastructure', horizontalalignment='center', verticalalignment='top',
-                transform=ax.transAxes)
-        ax = g.axes[1]
-        ax.text(0.5, 1.1, 'Hardened Infrastructure', horizontalalignment='center', verticalalignment='top',
-                transform=ax.transAxes)
-        ax.text(1.1, 0.5, 'Historical', horizontalalignment='center', verticalalignment='center', rotation=270,
-                transform=ax.transAxes)
-        ax = g.axes[3]
-        ax.text(1.1, 0.5, 'Climate Change', horizontalalignment='center', verticalalignment='center', rotation=270,
-                transform=ax.transAxes)
-        # Legend
-        ax = g.axes[2]
-        plt.legend(loc='center', bbox_to_anchor=(0.0, -0.3), frameon=False, fontsize=16, ncol=4)
-
-        # Save
-        savename = figure_name + "_violin500_" + context + '.png'
-        plt.savefig(savename, dpi=resolution, bbox_inches="tight")
-        plt.close()
-
-
-        # --------------------------
-        # Violin Plot
-        # --------------------------
-        # f = plt.figure(figsize=fig_size)
-        g = sns.catplot(x="Year", y="Value", data=df2, hue='Scenario', palette=custom_palette, kind="violin",
-                        col="case", col_wrap=2, col_order=col_order, inner=None, scale="area", cut=0, linewidth=1.0, legend=False, aspect=aspect, saturation=1.0)  # , scale_hue=False)
-        g.set_axis_labels(x_label, y_label)
-
-        plt.ylim(0, 1000)
-        # sns.plt.xlim(0, None)
-
-        # Additional Labels
-        g.set_titles(" ")
-        ax = g.axes[0]
-        ax.text(0.5, 1.1, 'Current Infrastructure', horizontalalignment='center', verticalalignment='top',
-                transform=ax.transAxes)
-        ax = g.axes[1]
-        ax.text(0.5, 1.1, 'Hardened Infrastructure', horizontalalignment='center', verticalalignment='top',
-                transform=ax.transAxes)
-        ax.text(1.1, 0.5, 'Historical', horizontalalignment='center', verticalalignment='center', rotation=270,
-                transform=ax.transAxes)
-        ax = g.axes[3]
-        ax.text(1.1, 0.5, 'Climate Change', horizontalalignment='center', verticalalignment='center', rotation=270,
-                transform=ax.transAxes)
-        # Legend
-        ax = g.axes[2]
-        plt.legend(loc='center', bbox_to_anchor=(0.0, -0.3), frameon=False, fontsize=16, ncol=4)
-
-        # Save
-        savename = figure_name + "_violin1000_" + context + '.png'
-        plt.savefig(savename, dpi=resolution, bbox_inches="tight")
-        plt.close()
+        # # --------------------------
+        # # Violin Plot
+        # # --------------------------
+        # # f = plt.figure(figsize=fig_size)
+        # g = sns.catplot(x="Year", y="Value", data=df2, hue='Scenario', palette=custom_palette, kind="violin",
+        #                 col="case", col_wrap=2, col_order=col_order, inner=None, scale="area", cut=0, linewidth=1.0, legend=False, aspect=aspect, saturation=1.0)  # , scale_hue=False)
+        # g.set_axis_labels(x_label, y_label)
+        #
+        # plt.ylim(0, 200)
+        # # sns.plt.xlim(0, None)
+        #
+        # # Additional Labels
+        # g.set_titles(" ")
+        # ax = g.axes[0]
+        # ax.text(0.5, 1.1, 'Current Infrastructure', horizontalalignment='center', verticalalignment='top',
+        #         transform=ax.transAxes)
+        # ax = g.axes[1]
+        # ax.text(0.5, 1.1, 'Hardened Infrastructure', horizontalalignment='center', verticalalignment='top',
+        #         transform=ax.transAxes)
+        # ax.text(1.1, 0.5, 'Historical', horizontalalignment='center', verticalalignment='center', rotation=270,
+        #         transform=ax.transAxes)
+        # ax = g.axes[3]
+        # ax.text(1.1, 0.5, 'Climate Change', horizontalalignment='center', verticalalignment='center', rotation=270,
+        #         transform=ax.transAxes)
+        # # Legend
+        # ax = g.axes[2]
+        # plt.legend(loc='center', bbox_to_anchor=(0.0, -0.3), frameon=False, fontsize=16, ncol=4)
+        #
+        # # Save
+        # savename = figure_name + "_violin200_" + context + '.png'
+        # plt.savefig(savename, dpi=resolution, bbox_inches="tight")
+        # plt.close()
+        #
+        # # --------------------------
+        # # Violin Plot
+        # # --------------------------
+        # # f = plt.figure(figsize=fig_size)
+        # g = sns.catplot(x="Year", y="Value", data=df2, hue='Scenario', palette=custom_palette, kind="violin",
+        #                 col="case", col_wrap=2, col_order=col_order, inner=None, scale="area", cut=0, linewidth=1.0, legend=False, aspect=aspect, saturation=1.0)  # , scale_hue=False)
+        # g.set_axis_labels(x_label, y_label)
+        #
+        # plt.ylim(0, 500)
+        # # sns.plt.xlim(0, None)
+        #
+        # # Additional Labels
+        # g.set_titles(" ")
+        # ax = g.axes[0]
+        # ax.text(0.5, 1.1, 'Current Infrastructure', horizontalalignment='center', verticalalignment='top',
+        #         transform=ax.transAxes)
+        # ax = g.axes[1]
+        # ax.text(0.5, 1.1, 'Hardened Infrastructure', horizontalalignment='center', verticalalignment='top',
+        #         transform=ax.transAxes)
+        # ax.text(1.1, 0.5, 'Historical', horizontalalignment='center', verticalalignment='center', rotation=270,
+        #         transform=ax.transAxes)
+        # ax = g.axes[3]
+        # ax.text(1.1, 0.5, 'Climate Change', horizontalalignment='center', verticalalignment='center', rotation=270,
+        #         transform=ax.transAxes)
+        # # Legend
+        # ax = g.axes[2]
+        # plt.legend(loc='center', bbox_to_anchor=(0.0, -0.3), frameon=False, fontsize=16, ncol=4)
+        #
+        # # Save
+        # savename = figure_name + "_violin500_" + context + '.png'
+        # plt.savefig(savename, dpi=resolution, bbox_inches="tight")
+        # plt.close()
+        #
+        #
+        # # --------------------------
+        # # Violin Plot
+        # # --------------------------
+        # # f = plt.figure(figsize=fig_size)
+        # g = sns.catplot(x="Year", y="Value", data=df2, hue='Scenario', palette=custom_palette, kind="violin",
+        #                 col="case", col_wrap=2, col_order=col_order, inner=None, scale="area", cut=0, linewidth=1.0, legend=False, aspect=aspect, saturation=1.0)  # , scale_hue=False)
+        # g.set_axis_labels(x_label, y_label)
+        #
+        # plt.ylim(0, 1000)
+        # # sns.plt.xlim(0, None)
+        #
+        # # Additional Labels
+        # g.set_titles(" ")
+        # ax = g.axes[0]
+        # ax.text(0.5, 1.1, 'Current Infrastructure', horizontalalignment='center', verticalalignment='top',
+        #         transform=ax.transAxes)
+        # ax = g.axes[1]
+        # ax.text(0.5, 1.1, 'Hardened Infrastructure', horizontalalignment='center', verticalalignment='top',
+        #         transform=ax.transAxes)
+        # ax.text(1.1, 0.5, 'Historical', horizontalalignment='center', verticalalignment='center', rotation=270,
+        #         transform=ax.transAxes)
+        # ax = g.axes[3]
+        # ax.text(1.1, 0.5, 'Climate Change', horizontalalignment='center', verticalalignment='center', rotation=270,
+        #         transform=ax.transAxes)
+        # # Legend
+        # ax = g.axes[2]
+        # plt.legend(loc='center', bbox_to_anchor=(0.0, -0.3), frameon=False, fontsize=16, ncol=4)
+        #
+        # # Save
+        # savename = figure_name + "_violin1000_" + context + '.png'
+        # plt.savefig(savename, dpi=resolution, bbox_inches="tight")
+        # plt.close()
 
     # =================================================
     # Emissions

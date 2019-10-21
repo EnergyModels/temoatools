@@ -56,7 +56,7 @@ n_years = len(years)-1
 if cutoff**n_years < 1e-6:
     print("Warning: cutoff^n<1e-6, where n is # of model years excluding the first time step")
 else:
-    print("Verified: Appropraite value for cutoff")
+    print("Verified: Appropriate value for cutoff")
 
 # Create directory to store outputs
 wrkdir = os.getcwd()

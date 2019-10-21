@@ -16,8 +16,8 @@ create_plots = 'N'  # Create default plots
 save_data = 'Y'  # Do not save data as a csv or xls
 sector_name = 'electric'  # Name of sector to be analyzed
 
-analyzeCosts = True
-analyzeEmissions = False
+analyzeCosts = False
+analyzeEmissions = True
 analyzeActivityFuels = False
 analyzeActivityTechs = False
 
