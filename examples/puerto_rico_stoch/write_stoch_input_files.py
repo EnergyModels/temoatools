@@ -20,9 +20,9 @@ years = [2016, 2021, 2026, 2031, 2036]
 
 # Hurricane scenarios with corresponding probabilities and windspeeds
 scenarios = ["H1", "H2", "H3"]
-probabilities_hist = [0.56, 0.24, 0.2]  # sum must equal 1
-probabilities_climate_change = [0.16, 0.24, 0.6]  # sum must equal 1
-windspeeds = [20.0, 50.0, 150.0]  # mph
+probabilities_hist = [0.52, 0.32, 0.16]  # sum must equal 1
+probabilities_climate_change = [0.2, 0.32, 0.48]  # sum must equal 1
+windspeeds = [22.0, 113.0, 154.0]  # mph
 
 # temoa model technologies and corresponding fragility curve groups
 techs = {'LOCAL': "inf_stiff", 'UGND_TRANS': "UGND", 'UGND_DIST': "UGND", 'TRANS': "trans", 'SUB': "sub",
@@ -45,7 +45,7 @@ curves = {"inf_stiff": "inf_stiff",
                 "natgas_petrol": "secbm_severe",
                 "battery": "secbl_severe",
                 "hydro": "cecbl_severe",
-                "UGND":"secbl_severe"}
+                "UGND":"secbm_severe"}
 
 #===================================
 # Begin input file preparation

@@ -5,9 +5,9 @@ import time
 
 # This script resamples the results based on the calculated probabilities and a Monte Carlo population of 10,000
 
-# Node probabilities
-p = {"0": [0.56, 0.24, 0.2],  # Node probabilities (H1, H3, H5) by case (0,1,2,3)
-     "1": [0.16, 0.24, 0.6]}
+# Node probabilities by case (H1, H3, H5)
+p = {"0": [0.52, 0.32, 0.16],  # Historical
+     "1": [0.2, 0.32, 0.48]} # Climate Change
 
 # Model runs to analyze (by folder)
 folders = ['2019_10_21', ]

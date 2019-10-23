@@ -5,7 +5,7 @@ import os
 # This script resamples the results based on the calculated probabilities and a Monte Carlo population of 10,000
 
 # Node probabilities
-p = [0.56, 0.24, 0.2]  # Node probabilities (H1, H3, H5)
+p = [0.52, 0.32, 0.16]  # Node probabilities (H1, H3, H5)
 # Model runs to analyze (by folder)
 folders = ['2019_09_25_HAZUS_moderate', '2019_09_27_HAZUS_severe']
 # Result files to resample

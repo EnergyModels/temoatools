@@ -157,7 +157,7 @@ for folder in folders:
         # 2 column: 190 mm = 7.48 in
 
         width = 4.0  # inches
-        height = 7.48  # inche
+        height = 7.48  # inches
 
         # f = plt.figure(figsize=fig_size)
         # g = sns.catplot(x="Year", y="Value", data=df2, hue='Scenario', palette=custom_palette, kind="violin",
