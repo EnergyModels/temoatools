@@ -7,41 +7,79 @@ import matplotlib.pyplot as plt
 
 folders = ['2019_10_21']
 
-dbs = ["WA_0.sqlite", "WA_1.sqlite", "WB_0.sqlite", "WB_1.sqlite", "WC_0.sqlite", "WC_1.sqlite", "WD_0.sqlite", "WD_1.sqlite",
-       "XA_0.sqlite", "XA_1.sqlite", "XB_0.sqlite", "XB_1.sqlite", "XC_0.sqlite", "XC_1.sqlite", "XD_0.sqlite", "XD_1.sqlite",
-       "YA_0.sqlite", "YA_1.sqlite", "YB_0.sqlite", "YB_1.sqlite", "YC_0.sqlite", "YC_1.sqlite", "YD_0.sqlite", "YD_1.sqlite",
-       "ZA_0.sqlite", "ZA_1.sqlite", "ZB_0.sqlite", "ZB_1.sqlite", "ZC_0.sqlite", "ZC_1.sqlite", "ZD_0.sqlite", "ZD_1.sqlite"]
+dbs = ["WA_0.sqlite", "WA_1.sqlite", "WB_0.sqlite", "WB_1.sqlite", "WC_0.sqlite", "WC_1.sqlite", "WD_0.sqlite",
+       "WD_1.sqlite",
+       "XA_0.sqlite", "XA_1.sqlite", "XB_0.sqlite", "XB_1.sqlite", "XC_0.sqlite", "XC_1.sqlite", "XD_0.sqlite",
+       "XD_1.sqlite",
+       "YA_0.sqlite", "YA_1.sqlite", "YB_0.sqlite", "YB_1.sqlite", "YC_0.sqlite", "YC_1.sqlite", "YD_0.sqlite",
+       "YD_1.sqlite",
+       "ZA_0.sqlite", "ZA_1.sqlite", "ZB_0.sqlite", "ZB_1.sqlite", "ZC_0.sqlite", "ZC_1.sqlite", "ZD_0.sqlite",
+       "ZD_1.sqlite"]
 
 # Technology Groups
 tech_group = ['Centralized - Natural Gas', 'Centralized - Hybrid', 'Distributed - Natural Gas', 'Distributed - Hybrid']
-tech_group_dict = {"WA_0.sqlite":tech_group[0], "WA_1.sqlite":tech_group[0], "WB_0.sqlite":tech_group[1], "WB_1.sqlite":tech_group[1], "WC_0.sqlite":tech_group[2], "WC_1.sqlite":tech_group[2], "WD_0.sqlite":tech_group[3], "WD_1.sqlite":tech_group[3],
-       "XA_0.sqlite":tech_group[0], "XA_1.sqlite":tech_group[0], "XB_0.sqlite":tech_group[1], "XB_1.sqlite":tech_group[1], "XC_0.sqlite":tech_group[2], "XC_1.sqlite":tech_group[2], "XD_0.sqlite":tech_group[3], "XD_1.sqlite":tech_group[3],
-       "YA_0.sqlite":tech_group[0], "YA_1.sqlite":tech_group[0], "YB_0.sqlite":tech_group[1], "YB_1.sqlite":tech_group[1], "YC_0.sqlite":tech_group[2], "YC_1.sqlite":tech_group[2], "YD_0.sqlite":tech_group[3], "YD_1.sqlite":tech_group[3],
-       "ZA_0.sqlite":tech_group[0], "ZA_1.sqlite":tech_group[0], "ZB_0.sqlite":tech_group[1], "ZB_1.sqlite":tech_group[1], "ZC_0.sqlite":tech_group[2], "ZC_1.sqlite":tech_group[2], "ZD_0.sqlite":tech_group[3], "ZD_1.sqlite":tech_group[3]}
+tech_group_dict = {"WA_0.sqlite": tech_group[0], "WA_1.sqlite": tech_group[0],
+                   "WB_0.sqlite": tech_group[1], "WB_1.sqlite": tech_group[1],
+                   "WC_0.sqlite": tech_group[2], "WC_1.sqlite": tech_group[2],
+                   "WD_0.sqlite": tech_group[3], "WD_1.sqlite": tech_group[3],
+                   "XA_0.sqlite": tech_group[0], "XA_1.sqlite": tech_group[0],
+                   "XB_0.sqlite": tech_group[1], "XB_1.sqlite": tech_group[1],
+                   "XC_0.sqlite": tech_group[2], "XC_1.sqlite": tech_group[2],
+                   "XD_0.sqlite": tech_group[3], "XD_1.sqlite": tech_group[3],
+                   "YA_0.sqlite": tech_group[0], "YA_1.sqlite": tech_group[0],
+                   "YB_0.sqlite": tech_group[1], "YB_1.sqlite": tech_group[1],
+                   "YC_0.sqlite": tech_group[2], "YC_1.sqlite": tech_group[2],
+                   "YD_0.sqlite": tech_group[3], "YD_1.sqlite": tech_group[3],
+                   "ZA_0.sqlite": tech_group[0], "ZA_1.sqlite": tech_group[0],
+                   "ZB_0.sqlite": tech_group[1], "ZB_1.sqlite": tech_group[1],
+                   "ZC_0.sqlite": tech_group[2], "ZC_1.sqlite": tech_group[2],
+                   "ZD_0.sqlite": tech_group[3], "ZD_1.sqlite": tech_group[3]}
 
 # Historical or Climate Change Probabilities
-prob = ["Historical","Climate Change"]
-prob_type_dict = {"WA_0.sqlite":prob[0], "WA_1.sqlite":prob[1], "WB_0.sqlite":prob[0], "WB_1.sqlite":prob[1], "WC_0.sqlite":prob[0], "WC_1.sqlite":prob[1], "WD_0.sqlite":prob[0], "WD_1.sqlite":prob[1],
-       "XA_0.sqlite":prob[0], "XA_1.sqlite":prob[1], "XB_0.sqlite":prob[0], "XB_1.sqlite":prob[1], "XC_0.sqlite":prob[0], "XC_1.sqlite":prob[1], "XD_0.sqlite":prob[0], "XD_1.sqlite":prob[1],
-       "YA_0.sqlite":prob[0], "YA_1.sqlite":prob[1], "YB_0.sqlite":prob[0], "YB_1.sqlite":prob[1], "YC_0.sqlite":prob[0], "YC_1.sqlite":prob[1], "YD_0.sqlite":prob[0], "YD_1.sqlite":prob[1],
-       "ZA_0.sqlite":prob[0], "ZA_1.sqlite":prob[1], "ZB_0.sqlite":prob[0], "ZB_1.sqlite":prob[1], "ZC_0.sqlite":prob[0], "ZC_1.sqlite":prob[1], "ZD_0.sqlite":prob[0], "ZD_1.sqlite":prob[1]}
+prob = ["Historical", "Climate Change"]
+prob_type_dict = {"WA_0.sqlite": prob[0], "WA_1.sqlite": prob[1], "WB_0.sqlite": prob[0], "WB_1.sqlite": prob[1],
+                  "WC_0.sqlite": prob[0], "WC_1.sqlite": prob[1], "WD_0.sqlite": prob[0], "WD_1.sqlite": prob[1],
+                  "XA_0.sqlite": prob[0], "XA_1.sqlite": prob[1], "XB_0.sqlite": prob[0], "XB_1.sqlite": prob[1],
+                  "XC_0.sqlite": prob[0], "XC_1.sqlite": prob[1], "XD_0.sqlite": prob[0], "XD_1.sqlite": prob[1],
+                  "YA_0.sqlite": prob[0], "YA_1.sqlite": prob[1], "YB_0.sqlite": prob[0], "YB_1.sqlite": prob[1],
+                  "YC_0.sqlite": prob[0], "YC_1.sqlite": prob[1], "YD_0.sqlite": prob[0], "YD_1.sqlite": prob[1],
+                  "ZA_0.sqlite": prob[0], "ZA_1.sqlite": prob[1], "ZB_0.sqlite": prob[0], "ZB_1.sqlite": prob[1],
+                  "ZC_0.sqlite": prob[0], "ZC_1.sqlite": prob[1], "ZD_0.sqlite": prob[0], "ZD_1.sqlite": prob[1]}
 
 # Infrastructure Type
-infra = ["Current","Hardened"]
-infra_dict = {"WA_0.sqlite":infra[0], "WA_1.sqlite":infra[0], "WB_0.sqlite":infra[0], "WB_1.sqlite":infra[0], "WC_0.sqlite":infra[0], "WC_1.sqlite":infra[0], "WD_0.sqlite":infra[0], "WD_1.sqlite":infra[0],
-       "XA_0.sqlite":infra[1], "XA_1.sqlite":infra[1], "XB_0.sqlite":infra[1], "XB_1.sqlite":infra[1], "XC_0.sqlite":infra[1], "XC_1.sqlite":infra[1], "XD_0.sqlite":infra[1], "XD_1.sqlite":infra[1],
-       "YA_0.sqlite":infra[0], "YA_1.sqlite":infra[0], "YB_0.sqlite":infra[0], "YB_1.sqlite":infra[0], "YC_0.sqlite":infra[0], "YC_1.sqlite":infra[0], "YD_0.sqlite":infra[0], "YD_1.sqlite":infra[0],
-       "ZA_0.sqlite":infra[1], "ZA_1.sqlite":infra[1], "ZB_0.sqlite":infra[1], "ZB_1.sqlite":infra[1], "ZC_0.sqlite":infra[1], "ZC_1.sqlite":infra[1], "ZD_0.sqlite":infra[1], "ZD_1.sqlite":infra[1]}
+infra = ["Current", "Hardened"]
+infra_dict = {"WA_0.sqlite": infra[0], "WA_1.sqlite": infra[0], "WB_0.sqlite": infra[0], "WB_1.sqlite": infra[0],
+              "WC_0.sqlite": infra[0], "WC_1.sqlite": infra[0], "WD_0.sqlite": infra[0], "WD_1.sqlite": infra[0],
+              "XA_0.sqlite": infra[1], "XA_1.sqlite": infra[1], "XB_0.sqlite": infra[1], "XB_1.sqlite": infra[1],
+              "XC_0.sqlite": infra[1], "XC_1.sqlite": infra[1], "XD_0.sqlite": infra[1], "XD_1.sqlite": infra[1],
+              "YA_0.sqlite": infra[0], "YA_1.sqlite": infra[0], "YB_0.sqlite": infra[0], "YB_1.sqlite": infra[0],
+              "YC_0.sqlite": infra[0], "YC_1.sqlite": infra[0], "YD_0.sqlite": infra[0], "YD_1.sqlite": infra[0],
+              "ZA_0.sqlite": infra[1], "ZA_1.sqlite": infra[1], "ZB_0.sqlite": infra[1], "ZB_1.sqlite": infra[1],
+              "ZC_0.sqlite": infra[1], "ZC_1.sqlite": infra[1], "ZD_0.sqlite": infra[1], "ZD_1.sqlite": infra[1]}
 
 # Carbon Tax
-carbon_tax = ["No", "Yes"]
-carbon_tax_dict = {"WA_0.sqlite":carbon_tax[0], "WA_1.sqlite":carbon_tax[0], "WB_0.sqlite":carbon_tax[0], "WB_1.sqlite":carbon_tax[0], "WC_0.sqlite":carbon_tax[0], "WC_1.sqlite":carbon_tax[0], "WD_0.sqlite":carbon_tax[0], "WD_1.sqlite":carbon_tax[0],
-       "XA_0.sqlite":carbon_tax[0], "XA_1.sqlite":carbon_tax[0], "XB_0.sqlite":carbon_tax[0], "XB_1.sqlite":carbon_tax[0], "XC_0.sqlite":carbon_tax[0], "XC_1.sqlite":carbon_tax[0], "XD_0.sqlite":carbon_tax[0], "XD_1.sqlite":carbon_tax[0],
-       "YA_0.sqlite":carbon_tax[1], "YA_1.sqlite":carbon_tax[1], "YB_0.sqlite":carbon_tax[1], "YB_1.sqlite":carbon_tax[1], "YC_0.sqlite":carbon_tax[1], "YC_1.sqlite":carbon_tax[1], "YD_0.sqlite":carbon_tax[1], "YD_1.sqlite":carbon_tax[1],
-       "ZA_0.sqlite":carbon_tax[1], "ZA_1.sqlite":carbon_tax[1], "ZB_0.sqlite":carbon_tax[1], "ZB_1.sqlite":carbon_tax[1], "ZC_0.sqlite":carbon_tax[1], "ZC_1.sqlite":carbon_tax[1], "ZD_0.sqlite":carbon_tax[1], "ZD_1.sqlite":carbon_tax[1]}
+carbon_tax = ["No Tax", "Tax"]
+carbon_tax_dict = {"WA_0.sqlite": carbon_tax[0], "WA_1.sqlite": carbon_tax[0],
+                   "WB_0.sqlite": carbon_tax[0], "WB_1.sqlite": carbon_tax[0],
+                   "WC_0.sqlite": carbon_tax[0], "WC_1.sqlite": carbon_tax[0],
+                   "WD_0.sqlite": carbon_tax[0], "WD_1.sqlite": carbon_tax[0],
+                   "XA_0.sqlite": carbon_tax[0], "XA_1.sqlite": carbon_tax[0],
+                   "XB_0.sqlite": carbon_tax[0], "XB_1.sqlite": carbon_tax[0],
+                   "XC_0.sqlite": carbon_tax[0], "XC_1.sqlite": carbon_tax[0],
+                   "XD_0.sqlite": carbon_tax[0], "XD_1.sqlite": carbon_tax[0],
+                   "YA_0.sqlite": carbon_tax[1], "YA_1.sqlite": carbon_tax[1],
+                   "YB_0.sqlite": carbon_tax[1], "YB_1.sqlite": carbon_tax[1],
+                   "YC_0.sqlite": carbon_tax[1], "YC_1.sqlite": carbon_tax[1],
+                   "YD_0.sqlite": carbon_tax[1], "YD_1.sqlite": carbon_tax[1],
+                   "ZA_0.sqlite": carbon_tax[1], "ZA_1.sqlite": carbon_tax[1],
+                   "ZB_0.sqlite": carbon_tax[1], "ZB_1.sqlite": carbon_tax[1],
+                   "ZC_0.sqlite": carbon_tax[1], "ZC_1.sqlite": carbon_tax[1],
+                   "ZD_0.sqlite": carbon_tax[1], "ZD_1.sqlite": carbon_tax[1]}
 
-# col_order = [ "Historical + Worst Curves", "Historical + Best Curves",
-#               "Climate Change + Worst Curves", "Climate Change + Best Curves",]
+col_order1 = ['Historical-Current-No Tax', 'Historical-Hardened-No Tax', 'Climate Change-Current-No Tax',
+              'Climate Change-Hardened-No Tax']
+col_order2 = ['Historical-Current-Tax', 'Historical-Hardened-Tax', 'Climate Change-Current-Tax',
+              'Climate Change-Hardened-Tax']
 
 aspect = 1.5
 
@@ -88,8 +126,8 @@ for folder in folders:
         df2.case = "unknown"
         for db in dbs:
             ind = df2.loc[:, "database"] == db
-            df2.loc[ind, "case"] = tech_group[db]+prob_type_dict[db]+infra_dict[db]+carbon_tax_dict[db]
-            df2.loc[ind, "database"] = tech_group[db]
+            df2.loc[ind, "case"] = prob_type_dict[db] + "-" + infra_dict[db] + "-" + carbon_tax_dict[db]
+            df2.loc[ind, "database"] = tech_group_dict[db]
             df2.loc[ind, "prob_type"] = prob_type_dict[db]
             df2.loc[ind, "infra"] = infra_dict[db]
             df2.loc[ind, "carbon_tax"] = carbon_tax_dict[db]
@@ -97,27 +135,59 @@ for folder in folders:
 
         # Set style and context using seaborn
         sns.set_style(style)
-        sns.set_context(context)
+        sns.set_context("paper")
 
         x_label = "Year (-)"
-        y_label = "Cost of Electricity (cents/kWh)"
+        y_label = "Cost of Electricity\n(cents/kWh)"
 
         # --------------------------
-        # Violin Plot
+        # Violin Plot - Without Tax
         # --------------------------
+
+        # sns.set_style('white')
+        # sns.set(font='serif')
+        sns.set_style("white", {
+            "font.family": "serif",
+            "font.serif": ["Times", "Palatino", "serif"]
+        })
+
+        # Column width guidelines https://www.elsevier.com/authors/author-schemas/artwork-and-media-instructions/artwork-sizing
+        # Single column: 90mm = 3.54 in
+        # 1.5 column: 140 mm = 5.51 in
+        # 2 column: 190 mm = 7.48 in
+
+        width = 4.0  # inches
+        height = 7.48  # inche
+
         # f = plt.figure(figsize=fig_size)
         # g = sns.catplot(x="Year", y="Value", data=df2, hue='Scenario', palette=custom_palette, kind="violin",
         #                 col="case", col_wrap=2, col_order=col_order, inner=None, scale="area", cut=0, linewidth=1.0,
         #                 legend=False, aspect=aspect, saturation=1.0)  # , scale_hue=False)
 
         g = sns.catplot(x="Year", y="Value", data=df2, hue='Scenario', palette=custom_palette, kind="violin",
-                        col="case", col_wrap=2, col_order=col_order, inner=None, scale="area", cut=0, linewidth=1.0,
-                        legend=False, aspect=aspect, saturation=1.0)  # , scale_hue=False)
+                        col="case", col_wrap=2, col_order=col_order1, inner=None, scale="area", cut=0, bw=0.5,
+                        linewidth=1.0,
+                        legend=False, aspect=aspect, saturation=1.0, scale_hue=False).set(yscale="linear")
+        f = plt.gcf()
+        f.set_size_inches(height, width)  # s
         g.set_axis_labels(x_label, y_label)
-        g.set(yscale="log")
+
+        # g.set(yscale="log")
 
         # plt.ylim(0, 200)
         # sns.plt.xlim(0, None)
+
+        # Remove ticks
+        g.axes[0].tick_params(top=False, right=False)
+        g.axes[1].tick_params(top=False, right=False, left=False)
+        g.axes[2].tick_params(top=False, right=False)
+        g.axes[3].tick_params(top=False, right=False, left=False)
+
+        # Despine
+        sns.despine(ax=g.axes[0], )
+        sns.despine(ax=g.axes[1], left=True)
+        sns.despine(ax=g.axes[2], )
+        sns.despine(ax=g.axes[3], left=True)
 
         # Additional Labels
         g.set_titles(" ")
@@ -134,112 +204,53 @@ for folder in folders:
                 transform=ax.transAxes)
         # Legend
         ax = g.axes[2]
-        plt.legend(loc='center', bbox_to_anchor=(0.0, -0.3), frameon=False, fontsize=16, ncol=4)
+        plt.legend(loc='center', bbox_to_anchor=(0.0, -0.3), frameon=False, ncol=4)  # fontsize=16,
 
         # Save
-        savename = figure_name + "_violin_log_" + context + '.png'
+        savename = figure_name + "_violin_noTax_" + context + '.png'
         plt.savefig(savename, dpi=resolution, bbox_inches="tight")
         plt.close()
 
-        # # --------------------------
-        # # Violin Plot
-        # # --------------------------
-        # # f = plt.figure(figsize=fig_size)
+        # --------------------------
+        # Violin Plot - With Tax
+        # --------------------------
+        # f = plt.figure(figsize=fig_size)
         # g = sns.catplot(x="Year", y="Value", data=df2, hue='Scenario', palette=custom_palette, kind="violin",
-        #                 col="case", col_wrap=2, col_order=col_order, inner=None, scale="area", cut=0, linewidth=1.0, legend=False, aspect=aspect, saturation=1.0)  # , scale_hue=False)
-        # g.set_axis_labels(x_label, y_label)
-        #
+        #                 col="case", col_wrap=2, col_order=col_order, inner=None, scale="area", cut=0, linewidth=1.0,
+        #                 legend=False, aspect=aspect, saturation=1.0)  # , scale_hue=False)
+
+        g = sns.catplot(x="Year", y="Value", data=df2, hue='Scenario', palette=custom_palette, kind="violin",
+                        col="case", col_wrap=2, col_order=col_order2, inner=None, scale="area", cut=0, bw=0.5,
+                        linewidth=0.5,
+                        legend=False, aspect=aspect, saturation=1.0, scale_hue=False).set(yscale="linear")
+
+        g.set_axis_labels(x_label, y_label)
+        # g.set(yscale="log")
+
         # plt.ylim(0, 200)
-        # # sns.plt.xlim(0, None)
-        #
-        # # Additional Labels
+        # sns.plt.xlim(0, None)
+
+        # Additional Labels
         # g.set_titles(" ")
-        # ax = g.axes[0]
-        # ax.text(0.5, 1.1, 'Current Infrastructure', horizontalalignment='center', verticalalignment='top',
-        #         transform=ax.transAxes)
-        # ax = g.axes[1]
-        # ax.text(0.5, 1.1, 'Hardened Infrastructure', horizontalalignment='center', verticalalignment='top',
-        #         transform=ax.transAxes)
-        # ax.text(1.1, 0.5, 'Historical', horizontalalignment='center', verticalalignment='center', rotation=270,
-        #         transform=ax.transAxes)
-        # ax = g.axes[3]
-        # ax.text(1.1, 0.5, 'Climate Change', horizontalalignment='center', verticalalignment='center', rotation=270,
-        #         transform=ax.transAxes)
-        # # Legend
-        # ax = g.axes[2]
-        # plt.legend(loc='center', bbox_to_anchor=(0.0, -0.3), frameon=False, fontsize=16, ncol=4)
-        #
-        # # Save
-        # savename = figure_name + "_violin200_" + context + '.png'
-        # plt.savefig(savename, dpi=resolution, bbox_inches="tight")
-        # plt.close()
-        #
-        # # --------------------------
-        # # Violin Plot
-        # # --------------------------
-        # # f = plt.figure(figsize=fig_size)
-        # g = sns.catplot(x="Year", y="Value", data=df2, hue='Scenario', palette=custom_palette, kind="violin",
-        #                 col="case", col_wrap=2, col_order=col_order, inner=None, scale="area", cut=0, linewidth=1.0, legend=False, aspect=aspect, saturation=1.0)  # , scale_hue=False)
-        # g.set_axis_labels(x_label, y_label)
-        #
-        # plt.ylim(0, 500)
-        # # sns.plt.xlim(0, None)
-        #
-        # # Additional Labels
-        # g.set_titles(" ")
-        # ax = g.axes[0]
-        # ax.text(0.5, 1.1, 'Current Infrastructure', horizontalalignment='center', verticalalignment='top',
-        #         transform=ax.transAxes)
-        # ax = g.axes[1]
-        # ax.text(0.5, 1.1, 'Hardened Infrastructure', horizontalalignment='center', verticalalignment='top',
-        #         transform=ax.transAxes)
-        # ax.text(1.1, 0.5, 'Historical', horizontalalignment='center', verticalalignment='center', rotation=270,
-        #         transform=ax.transAxes)
-        # ax = g.axes[3]
-        # ax.text(1.1, 0.5, 'Climate Change', horizontalalignment='center', verticalalignment='center', rotation=270,
-        #         transform=ax.transAxes)
-        # # Legend
-        # ax = g.axes[2]
-        # plt.legend(loc='center', bbox_to_anchor=(0.0, -0.3), frameon=False, fontsize=16, ncol=4)
-        #
-        # # Save
-        # savename = figure_name + "_violin500_" + context + '.png'
-        # plt.savefig(savename, dpi=resolution, bbox_inches="tight")
-        # plt.close()
-        #
-        #
-        # # --------------------------
-        # # Violin Plot
-        # # --------------------------
-        # # f = plt.figure(figsize=fig_size)
-        # g = sns.catplot(x="Year", y="Value", data=df2, hue='Scenario', palette=custom_palette, kind="violin",
-        #                 col="case", col_wrap=2, col_order=col_order, inner=None, scale="area", cut=0, linewidth=1.0, legend=False, aspect=aspect, saturation=1.0)  # , scale_hue=False)
-        # g.set_axis_labels(x_label, y_label)
-        #
-        # plt.ylim(0, 1000)
-        # # sns.plt.xlim(0, None)
-        #
-        # # Additional Labels
-        # g.set_titles(" ")
-        # ax = g.axes[0]
-        # ax.text(0.5, 1.1, 'Current Infrastructure', horizontalalignment='center', verticalalignment='top',
-        #         transform=ax.transAxes)
-        # ax = g.axes[1]
-        # ax.text(0.5, 1.1, 'Hardened Infrastructure', horizontalalignment='center', verticalalignment='top',
-        #         transform=ax.transAxes)
-        # ax.text(1.1, 0.5, 'Historical', horizontalalignment='center', verticalalignment='center', rotation=270,
-        #         transform=ax.transAxes)
-        # ax = g.axes[3]
-        # ax.text(1.1, 0.5, 'Climate Change', horizontalalignment='center', verticalalignment='center', rotation=270,
-        #         transform=ax.transAxes)
-        # # Legend
-        # ax = g.axes[2]
-        # plt.legend(loc='center', bbox_to_anchor=(0.0, -0.3), frameon=False, fontsize=16, ncol=4)
-        #
-        # # Save
-        # savename = figure_name + "_violin1000_" + context + '.png'
-        # plt.savefig(savename, dpi=resolution, bbox_inches="tight")
-        # plt.close()
+        ax = g.axes[0]
+        ax.text(0.5, 1.1, 'Current Infrastructure', horizontalalignment='center', verticalalignment='top',
+                transform=ax.transAxes)
+        ax = g.axes[1]
+        ax.text(0.5, 1.1, 'Hardened Infrastructure', horizontalalignment='center', verticalalignment='top',
+                transform=ax.transAxes)
+        ax.text(1.1, 0.5, 'Historical', horizontalalignment='center', verticalalignment='center', rotation=270,
+                transform=ax.transAxes)
+        ax = g.axes[3]
+        ax.text(1.1, 0.5, 'Climate Change', horizontalalignment='center', verticalalignment='center', rotation=270,
+                transform=ax.transAxes)
+        # Legend
+        ax = g.axes[2]
+        plt.legend(loc='center', bbox_to_anchor=(0.0, -0.3), frameon=False, fontsize=16, ncol=4)
+
+        # Save
+        savename = figure_name + "_violin_tax_" + context + '.pdf'
+        plt.savefig(savename, dpi=resolution, bbox_inches="tight")
+        plt.close()
 
     # =================================================
     # Emissions
@@ -270,9 +281,10 @@ for folder in folders:
         # --------------------------
         # Violin Plot
         # --------------------------
-        f = plt.figure(figsize=[8,6])
+        f = plt.figure(figsize=[8, 6])
         g = sns.catplot(x="Year", y="Value", data=df2, hue='Scenario', palette=custom_palette, kind="violin",
-                        col="case", col_wrap=2, col_order=col_order, inner=None, cut=0, linewidth=1.0, legend=False, scale="width", aspect=aspect, saturation=1.0)
+                        col="case", col_wrap=2, col_order=col_order, inner=None, cut=0, linewidth=1.0, legend=False,
+                        scale="width", aspect=aspect, saturation=1.0)
         g.set_axis_labels(x_label, y_label)
 
         # Additional Labels
@@ -402,7 +414,8 @@ for folder in folders:
         col_order = [cent_renew, dist_renew]
         row_order = ["Historical + Worst Curves", "Climate Change + Worst Curves", ]
         g = sns.catplot(x="Year", y="Value", hue="Scenario", row="Type", col="case", data=df2, kind="violin",
-                        col_order=col_order, row_order = row_order,palette=custom_palette, legend=False, inner=None,aspect=aspect)
+                        col_order=col_order, row_order=row_order, palette=custom_palette, legend=False, inner=None,
+                        aspect=aspect)
         # Additional Labels
         g.set_titles(" ")
         ax = g.axes[0][0]
@@ -411,10 +424,12 @@ for folder in folders:
         ax = g.axes[0][1]
         ax.text(0.5, 1.1, 'Underground Distribution', horizontalalignment='center', verticalalignment='top',
                 transform=ax.transAxes)
-        ax.text(1.1, 0.5, 'Current Infra. + Historical', horizontalalignment='center', verticalalignment='center', rotation=270,
+        ax.text(1.1, 0.5, 'Current Infra. + Historical', horizontalalignment='center', verticalalignment='center',
+                rotation=270,
                 transform=ax.transAxes)
         ax = g.axes[1][1]
-        ax.text(1.1, 0.5, 'Current Infra. + Climate Change', horizontalalignment='center', verticalalignment='center', rotation=270,
+        ax.text(1.1, 0.5, 'Current Infra. + Climate Change', horizontalalignment='center', verticalalignment='center',
+                rotation=270,
                 transform=ax.transAxes)
         # Legend
         ax = g.axes[1][0]
@@ -426,12 +441,13 @@ for folder in folders:
 
         # --------------------------------------------------
         # Box Plot - Group 2
-        #--------------------------------------------------
+        # --------------------------------------------------
         # col_order = ['TRANS', 'UGND_TRANS', 'DIST', 'UGND_DIST']
         col_order = ['UGND_TRANS', 'UGND_DIST']
-        row_order = ["Historical + Worst Curves",  "Climate Change + Worst Curves",]
+        row_order = ["Historical + Worst Curves", "Climate Change + Worst Curves", ]
         g = sns.catplot(x="Year", y="Value", hue="Scenario", row="Type", col="case", data=df2, kind="violin",
-                        col_order=col_order, row_order = row_order,palette=custom_palette, legend=False, inner=None,aspect=aspect)  # ,height=4, aspect=.7)
+                        col_order=col_order, row_order=row_order, palette=custom_palette, legend=False, inner=None,
+                        aspect=aspect)  # ,height=4, aspect=.7)
 
         # Additional Labels
         g.set_titles(" ")
@@ -441,10 +457,12 @@ for folder in folders:
         ax = g.axes[0][1]
         ax.text(0.5, 1.1, 'Underground Distribution', horizontalalignment='center', verticalalignment='top',
                 transform=ax.transAxes)
-        ax.text(1.1, 0.5, 'Current Infra. + Historical', horizontalalignment='center', verticalalignment='center', rotation=270,
+        ax.text(1.1, 0.5, 'Current Infra. + Historical', horizontalalignment='center', verticalalignment='center',
+                rotation=270,
                 transform=ax.transAxes)
         ax = g.axes[1][1]
-        ax.text(1.1, 0.5, 'Current Infra. + Climate Change', horizontalalignment='center', verticalalignment='center', rotation=270,
+        ax.text(1.1, 0.5, 'Current Infra. + Climate Change', horizontalalignment='center', verticalalignment='center',
+                rotation=270,
                 transform=ax.transAxes)
         # Legend
         ax = g.axes[1][0]
