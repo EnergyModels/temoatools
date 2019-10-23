@@ -1,5 +1,8 @@
 import os
 
+# Model runs to analyze (by folder)
+folders = ['2019_10_23', ]
+
 db_shift = {"WA_0": "WA_1", "WB_0": "WB_1",
             "WC_0": "WC_1", "WD_0": "WD_1",
             "XA_0": "XA_1", "XB_0": "XB_1",
@@ -9,12 +12,11 @@ db_shift = {"WA_0": "WA_1", "WB_0": "WB_1",
             "ZA_0": "ZA_1", "ZB_0": "ZB_1",
             "ZC_0": "ZC_1", "ZD_0": "ZD_1"}
 
-# Model runs to analyze (by folder)
-folders = ['2019_10_21', ]
-
 # Filenames to analyze
 # filenames = ['emissions_yearly']
-filenames = ['costs_yearly']
+# filenames = ['costs_yearly']
+# filenames = ['activity_by_fuel']
+filenames = ['activity_by_tech']
 # filenames = ['costs_yearly','emissions_yearly','activity_by_fuel','activity_by_tech"]
 
 for folder in folders:

@@ -10,13 +10,13 @@ p = {"0": [0.52, 0.32, 0.16],  # Historical
      "1": [0.2, 0.32, 0.48]} # Climate Change
 
 # Model runs to analyze (by folder)
-folders = ['2019_10_21', ]
+folders = ['2019_10_23', ]
 
 # Result files to resample
 # filenames = ["emissions_yearly_exp"]
-filenames = ["costs_yearly_exp"]
+# filenames = ["costs_yearly_exp"]
 # filenames = ["activity_by_fuel_exp"]
-# filenames = ["activity_by_tech_exp"]
+filenames = ["activity_by_tech_exp"]
 
 # ====================
 # Process files
