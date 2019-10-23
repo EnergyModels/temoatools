@@ -189,6 +189,7 @@ for folder in folders:
                 df = df.drop(col, axis=1)
         df2 = pd.melt(df, id_vars=["database", "scenario"], var_name="Year", value_name="Value")
         df2.case = "unknown"
+        df2.Value = df2.Value / 100.0  # Convert from cents/kWh to $/kWh/yr
         for db in dbs:
             ind = df2.loc[:, "database"] == db
             df2.loc[ind, "case"] = prob_type_dict[db] + "-" + infra_dict[db] + "-" + carbon_tax_dict[db]
@@ -202,7 +203,7 @@ for folder in folders:
         x_var = 'Year'
         x_label = "Year (-)"
         y_var = 'Value'
-        y_label = "Cost of Electricity\n(cents/kWh)"
+        y_label = "Cost of Electricity\n($/kWh)"
 
         # Violin Plot - Without Tax
         figure_name = "costs_yearly_noTax"
@@ -227,6 +228,7 @@ for folder in folders:
                 df = df.drop(col, axis=1)
         df2 = pd.melt(df, id_vars=["database", "scenario"], var_name="Year", value_name="Value")
         df2.case = "unknown"
+        df2.Value = df2.Value / 1000.0 # Convert from kton/yr to Mton/yr
         for db in dbs:
             ind = df2.loc[:, "database"] == db
             df2.loc[ind, "case"] = prob_type_dict[db] + "-" + infra_dict[db] + "-" + carbon_tax_dict[db]
@@ -240,7 +242,7 @@ for folder in folders:
         x_var = 'Year'
         x_label = "Year (-)"
         y_var = 'Value'
-        y_label = "Emissions\n(kton/yr)"
+        y_label = "Emissions\n(Mton/yr)"
 
         # Violin Plot - Without Tax
         figure_name = "emissions_yearly_noTax"
