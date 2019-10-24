@@ -5,7 +5,7 @@ import temoatools as tt
 # Inputs
 # ===============
 db_folder = os.getcwd() + '\\stochastic_databases'
-run_names = ["2019_10_23",]
+run_names = ["2019_10_24",]
 
 dbs = ["WA_0.sqlite", "WB_0.sqlite", "WC_0.sqlite", "WD_0.sqlite",
        "XA_0.sqlite", "XB_0.sqlite", "XC_0.sqlite", "XD_0.sqlite",

@@ -1,7 +1,7 @@
 import os
 
 # Model runs to analyze (by folder)
-folders = ['2019_10_23', ]
+folders = ['2019_10_24', ]
 
 db_shift = {"WA_0": "WA_1", "WB_0": "WB_1",
             "WC_0": "WC_1", "WD_0": "WD_1",

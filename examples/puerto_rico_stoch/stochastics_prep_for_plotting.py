@@ -3,84 +3,8 @@ import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
 
-
-def violinPlot(df, col_order, x_var, x_label, y_var, y_label, figure_name):
-    # Set style and context using seaborn
-    sns.set_style("white", {
-        "font.family": "serif",
-        "font.serif": ["Times", "Palatino", "serif"]})
-    sns.set_context("paper")
-
-    custom_palette = [(0.380, 0.380, 0.380), (0.957, 0.451, 0.125), (.047, 0.149, 0.361), (0.847, 0.000, 0.067),
-                      (0.0, 0.0, 0.0)]  # Custom palette
-
-    resolution = 600
-
-    # Column width guidelines https://www.elsevier.com/authors/author-schemas/artwork-and-media-instructions/artwork-sizing
-    # Single column: 90mm = 3.54 in
-    # 1.5 column: 140 mm = 5.51 in
-    # 2 column: 190 mm = 7.48 i
-    width = 7.48  # inches
-    height = 4.0  # inches
-
-    # --------------------------
-    # Violin Plot
-    # --------------------------
-
-    g = sns.catplot(x=x_var, y=y_var, data=df, hue='Scenario', palette=custom_palette, kind="violin",
-                    col="case", col_wrap=2, col_order=col_order, inner=None, scale="area", cut=0, bw=0.5,
-                    linewidth=0.5,
-                    legend=False, aspect=aspect, saturation=1.0, scale_hue=False).set(yscale="linear")
-
-    # Set size
-    f = plt.gcf()
-    f.set_size_inches(width, height)
-
-    # Labels
-    g.set_axis_labels(x_label, y_label)
-
-    # Remove ticks
-    g.axes[0].tick_params(top=False, right=False)
-    g.axes[1].tick_params(top=False, right=False, left=False)
-    g.axes[2].tick_params(top=False, right=False)
-    g.axes[3].tick_params(top=False, right=False, left=False)
-
-    # Despine
-    sns.despine(ax=g.axes[0], )
-    sns.despine(ax=g.axes[1], left=True)
-    sns.despine(ax=g.axes[2], )
-    sns.despine(ax=g.axes[3], left=True)
-
-    # Additional Labels
-    g.set_titles(" ")
-    ax = g.axes[0]
-    ax.text(0.5, 1.1, 'Current Infrastructure', horizontalalignment='center', verticalalignment='top',
-            transform=ax.transAxes)
-    ax = g.axes[1]
-    ax.text(0.5, 1.1, 'Hardened Infrastructure', horizontalalignment='center', verticalalignment='top',
-            transform=ax.transAxes)
-    ax.text(1.1, 0.5, 'Historical', horizontalalignment='center', verticalalignment='center', rotation=270,
-            transform=ax.transAxes)
-    ax = g.axes[3]
-    ax.text(1.1, 0.5, 'Climate Change', horizontalalignment='center', verticalalignment='center', rotation=270,
-            transform=ax.transAxes)
-    # Legend
-    ax = g.axes[2]
-    plt.legend(loc='center', bbox_to_anchor=(0.0, -0.3), frameon=False, ncol=4)  # fontsize=16,
-
-    # Save
-    savename = figure_name + '.png'
-    plt.savefig(savename, dpi=resolution, bbox_inches="tight")
-    plt.close()
-
-    # Return plot
-    return g
-
-#======================================================================================================================
-
-
 # Note: Need to resample results before plotting
-folders = ['2019_10_24']
+folders = ['2019_10_23','2019_10_24']
 
 dbs = ["WA_0.sqlite", "WA_1.sqlite", "WB_0.sqlite", "WB_1.sqlite", "WC_0.sqlite", "WC_1.sqlite", "WD_0.sqlite",
        "WD_1.sqlite",
@@ -199,21 +123,10 @@ for folder in folders:
             df2.loc[ind, "carbon_tax"] = carbon_tax_dict[db]
         df2 = df2.rename(columns={"scenario": "s", "database": "Scenario"})
 
-        # Set variables and labels
-        x_var = 'Year'
-        x_label = "Year (-)"
-        y_var = 'Value'
-        y_label = "Cost of Electricity\n($/kWh)"
+        # Save file
+        csv_file = "costs_yearly_toPlot.csv"
+        df2.to_csv(csv_file)
 
-        # Violin Plot - Without Tax
-        figure_name = "costs_yearly_noTax"
-        col_order = col_order1
-        g = violinPlot(df2, col_order, x_var, x_label, y_var, y_label, figure_name)
-
-        # Violin Plot - With Tax
-        figure_name = "costs_yearly_tax"
-        col_order = col_order2
-        g = violinPlot(df2, col_order, x_var, x_label, y_var, y_label, figure_name)
 
     # =================================================
     # Emissions
@@ -238,21 +151,11 @@ for folder in folders:
             df2.loc[ind, "carbon_tax"] = carbon_tax_dict[db]
         df2 = df2.rename(columns={"scenario": "s", "database": "Scenario"})
 
-        # Set variables and labels
-        x_var = 'Year'
-        x_label = "Year (-)"
-        y_var = 'Value'
-        y_label = "Emissions\n(Mton/yr)"
+        # Save file
+        csv_file = "emissions_yearly_toPlot.csv"
+        df2.to_csv(csv_file)
 
-        # Violin Plot - Without Tax
-        figure_name = "emissions_yearly_noTax"
-        col_order = col_order1
-        g = violinPlot(df2, col_order, x_var, x_label, y_var, y_label, figure_name)
 
-        # Violin Plot - With Tax
-        figure_name = "emissions_yearly_tax"
-        col_order = col_order2
-        g = violinPlot(df2, col_order, x_var, x_label, y_var, y_label, figure_name)
     #
     #
     # # =====================================================
@@ -307,51 +210,51 @@ for folder in folders:
     #     plt.savefig(savename, dpi=resolution, bbox_inches="tight")
     #     plt.close()
     #
-    # =====================================================
-    # Activity by Tech
-    figure_name = "activity_by_tech"
-    # =====================================================
-    if plotActivityTech:
-
-        tech_short = ['EX_DSL_CC', 'DIST', 'SUB', 'EC_BATT', 'EX_SOLPV', 'ED_BATT', 'EX_COAL', 'EX_HYDRO', 'EX_MSW_LF',
-                      'TRANS', 'ED_NG_OC', 'LOCAL', 'EX_DSL_SIMP', 'ED_NG_CC', 'EC_NG_CC', 'EX_OIL_TYPE3',
-                      'EX_OIL_TYPE2', 'EC_WIND', 'EC_SOLPV', 'UGND_TRANS', 'EX_WIND', 'EX_NG_CC', 'EC_NG_OC', 'ED_WIND',
-                      'UGND_DIST', 'EX_OIL_TYPE1', 'EC_BIO', 'ED_BIO', 'ED_SOLPV']
-
-        cent_fsl = "Centralized Fossil"
-        cent_renew = "Centralized Renewable"
-        dist_fsl = "Distributed Fossil"
-        dist_renew = "Distributed Renewable"
-
-        tech_long = [cent_fsl, 'DIST', 'SUB', 'storage', cent_renew, 'storage', cent_fsl, cent_renew, cent_renew,
-                     'TRANS', dist_fsl, 'LOCAL', cent_fsl, dist_fsl, cent_fsl, cent_fsl, cent_fsl, cent_renew,
-                     cent_renew, 'UGND_TRANS', cent_renew, cent_fsl, cent_fsl, dist_renew, 'UGND_DIST', cent_fsl,
-                     cent_renew, dist_renew, dist_renew]
-
-        # Load and Process data
-        df = pd.read_csv(filename_activity_by_tech, index_col=0)
-        df = df.drop("prob", axis=1)
-        for col in df.columns:
-            if 'Unnamed' in col:
-                df = df.drop(col, axis=1)
-        df2 = pd.melt(df, id_vars=["database", "scenario", "fuelOrTech"], var_name="Year", value_name="Value")
-        df2.case = "unknown"
-        for db in dbs:
-            ind = df2.loc[:, "database"] == db
-            df2.loc[ind, "database"] = scenario_dict[db]
-            df2.loc[ind, "case"] = case_dict[db]
-        for short, long in zip(tech_short, tech_long):
-            ind = df2.loc[:, "fuelOrTech"] == short
-            df2.loc[ind, "fuelOrTech"] = long
-        df2 = df2.rename(columns={"scenario": "s", "database": "Scenario", "fuelOrTech": "Type"})
-
-        for col in df.columns:
-            if 'Unnamed' in col:
-                df = df.drop(col, axis=1)
-
-        # Set style and context using seaborn
-        sns.set_style(style)
-        sns.set_context(context)
+    # # =====================================================
+    # # Activity by Tech
+    # figure_name = "activity_by_tech"
+    # # =====================================================
+    # if plotActivityTech:
+    #
+    #     tech_short = ['EX_DSL_CC', 'DIST', 'SUB', 'EC_BATT', 'EX_SOLPV', 'ED_BATT', 'EX_COAL', 'EX_HYDRO', 'EX_MSW_LF',
+    #                   'TRANS', 'ED_NG_OC', 'LOCAL', 'EX_DSL_SIMP', 'ED_NG_CC', 'EC_NG_CC', 'EX_OIL_TYPE3',
+    #                   'EX_OIL_TYPE2', 'EC_WIND', 'EC_SOLPV', 'UGND_TRANS', 'EX_WIND', 'EX_NG_CC', 'EC_NG_OC', 'ED_WIND',
+    #                   'UGND_DIST', 'EX_OIL_TYPE1', 'EC_BIO', 'ED_BIO', 'ED_SOLPV']
+    #
+    #     cent_fsl = "Centralized Fossil"
+    #     cent_renew = "Centralized Renewable"
+    #     dist_fsl = "Distributed Fossil"
+    #     dist_renew = "Distributed Renewable"
+    #
+    #     tech_long = [cent_fsl, 'DIST', 'SUB', 'storage', cent_renew, 'storage', cent_fsl, cent_renew, cent_renew,
+    #                  'TRANS', dist_fsl, 'LOCAL', cent_fsl, dist_fsl, cent_fsl, cent_fsl, cent_fsl, cent_renew,
+    #                  cent_renew, 'UGND_TRANS', cent_renew, cent_fsl, cent_fsl, dist_renew, 'UGND_DIST', cent_fsl,
+    #                  cent_renew, dist_renew, dist_renew]
+    #
+    #     # Load and Process data
+    #     df = pd.read_csv(filename_activity_by_tech, index_col=0)
+    #     df = df.drop("prob", axis=1)
+    #     for col in df.columns:
+    #         if 'Unnamed' in col:
+    #             df = df.drop(col, axis=1)
+    #     df2 = pd.melt(df, id_vars=["database", "scenario", "fuelOrTech"], var_name="Year", value_name="Value")
+    #     df2.case = "unknown"
+    #     for db in dbs:
+    #         ind = df2.loc[:, "database"] == db
+    #         df2.loc[ind, "database"] = scenario_dict[db]
+    #         df2.loc[ind, "case"] = case_dict[db]
+    #     for short, long in zip(tech_short, tech_long):
+    #         ind = df2.loc[:, "fuelOrTech"] == short
+    #         df2.loc[ind, "fuelOrTech"] = long
+    #     df2 = df2.rename(columns={"scenario": "s", "database": "Scenario", "fuelOrTech": "Type"})
+    #
+    #     for col in df.columns:
+    #         if 'Unnamed' in col:
+    #             df = df.drop(col, axis=1)
+    #
+    #     # Set style and context using seaborn
+    #     sns.set_style(style)
+    #     sns.set_context(context)
     #
     #     # --------------------------------------------------
     #     # Box Plot - Group 1
@@ -385,39 +288,39 @@ for folder in folders:
     #     plt.savefig(savename, dpi=resolution, bbox_inches="tight")
     #     plt.close()
     #
-        # --------------------------------------------------
-        # Box Plot - Group 2
-        # --------------------------------------------------
-        # col_order = ['TRANS', 'UGND_TRANS', 'DIST', 'UGND_DIST']
-        col_order = ['UGND_TRANS', 'UGND_DIST']
-        row_order = ["Historical + Worst Curves", "Climate Change + Worst Curves", ]
-        g = sns.catplot(x="Year", y="Value", hue="Scenario", row="Type", col="case", data=df2, kind="violin",
-                        col_order=col_order, row_order=row_order, palette=custom_palette, legend=False, inner=None,
-                        aspect=aspect)  # ,height=4, aspect=.7)
-
-        # Additional Labels
-        g.set_titles(" ")
-        ax = g.axes[0][0]
-        ax.text(0.5, 1.1, 'Underground Transmission', horizontalalignment='center', verticalalignment='top',
-                transform=ax.transAxes)
-        ax = g.axes[0][1]
-        ax.text(0.5, 1.1, 'Underground Distribution', horizontalalignment='center', verticalalignment='top',
-                transform=ax.transAxes)
-        ax.text(1.1, 0.5, 'Current Infra. + Historical', horizontalalignment='center', verticalalignment='center',
-                rotation=270,
-                transform=ax.transAxes)
-        ax = g.axes[1][1]
-        ax.text(1.1, 0.5, 'Current Infra. + Climate Change', horizontalalignment='center', verticalalignment='center',
-                rotation=270,
-                transform=ax.transAxes)
-        # Legend
-        ax = g.axes[1][0]
-        plt.legend(loc='center', bbox_to_anchor=(0.0, -0.3), frameon=False, fontsize=16, ncol=4)
-        # Save
-        savename = figure_name + "group2_violin_" + context + '.pdf'
-        plt.savefig(savename, dpi=resolution, bbox_inches="tight")
-        plt.close()
-
+    #     # --------------------------------------------------
+    #     # Box Plot - Group 2
+    #     # --------------------------------------------------
+    #     # col_order = ['TRANS', 'UGND_TRANS', 'DIST', 'UGND_DIST']
+    #     col_order = ['UGND_TRANS', 'UGND_DIST']
+    #     row_order = ["Historical + Worst Curves", "Climate Change + Worst Curves", ]
+    #     g = sns.catplot(x="Year", y="Value", hue="Scenario", row="Type", col="case", data=df2, kind="violin",
+    #                     col_order=col_order, row_order=row_order, palette=custom_palette, legend=False, inner=None,
+    #                     aspect=aspect)  # ,height=4, aspect=.7)
+    #
+    #     # Additional Labels
+    #     g.set_titles(" ")
+    #     ax = g.axes[0][0]
+    #     ax.text(0.5, 1.1, 'Underground Transmission', horizontalalignment='center', verticalalignment='top',
+    #             transform=ax.transAxes)
+    #     ax = g.axes[0][1]
+    #     ax.text(0.5, 1.1, 'Underground Distribution', horizontalalignment='center', verticalalignment='top',
+    #             transform=ax.transAxes)
+    #     ax.text(1.1, 0.5, 'Current Infra. + Historical', horizontalalignment='center', verticalalignment='center',
+    #             rotation=270,
+    #             transform=ax.transAxes)
+    #     ax = g.axes[1][1]
+    #     ax.text(1.1, 0.5, 'Current Infra. + Climate Change', horizontalalignment='center', verticalalignment='center',
+    #             rotation=270,
+    #             transform=ax.transAxes)
+    #     # Legend
+    #     ax = g.axes[1][0]
+    #     plt.legend(loc='center', bbox_to_anchor=(0.0, -0.3), frameon=False, fontsize=16, ncol=4)
+    #     # Save
+    #     savename = figure_name + "group2_violin_" + context + '.pdf'
+    #     plt.savefig(savename, dpi=resolution, bbox_inches="tight")
+    #     plt.close()
+    #
     # =================================================
     # Return to original directory
     os.chdir(cwd)
