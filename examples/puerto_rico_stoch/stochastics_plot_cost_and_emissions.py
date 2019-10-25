@@ -87,8 +87,6 @@ def plot(df_, col_order_, x_var_, x_label_, y_var_, y_label_, figure_name_, plot
 # ======================================================================================================================
 
 
-# Note: Need to resample results before plotting
-# folders = ['2019_10_23', '2019_10_24']
 folders = ['2019_10_25']
 
 col_order1 = ['Historical-Current-No Tax', 'Historical-Hardened-No Tax', 'Climate Change-Current-No Tax',
@@ -98,12 +96,11 @@ col_order2 = ['Historical-Current-Tax', 'Historical-Hardened-Tax', 'Climate Chan
 
 plotCosts = True
 plotEmissions = True
-plotActivityFuel = False
-plotActivityTech = False
 
 # Naming conventions
 filename_costs_yearly = "costs_yearly_toPlot.csv"
 filename_emissions_yearly = "emissions_yearly_toPlot.csv"
+
 # Iterate through model runs
 for folder in folders:
 

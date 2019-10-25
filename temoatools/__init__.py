@@ -14,6 +14,8 @@ from .analyze_capacity import getCapacity
 from .analyze_costs import getCosts
 from .analyze_emissions import getEmissions
 from .fragility_curves import fragility
+from .stochastic_postprocessing import stoch_expand
+from .stochastic_postprocessing import stoch_resample
 
 # storing where resources folder is
 resource_path = os.path.join(os.path.split(__file__)[0], "resources")
