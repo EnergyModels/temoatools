@@ -4,76 +4,75 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Note: Need to resample results before plotting
-folders = ['2019_10_23','2019_10_24']
+folders = ['2019_10_25']
 
 dbs = ["WA_0.sqlite", "WA_1.sqlite", "WB_0.sqlite", "WB_1.sqlite", "WC_0.sqlite", "WC_1.sqlite", "WD_0.sqlite",
-       "WD_1.sqlite",
-       "XA_0.sqlite", "XA_1.sqlite", "XB_0.sqlite", "XB_1.sqlite", "XC_0.sqlite", "XC_1.sqlite", "XD_0.sqlite",
-       "XD_1.sqlite",
-       "YA_0.sqlite", "YA_1.sqlite", "YB_0.sqlite", "YB_1.sqlite", "YC_0.sqlite", "YC_1.sqlite", "YD_0.sqlite",
-       "YD_1.sqlite",
-       "ZA_0.sqlite", "ZA_1.sqlite", "ZB_0.sqlite", "ZB_1.sqlite", "ZC_0.sqlite", "ZC_1.sqlite", "ZD_0.sqlite",
-       "ZD_1.sqlite"]
+       "WD_1.sqlite", "WE_0.sqlite", "WE_1.sqlite", "XA_0.sqlite", "XA_1.sqlite", "XB_0.sqlite", "XB_1.sqlite",
+       "XC_0.sqlite", "XC_1.sqlite", "XD_0.sqlite", "XD_1.sqlite", "XE_0.sqlite", "XE_1.sqlite", "YA_0.sqlite",
+       "YA_1.sqlite", "YB_0.sqlite", "YB_1.sqlite", "YC_0.sqlite", "YC_1.sqlite", "YD_0.sqlite", "YD_1.sqlite",
+       "YE_0.sqlite", "YE_1.sqlite", "ZA_0.sqlite", "ZA_1.sqlite", "ZB_0.sqlite", "ZB_1.sqlite", "ZC_0.sqlite",
+       "ZC_1.sqlite", "ZD_0.sqlite", "ZD_1.sqlite", "ZE_0.sqlite", "ZE_1.sqlite"]
 
 # Technology Groups
-tech_group = ['Centralized - Natural Gas', 'Centralized - Hybrid', 'Distributed - Natural Gas', 'Distributed - Hybrid']
-tech_group_dict = {"WA_0.sqlite": tech_group[0], "WA_1.sqlite": tech_group[0],
-                   "WB_0.sqlite": tech_group[1], "WB_1.sqlite": tech_group[1],
-                   "WC_0.sqlite": tech_group[2], "WC_1.sqlite": tech_group[2],
-                   "WD_0.sqlite": tech_group[3], "WD_1.sqlite": tech_group[3],
-                   "XA_0.sqlite": tech_group[0], "XA_1.sqlite": tech_group[0],
-                   "XB_0.sqlite": tech_group[1], "XB_1.sqlite": tech_group[1],
-                   "XC_0.sqlite": tech_group[2], "XC_1.sqlite": tech_group[2],
-                   "XD_0.sqlite": tech_group[3], "XD_1.sqlite": tech_group[3],
-                   "YA_0.sqlite": tech_group[0], "YA_1.sqlite": tech_group[0],
-                   "YB_0.sqlite": tech_group[1], "YB_1.sqlite": tech_group[1],
-                   "YC_0.sqlite": tech_group[2], "YC_1.sqlite": tech_group[2],
-                   "YD_0.sqlite": tech_group[3], "YD_1.sqlite": tech_group[3],
-                   "ZA_0.sqlite": tech_group[0], "ZA_1.sqlite": tech_group[0],
-                   "ZB_0.sqlite": tech_group[1], "ZB_1.sqlite": tech_group[1],
-                   "ZC_0.sqlite": tech_group[2], "ZC_1.sqlite": tech_group[2],
-                   "ZD_0.sqlite": tech_group[3], "ZD_1.sqlite": tech_group[3]}
+tech_group = ['Centralized - Natural Gas', 'Centralized - Hybrid', 'Distributed - Natural Gas', 'Distributed - Hybrid',
+              'BAU']
+tech_group_dict = {"WA_0.sqlite": tech_group[0], "WA_1.sqlite": tech_group[0], "WB_0.sqlite": tech_group[1],
+                   "WB_1.sqlite": tech_group[1], "WC_0.sqlite": tech_group[2], "WC_1.sqlite": tech_group[2],
+                   "WD_0.sqlite": tech_group[3], "WD_1.sqlite": tech_group[3], "WE_0.sqlite": tech_group[4],
+                   "WE_1.sqlite": tech_group[4], "XA_0.sqlite": tech_group[0], "XA_1.sqlite": tech_group[0],
+                   "XB_0.sqlite": tech_group[1], "XB_1.sqlite": tech_group[1], "XC_0.sqlite": tech_group[2],
+                   "XC_1.sqlite": tech_group[2], "XD_0.sqlite": tech_group[3], "XD_1.sqlite": tech_group[3],
+                   "XE_0.sqlite": tech_group[4], "XE_1.sqlite": tech_group[4], "YA_0.sqlite": tech_group[0],
+                   "YA_1.sqlite": tech_group[0], "YB_0.sqlite": tech_group[1], "YB_1.sqlite": tech_group[1],
+                   "YC_0.sqlite": tech_group[2], "YC_1.sqlite": tech_group[2], "YD_0.sqlite": tech_group[3],
+                   "YD_1.sqlite": tech_group[3], "YE_0.sqlite": tech_group[4], "YE_1.sqlite": tech_group[4],
+                   "ZA_0.sqlite": tech_group[0], "ZA_1.sqlite": tech_group[0], "ZB_0.sqlite": tech_group[1],
+                   "ZB_1.sqlite": tech_group[1], "ZC_0.sqlite": tech_group[2], "ZC_1.sqlite": tech_group[2],
+                   "ZD_0.sqlite": tech_group[3], "ZD_1.sqlite": tech_group[3], "ZE_0.sqlite": tech_group[4],
+                   "ZE_1.sqlite": tech_group[4]}
 
 # Historical or Climate Change Probabilities
 prob = ["Historical", "Climate Change"]
 prob_type_dict = {"WA_0.sqlite": prob[0], "WA_1.sqlite": prob[1], "WB_0.sqlite": prob[0], "WB_1.sqlite": prob[1],
                   "WC_0.sqlite": prob[0], "WC_1.sqlite": prob[1], "WD_0.sqlite": prob[0], "WD_1.sqlite": prob[1],
-                  "XA_0.sqlite": prob[0], "XA_1.sqlite": prob[1], "XB_0.sqlite": prob[0], "XB_1.sqlite": prob[1],
-                  "XC_0.sqlite": prob[0], "XC_1.sqlite": prob[1], "XD_0.sqlite": prob[0], "XD_1.sqlite": prob[1],
+                  "WE_0.sqlite": prob[0], "WE_1.sqlite": prob[1], "XA_0.sqlite": prob[0], "XA_1.sqlite": prob[1],
+                  "XB_0.sqlite": prob[0], "XB_1.sqlite": prob[1], "XC_0.sqlite": prob[0], "XC_1.sqlite": prob[1],
+                  "XD_0.sqlite": prob[0], "XD_1.sqlite": prob[1], "XE_0.sqlite": prob[0], "XE_1.sqlite": prob[1],
                   "YA_0.sqlite": prob[0], "YA_1.sqlite": prob[1], "YB_0.sqlite": prob[0], "YB_1.sqlite": prob[1],
                   "YC_0.sqlite": prob[0], "YC_1.sqlite": prob[1], "YD_0.sqlite": prob[0], "YD_1.sqlite": prob[1],
-                  "ZA_0.sqlite": prob[0], "ZA_1.sqlite": prob[1], "ZB_0.sqlite": prob[0], "ZB_1.sqlite": prob[1],
-                  "ZC_0.sqlite": prob[0], "ZC_1.sqlite": prob[1], "ZD_0.sqlite": prob[0], "ZD_1.sqlite": prob[1]}
+                  "YE_0.sqlite": prob[0], "YE_1.sqlite": prob[1], "ZA_0.sqlite": prob[0], "ZA_1.sqlite": prob[1],
+                  "ZB_0.sqlite": prob[0], "ZB_1.sqlite": prob[1], "ZC_0.sqlite": prob[0], "ZC_1.sqlite": prob[1],
+                  "ZD_0.sqlite": prob[0], "ZD_1.sqlite": prob[1], "ZE_0.sqlite": prob[0], "ZE_1.sqlite": prob[1]}
 
 # Infrastructure Type
 infra = ["Current", "Hardened"]
 infra_dict = {"WA_0.sqlite": infra[0], "WA_1.sqlite": infra[0], "WB_0.sqlite": infra[0], "WB_1.sqlite": infra[0],
               "WC_0.sqlite": infra[0], "WC_1.sqlite": infra[0], "WD_0.sqlite": infra[0], "WD_1.sqlite": infra[0],
-              "XA_0.sqlite": infra[1], "XA_1.sqlite": infra[1], "XB_0.sqlite": infra[1], "XB_1.sqlite": infra[1],
-              "XC_0.sqlite": infra[1], "XC_1.sqlite": infra[1], "XD_0.sqlite": infra[1], "XD_1.sqlite": infra[1],
+              "WE_0.sqlite": infra[0], "WE_1.sqlite": infra[0], "XA_0.sqlite": infra[1], "XA_1.sqlite": infra[1],
+              "XB_0.sqlite": infra[1], "XB_1.sqlite": infra[1], "XC_0.sqlite": infra[1], "XC_1.sqlite": infra[1],
+              "XD_0.sqlite": infra[1], "XD_1.sqlite": infra[1], "XE_0.sqlite": infra[1], "XE_1.sqlite": infra[1],
               "YA_0.sqlite": infra[0], "YA_1.sqlite": infra[0], "YB_0.sqlite": infra[0], "YB_1.sqlite": infra[0],
               "YC_0.sqlite": infra[0], "YC_1.sqlite": infra[0], "YD_0.sqlite": infra[0], "YD_1.sqlite": infra[0],
-              "ZA_0.sqlite": infra[1], "ZA_1.sqlite": infra[1], "ZB_0.sqlite": infra[1], "ZB_1.sqlite": infra[1],
-              "ZC_0.sqlite": infra[1], "ZC_1.sqlite": infra[1], "ZD_0.sqlite": infra[1], "ZD_1.sqlite": infra[1]}
+              "YE_0.sqlite": infra[0], "YE_1.sqlite": infra[0], "ZA_0.sqlite": infra[1], "ZA_1.sqlite": infra[1],
+              "ZB_0.sqlite": infra[1], "ZB_1.sqlite": infra[1], "ZC_0.sqlite": infra[1], "ZC_1.sqlite": infra[1],
+              "ZD_0.sqlite": infra[1], "ZD_1.sqlite": infra[1], "ZE_0.sqlite": infra[1], "ZE_1.sqlite": infra[1]}
 
 # Carbon Tax
 carbon_tax = ["No Tax", "Tax"]
-carbon_tax_dict = {"WA_0.sqlite": carbon_tax[0], "WA_1.sqlite": carbon_tax[0],
-                   "WB_0.sqlite": carbon_tax[0], "WB_1.sqlite": carbon_tax[0],
-                   "WC_0.sqlite": carbon_tax[0], "WC_1.sqlite": carbon_tax[0],
-                   "WD_0.sqlite": carbon_tax[0], "WD_1.sqlite": carbon_tax[0],
-                   "XA_0.sqlite": carbon_tax[0], "XA_1.sqlite": carbon_tax[0],
-                   "XB_0.sqlite": carbon_tax[0], "XB_1.sqlite": carbon_tax[0],
-                   "XC_0.sqlite": carbon_tax[0], "XC_1.sqlite": carbon_tax[0],
-                   "XD_0.sqlite": carbon_tax[0], "XD_1.sqlite": carbon_tax[0],
-                   "YA_0.sqlite": carbon_tax[1], "YA_1.sqlite": carbon_tax[1],
-                   "YB_0.sqlite": carbon_tax[1], "YB_1.sqlite": carbon_tax[1],
-                   "YC_0.sqlite": carbon_tax[1], "YC_1.sqlite": carbon_tax[1],
-                   "YD_0.sqlite": carbon_tax[1], "YD_1.sqlite": carbon_tax[1],
-                   "ZA_0.sqlite": carbon_tax[1], "ZA_1.sqlite": carbon_tax[1],
-                   "ZB_0.sqlite": carbon_tax[1], "ZB_1.sqlite": carbon_tax[1],
-                   "ZC_0.sqlite": carbon_tax[1], "ZC_1.sqlite": carbon_tax[1],
-                   "ZD_0.sqlite": carbon_tax[1], "ZD_1.sqlite": carbon_tax[1]}
+carbon_tax_dict = {"WA_0.sqlite": carbon_tax[0], "WA_1.sqlite": carbon_tax[0], "WB_0.sqlite": carbon_tax[0],
+                   "WB_1.sqlite": carbon_tax[0], "WC_0.sqlite": carbon_tax[0], "WC_1.sqlite": carbon_tax[0],
+                   "WD_0.sqlite": carbon_tax[0], "WD_1.sqlite": carbon_tax[0], "WE_0.sqlite": carbon_tax[0],
+                   "WE_1.sqlite": carbon_tax[0], "XA_0.sqlite": carbon_tax[0], "XA_1.sqlite": carbon_tax[0],
+                   "XB_0.sqlite": carbon_tax[0], "XB_1.sqlite": carbon_tax[0], "XC_0.sqlite": carbon_tax[0],
+                   "XC_1.sqlite": carbon_tax[0], "XD_0.sqlite": carbon_tax[0], "XD_1.sqlite": carbon_tax[0],
+                   "XE_0.sqlite": carbon_tax[0], "XE_1.sqlite": carbon_tax[0], "YA_0.sqlite": carbon_tax[1],
+                   "YA_1.sqlite": carbon_tax[1], "YB_0.sqlite": carbon_tax[1], "YB_1.sqlite": carbon_tax[1],
+                   "YC_0.sqlite": carbon_tax[1], "YC_1.sqlite": carbon_tax[1], "YD_0.sqlite": carbon_tax[1],
+                   "YD_1.sqlite": carbon_tax[1], "YE_0.sqlite": carbon_tax[1], "YE_1.sqlite": carbon_tax[1],
+                   "ZA_0.sqlite": carbon_tax[1], "ZA_1.sqlite": carbon_tax[1], "ZB_0.sqlite": carbon_tax[1],
+                   "ZB_1.sqlite": carbon_tax[1], "ZC_0.sqlite": carbon_tax[1], "ZC_1.sqlite": carbon_tax[1],
+                   "ZD_0.sqlite": carbon_tax[1], "ZD_1.sqlite": carbon_tax[1], "ZE_0.sqlite": carbon_tax[1],
+                   "ZE_1.sqlite": carbon_tax[1]}
 
 col_order1 = ['Historical-Current-No Tax', 'Historical-Hardened-No Tax', 'Climate Change-Current-No Tax',
               'Climate Change-Hardened-No Tax']
@@ -90,8 +89,8 @@ plotActivityTech = False
 # Naming conventions
 filename_costs_yearly = "costs_yearly_exp_resampled.csv"
 filename_emissions_yearly = "emissions_yearly_exp_resampled.csv"
-filename_activity_by_fuel = "activity_by_fuel_exp_resampled.csv"
-filename_activity_by_tech = "activity_by_tech_exp_resampled.csv"
+filename_activity_by_fuel = "activity_by_fuel.csv" # Don't expand and resample these results
+filename_activity_by_tech = "activity_by_tech.csv" # Don't expand and resample these results
 
 # Iterate through model runs
 for folder in folders:
@@ -127,7 +126,6 @@ for folder in folders:
         csv_file = "costs_yearly_toPlot.csv"
         df2.to_csv(csv_file)
 
-
     # =================================================
     # Emissions
     figure_name = "emissions_yearly"
@@ -141,7 +139,7 @@ for folder in folders:
                 df = df.drop(col, axis=1)
         df2 = pd.melt(df, id_vars=["database", "scenario"], var_name="Year", value_name="Value")
         df2.case = "unknown"
-        df2.Value = df2.Value / 1000.0 # Convert from kton/yr to Mton/yr
+        df2.Value = df2.Value / 1000.0  # Convert from kton/yr to Mton/yr
         for db in dbs:
             ind = df2.loc[:, "database"] == db
             df2.loc[ind, "case"] = prob_type_dict[db] + "-" + infra_dict[db] + "-" + carbon_tax_dict[db]
@@ -154,7 +152,6 @@ for folder in folders:
         # Save file
         csv_file = "emissions_yearly_toPlot.csv"
         df2.to_csv(csv_file)
-
 
     #
     #

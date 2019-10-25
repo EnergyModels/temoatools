@@ -88,8 +88,8 @@ def plot(df_, col_order_, x_var_, x_label_, y_var_, y_label_, figure_name_, plot
 
 
 # Note: Need to resample results before plotting
-folders = ['2019_10_23', '2019_10_24']
-folders = ['2019_10_24']
+# folders = ['2019_10_23', '2019_10_24']
+folders = ['2019_10_25']
 
 col_order1 = ['Historical-Current-No Tax', 'Historical-Hardened-No Tax', 'Climate Change-Current-No Tax',
               'Climate Change-Hardened-No Tax']
@@ -131,6 +131,8 @@ for folder in folders:
             ylims = [0,5]
         elif folder =='2019_10_24':
             ylims = [0,100]
+        elif folder == '2019_10_25':
+            ylims = [0, 2.5]
         else:
             ylims=[]
 
@@ -148,41 +150,41 @@ for folder in folders:
         col_order = col_order2
         g = plot(df, col_order, x_var, x_label, y_var, y_label, figure_name, plot_type='violin', y_scale='linear', ylims=ylims)
 
-        # Log limits
-        if folder == '2019_10_23':
-            ylims = [0.1, 10]
-        elif folder == '2019_10_24':
-            ylims = [0.01, 100]
-        else:
-            ylims = []
+        # # Log limits
+        # if folder == '2019_10_23':
+        #     ylims = [0.1, 10]
+        # elif folder == '2019_10_24':
+        #     ylims = [0.01, 100]
+        # else:
+        #     ylims = []
 
-        # ------------------
-        # Violin - log
-        # ------------------
-
-        # Violin Plot - Without Tax
-        figure_name = "costs_yearly_noTax_violin_log"
-        col_order = col_order1
-        g = plot(df, col_order, x_var, x_label, y_var, y_label, figure_name, plot_type='violin', y_scale='log', ylims=ylims)
-
-        # Violin Plot - With Tax
-        figure_name = "costs_yearly_tax_violin_log"
-        col_order = col_order2
-        g = plot(df, col_order, x_var, x_label, y_var, y_label, figure_name, plot_type='violin', y_scale='log', ylims=ylims)
-
-        # ------------------
-        # Box - log
-        # ------------------
-
-        # Violin Plot - Without Tax
-        figure_name = "costs_yearly_noTax_box"
-        col_order = col_order1
-        g = plot(df, col_order, x_var, x_label, y_var, y_label, figure_name, plot_type='box', y_scale='linear', ylims=ylims)
-
-        # Violin Plot - With Tax
-        figure_name = "costs_yearly_tax_box"
-        col_order = col_order2
-        g = plot(df, col_order, x_var, x_label, y_var, y_label, figure_name, plot_type='box', y_scale='linear', ylims=ylims)
+        # # ------------------
+        # # Violin - log
+        # # ------------------
+        #
+        # # Violin Plot - Without Tax
+        # figure_name = "costs_yearly_noTax_violin_log"
+        # col_order = col_order1
+        # g = plot(df, col_order, x_var, x_label, y_var, y_label, figure_name, plot_type='violin', y_scale='log', ylims=ylims)
+        #
+        # # Violin Plot - With Tax
+        # figure_name = "costs_yearly_tax_violin_log"
+        # col_order = col_order2
+        # g = plot(df, col_order, x_var, x_label, y_var, y_label, figure_name, plot_type='violin', y_scale='log', ylims=ylims)
+        #
+        # # ------------------
+        # # Box - log
+        # # ------------------
+        #
+        # # Violin Plot - Without Tax
+        # figure_name = "costs_yearly_noTax_box"
+        # col_order = col_order1
+        # g = plot(df, col_order, x_var, x_label, y_var, y_label, figure_name, plot_type='box', y_scale='linear', ylims=ylims)
+        #
+        # # Violin Plot - With Tax
+        # figure_name = "costs_yearly_tax_box"
+        # col_order = col_order2
+        # g = plot(df, col_order, x_var, x_label, y_var, y_label, figure_name, plot_type='box', y_scale='linear', ylims=ylims)
 
     # =================================================
     # Emissions
@@ -214,19 +216,19 @@ for folder in folders:
         col_order = col_order2
         g = plot(df, col_order, x_var, x_label, y_var, y_label, figure_name, plot_type='violin', y_scale='linear', ylims=ylims)
 
-        # ------------------
-        # Box - linear
-        #------------------
-
-        # Box Plot - Without Tax
-        figure_name = "emissions_yearly_noTax_box"
-        col_order = col_order1
-        g = plot(df, col_order, x_var, x_label, y_var, y_label, figure_name, plot_type='box', y_scale='linear', ylims=ylims)
-
-        # Box Plot - With Tax
-        figure_name = "emissions_yearly_tax_box"
-        col_order = col_order2
-        g = plot(df, col_order, x_var, x_label, y_var, y_label, figure_name, plot_type='box', y_scale='linear', ylims=ylims)
+        # # ------------------
+        # # Box - linear
+        # #------------------
+        #
+        # # Box Plot - Without Tax
+        # figure_name = "emissions_yearly_noTax_box"
+        # col_order = col_order1
+        # g = plot(df, col_order, x_var, x_label, y_var, y_label, figure_name, plot_type='box', y_scale='linear', ylims=ylims)
+        #
+        # # Box Plot - With Tax
+        # figure_name = "emissions_yearly_tax_box"
+        # col_order = col_order2
+        # g = plot(df, col_order, x_var, x_label, y_var, y_label, figure_name, plot_type='box', y_scale='linear', ylims=ylims)
 
     # Return to original directory
     os.chdir(cwd)

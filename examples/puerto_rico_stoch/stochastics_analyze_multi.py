@@ -5,12 +5,12 @@ import temoatools as tt
 # Inputs
 # ===============
 db_folder = os.getcwd() + '\\stochastic_databases'
-run_names = ["2019_10_24",]
+run_names = ["2019_10_25",]
 
-dbs = ["WA_0.sqlite", "WB_0.sqlite", "WC_0.sqlite", "WD_0.sqlite",
-       "XA_0.sqlite", "XB_0.sqlite", "XC_0.sqlite", "XD_0.sqlite",
-       "YA_0.sqlite", "YB_0.sqlite", "YC_0.sqlite", "YD_0.sqlite",
-       "ZA_0.sqlite", "ZB_0.sqlite", "ZC_0.sqlite", "ZD_0.sqlite"]
+dbs = ["WA_0.sqlite", "WB_0.sqlite", "WC_0.sqlite", "WD_0.sqlite", "WE_0.sqlite",
+       "XA_0.sqlite", "XB_0.sqlite", "XC_0.sqlite", "XD_0.sqlite", "XE_0.sqlite",
+       "YA_0.sqlite", "YB_0.sqlite", "YC_0.sqlite", "YD_0.sqlite", "YE_0.sqlite",
+       "ZA_0.sqlite", "ZB_0.sqlite", "ZC_0.sqlite", "ZD_0.sqlite", "ZE_0.sqlite"]
 
 create_plots = 'N'  # Create default plots
 save_data = 'Y'  # Do not save data as a csv or xls

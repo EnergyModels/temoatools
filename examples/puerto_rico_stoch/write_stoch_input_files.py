@@ -10,10 +10,10 @@ import temoatools as tt
 cutoff = 0.05 # cutoff^n<1e-6, where n is # of model years excluding the first time step
 
 # Baseline databases to use
-dbs = ["WA.sqlite", "WB.sqlite", "WC.sqlite", "WD.sqlite",
-       "XA.sqlite", "XB.sqlite", "XC.sqlite", "XD.sqlite",
-       "YA.sqlite", "YB.sqlite", "YC.sqlite", "YD.sqlite",
-       "ZA.sqlite", "ZB.sqlite", "ZC.sqlite", "ZD.sqlite"]
+dbs = ["WA.sqlite", "WB.sqlite", "WC.sqlite", "WD.sqlite", "WE.sqlite",
+       "XA.sqlite", "XB.sqlite", "XC.sqlite", "XD.sqlite", "XE.sqlite",
+       "YA.sqlite", "YB.sqlite", "YC.sqlite", "YD.sqlite", "YE.sqlite",
+       "ZA.sqlite", "ZB.sqlite", "ZC.sqlite", "ZD.sqlite", "ZE.sqlite"]
 
 # model years
 years = [2016, 2021, 2026, 2031, 2036]
