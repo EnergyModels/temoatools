@@ -95,7 +95,7 @@ def stoch_resample(path, filename, node_prob):
         ind1 = s.find("_") + 1
         ind2 = s.find("S") + 1
         case_num = s[ind1]
-        p_case = p[case_num]
+        p_case = node_prob[case_num]
         # Compute probability of this scenario recursively
         prob = p_case[int(s[ind2])]
         while ind2 < len(s) - 1:
