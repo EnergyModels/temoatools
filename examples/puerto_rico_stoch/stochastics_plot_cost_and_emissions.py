@@ -178,8 +178,8 @@ col_order1 = ['Historical-Current-No Tax', 'Historical-Hardened-No Tax', 'Climat
 col_order2 = ['Historical-Current-Tax', 'Historical-Hardened-Tax', 'Climate Change-Current-Tax',
               'Climate Change-Hardened-Tax']
 
-plotCosts = True
-plotEmissions = True
+plotCosts = False
+plotEmissions = False
 plotComb = True
 
 # Naming conventions
@@ -290,6 +290,7 @@ for folder in folders:
 
         # # Merge data together
         df = pd.merge(left=df_c2, right=df_e2)
+        df.to_csv('cost_emissions_comb.csv')
 
         # Plot
         figure_name = 'cost_and_emissions_combined'

@@ -1,7 +1,9 @@
+from __future__ import print_function
 import os
 import sqlite3
 import pandas as pd
 import matplotlib.pyplot as plt
+from help_functions import create_results_dir
 
 debug = False
 resolution = 1000 #DPI
@@ -11,7 +13,7 @@ resolution = 1000 #DPI
 def name(db):
     return db[:db.find('.')]
 #==============================================================================
-def getCapacity(folders,dbs,switch='fuel',group={},sectorName='electric',saveData='N',createPlots='N'):
+def getCapacity(folders,dbs,switch='fuel',group={},sectorName='electric',save_data='N',create_plots='N', run_name=''):
 #    inputs:
 #    1) folders         - paths containing dbs (list or single string if all in the same path)
 #    2) dbs             - names of databases (list)
@@ -25,7 +27,7 @@ def getCapacity(folders,dbs,switch='fuel',group={},sectorName='electric',saveDat
 #    1) capacity     - pandas DataFrame holding capacity for each model year
 #==============================================================================
     # Save original directory
-    origDir = os.getcwd()
+    wrkdir = os.getcwd()
 
     # If only a single db and folder provided, change to a list
     if type(dbs) == str and type(folders) == str:
@@ -43,22 +45,30 @@ def getCapacity(folders,dbs,switch='fuel',group={},sectorName='electric',saveDat
         folders = fldrs
     
     # Create dictionary to hold each capacity_single series
-    capacity = {}
+    capacity = pd.DataFrame()
     
     # Iterate through each db
     for folder,db in zip(folders,dbs):
-        capacity[name(db)] = SingleDB(folder,db,switch=switch,group=group,sectorName=sectorName)
+        capacity_single = SingleDB(folder,db,switch=switch,group=group,sectorName=sectorName)
+        capacity = pd.concat([capacity,capacity_single])
     
     # Directory to hold results
-    if saveData == 'Y' or createPlots == 'Y':
-        resultsDir = origDir + "\\results"
-        try:
-            os.stat(resultsDir)
-        except:
-            os.mkdir(resultsDir)
-        os.chdir(resultsDir)
-    
-    if createPlots == 'Y':
+    if save_data == 'Y' or create_plots == 'Y':
+        create_results_dir(wrkdir=wrkdir, run_name=run_name)
+
+    # Save results to Excel
+    if save_data == 'Y':
+        # Create savename based on switch
+        if switch == 'fuel':
+            savename = 'Results_yearlyCapacity_byFuel.xls'
+        elif switch == 'tech':
+            savename = 'Results_yearlyCapacity_byTech.xls'
+        elif switch == 'techgroup':
+            savename = 'Results_yearlyCapacity_byTechGroup.xls'
+        # Save
+        capacity.to_csv(savename)
+
+    if create_plots == 'Y':
         # Create plots
         n_subplots = len(dbs)
 
@@ -99,24 +109,10 @@ def getCapacity(folders,dbs,switch='fuel',group={},sectorName='electric',saveDat
         fig = ax.get_figure()
         fig.savefig(savename,dpi=resolution)
         
-    # Save results to Excel
-    if saveData == 'Y':
-        # Create savename based on switch
-        if switch == 'fuel':
-            savename  = 'Results_yearlyCapacity_byFuel.xls'
-        elif switch == 'tech':
-            savename  = 'Results_yearlyCapacity_byTech.xls'
-        elif switch == 'techgroup':
-            savename  = 'Results_yearlyCapacity_byTechGroup.xls'
-        # Create connection to excel
-        writer = pd.ExcelWriter(savename)
-        for db in dbs:
-            capacity[name(db)].to_excel(writer,db)
-        # Save
-        writer.save()
+
         
     # Return to original directory
-    os.chdir(origDir)
+    os.chdir(wrkdir)
             
     # return capacity as a dictionary
     return capacity
@@ -228,34 +224,7 @@ def SingleDB(folder,db,switch='fuel',group={},sectorName='electric',saveData='N'
         if df[col].sum()==0.0:
             empty.append(str(col))
     df2 = df.drop(empty,axis=1)
-            
-    # Directory to hold results
-    if saveData == 'Y' or createPlots == 'Y':
-        resultsDir = origDir + "\\results"
-        try:
-            os.stat(resultsDir)
-        except:
-            os.mkdir(resultsDir)
-        os.chdir(resultsDir)
-    
-    # Plot Results
-    if createPlots == 'Y':
-        if switch == 'fuel':
-            titlename = name(db) + ' by fuel'
-        elif switch == 'tech':
-            titlename = name(db) + ' by tech'
-        elif switch == 'techgroup':
-            titlename = name(db) + ' by tech group'
-        ax = df2.plot.bar(stacked=True, title=titlename)
-        ax.set_xlabel("Year [-]")
-        ax.set_ylabel("Capacity [GW]")
-        fig = ax.get_figure()
-        fig.savefig(savename + '.png',dpi=resolution)
-    
-    # Save as CSV (include all technologies in case comparing multiple scenarios)
-    if saveData == 'Y' or saveData == 'y':
-        df.to_csv(savename+ '.csv')
-        
+
     # return to original folder
     os.chdir(origDir)
     
