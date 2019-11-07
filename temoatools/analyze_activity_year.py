@@ -80,19 +80,6 @@ def getActivity(folders, dbs, switch='fuel', sector_name='electric', save_data='
         ax = activity.plot.bar(stacked=True, title=titlename)
         ax.set_xlabel("Year [-]")
         ax.set_ylabel("Activity [GWh]")
-        # else:  # With subplots
-        #     f,a = plt.subplots(n_subplots,1,sharex=True, sharey=True)
-        #     a = a.ravel()
-        #     # Create subplots
-        #     for idx,ax in enumerate(a):
-        #         db = dbs[idx]
-        #         if switch == 'fuel':
-        #             titlename = name(db) + ' by fuel'
-        #         elif switch == 'tech':
-        #             titlename = name(db) + ' by tech'
-        #         activity[name(db)].plot.bar(ax=ax,stacked=True, title=titlename)
-        #         ax.set_xlabel("Year [-]")
-        #         ax.set_ylabel("Activity [GWh]")
 
         if switch == 'fuel':
             savename = 'Results_yearlyActivity_byFuel.png'

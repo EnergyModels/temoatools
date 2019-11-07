@@ -1,8 +1,7 @@
-# from __future__ import print_function
+from __future__ import print_function
 import os
 import sqlite3
 import pandas as pd
-import matplotlib.pyplot as plt
 from help_functions import create_results_dir
 
 debug = False
@@ -13,7 +12,7 @@ resolution = 1000 #DPI
 def name(db):
     return db[:db.find('.')]
 #==============================================================================
-def getCapacity(folders,dbs,switch='fuel',group={},sectorName='electric',save_data='N',create_plots='N', run_name=''):
+def getCapacity(folders,dbs,switch='fuel',group={},sector_name='electric',save_data='N',create_plots='N', run_name=''):
 #    inputs:
 #    1) folders         - paths containing dbs (list or single string if all in the same path)
 #    2) dbs             - names of databases (list)
@@ -21,7 +20,8 @@ def getCapacity(folders,dbs,switch='fuel',group={},sectorName='electric',save_da
 #    4) group           - custom dictionary used for techgroup
 #    5) sectorName      - name of temoa sector to be analyzed
 #    6) saveData         - 'Y' or 'N', default is 'N' 
-#    7) createPlot      - 'Y' or 'N', default is 'N' 
+#    7) createPlot      - 'Y' or 'N', default is 'N'
+#    8) run_name         - Used for saving results in dedicated folder
 #
 #    outputs:
 #    1) capacity     - pandas DataFrame holding capacity for each model year
@@ -49,7 +49,7 @@ def getCapacity(folders,dbs,switch='fuel',group={},sectorName='electric',save_da
     
     # Iterate through each db
     for folder,db in zip(folders,dbs):
-        capacity_single = SingleDB(folder,db,switch=switch,group=group,sectorName=sectorName)
+        capacity_single = SingleDB(folder,db,switch=switch,group=group,sector_name=sector_name)
         capacity = pd.concat([capacity,capacity_single])
     
     # Directory to hold results
@@ -68,49 +68,25 @@ def getCapacity(folders,dbs,switch='fuel',group={},sectorName='electric',save_da
         # Save
         capacity.to_csv(savename)
 
+    # Create plots
     if create_plots == 'Y':
-        # Create plots
-        n_subplots = len(dbs)
-
-        if n_subplots == 1: # Only one plot
-            db = dbs[0]
-            if switch == 'fuel':
-                titlename = name(db) + ' by fuel'
-            elif switch == 'tech':
-                titlename = name(db) + ' by tech'
-            elif switch == 'techgroup':
-                titlename = name(db) + ' by tech group'
-            ax = capacity[name(db)].plot.bar(stacked=True, title=titlename)
-            ax.set_xlabel("Year [-]")
-            ax.set_ylabel("Capacity [GW]")
-
-        else: # With subplots
-            f, a = plt.subplots(n_subplots, 1, sharex=True, sharey=True)
-            a = a.ravel()
-            # Create subplots
-            for idx,ax in enumerate(a):
-                db = dbs[idx]
-                if switch == 'fuel':
-                    titlename = name(db) + ' by fuel'
-                elif switch == 'tech':
-                    titlename = name(db) + ' by tech'
-                elif switch == 'techgroup':
-                    titlename = name(db) + ' by tech group'
-                capacity[name(db)].plot.bar(ax=ax,stacked=True, title=titlename)
-                ax.set_xlabel("Year [-]")
-                ax.set_ylabel("Capacity [GW]")
-
         if switch == 'fuel':
-            savename  = 'Results_yearlyCapacity_byFuel.png'
+            titlename = 'By fuel'
+            savename = 'Results_yearlyCapacity_byFuel.png'
         elif switch == 'tech':
-            savename  = 'Results_yearlyCapacity_byTech.png'
-        elif switch == 'tech':
-            savename  = 'Results_yearlyCapacity_byTechGroup.png'
+            titlename = 'By tech'
+            savename = 'Results_yearlyCapacity_byTech.png'
+        elif switch == 'techgroup':
+            titlename = 'By tech group'
+            savename = 'Results_yearlyCapacity_byTechGroup.png'
+        # Plot
+        ax = capacity.plot.bar(stacked=True, title=titlename)
+        ax.set_xlabel("Year [-]")
+        ax.set_ylabel("Activity [GWh]")
+        # Save
         fig = ax.get_figure()
         fig.savefig(savename,dpi=resolution)
-        
 
-        
     # Return to original directory
     os.chdir(wrkdir)
             
@@ -118,35 +94,25 @@ def getCapacity(folders,dbs,switch='fuel',group={},sectorName='electric',save_da
     return capacity
 
 #==============================================================================
-def SingleDB(folder,db,switch='fuel',group={},sectorName='electric',saveData='N',createPlots='N'):
+def SingleDB(folder,db,switch='fuel',group={},sector_name='electric'):
 #    inputs:
 #    1) folder          - path containing db
 #    2) db              - name of databas
 #    3) switch          - 'fuel' or 'tech' or 'techgroup, basis of categorization
 #    4) group           - custom dictionary used for techgroup
 #    5) sectorName      - name of temoa sector to be analyzed
-#    6) saveData         - 'Y' or 'N', default is 'N' 
-#    7) createPlot      - 'Y' or 'N', default is 'N' 
 #
 #    outputs:
 #    1) capacity     - pandas DataFrame holding capacity for each model year
 #==============================================================================
-    if switch == 'fuel':
-        savename = 'Results_yearlyCapacity_byFuel_' + name(db)
-    elif switch == 'tech':
-        savename = 'Results_yearlyCapacity_byTech_' + name(db)
-    elif switch == 'techgroup':
-        savename = 'Results_yearlyCapacity_byTechGroup_' + name(db)
-        
+    print("Analyzing db: ", db)
+
     # save original folder
     origDir = os.getcwd()
     
     # move to folder
     os.chdir(folder)
-    
-    if debug ==True:
-        print db
-        
+
     # Connect to Database
     con = sqlite3.connect(db)
     cur = con.cursor()
@@ -179,7 +145,7 @@ def SingleDB(folder,db,switch='fuel',group={},sectorName='electric',saveData='N'
     # Review db_technologies to select related sector
     techs = []
     for tech, flag, sector, tech_desc, tech_category in db_technologies:    
-        if sector == sectorName:
+        if sector == sector_name:
             if tech not in techs:
                 techs.append(tech)
      
@@ -208,9 +174,9 @@ def SingleDB(folder,db,switch='fuel',group={},sectorName='electric',saveData='N'
     # Create dataframe initialized to zero
     df = pd.DataFrame(data=0.0,index=rows,columns = cols)
     
-    ## Review db_Output_CapacityByPeriodAndTech to fill data frame
+    # Review db_Output_CapacityByPeriodAndTech to fill data frame
     for scenario, sector, t_periods, tech, capacity in db_Output_CapacityByPeriodAndTech:    
-        if sector == sectorName:
+        if sector == sector_name or sector_name == "all":
             if switch == 'fuel':
                 df.loc[t_periods,d[tech]] = df.loc[t_periods,d[tech]] + capacity
             elif switch == 'tech':
