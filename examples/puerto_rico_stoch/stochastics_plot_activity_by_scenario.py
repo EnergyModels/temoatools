@@ -107,7 +107,7 @@ def plot(df_, cats_, figure_name_):
 
 # ========================================================================
 
-folders = ['2019_10_30']
+folders = ['2019_11_07_full']
 
 # Naming conventions
 filename_activity_by_fuel = "activity_by_fuel_toPlot.csv"

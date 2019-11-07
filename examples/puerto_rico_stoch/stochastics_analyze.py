@@ -174,7 +174,7 @@ if __name__ == '__main__':
 
     print("running")
 
-    run_names = ["2019_10_30", ]
+    run_names = ["2019_11_07_full", ]
 
     # Names of databases simulated
     dbs = ["WA_0.sqlite", "WB_0.sqlite", "WC_0.sqlite", "WD_0.sqlite", "WE_0.sqlite", "XA_0.sqlite", "XB_0.sqlite",

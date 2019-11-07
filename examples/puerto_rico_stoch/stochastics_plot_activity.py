@@ -188,7 +188,7 @@ def plot2(df_, rows_, row_labels_, figure_name_):
 
 # ========================================================================
 
-folders = ['2019_10_30']
+folders = ['2019_11_07_full']
 
 # Naming conventions
 filename_activity_by_fuel = "activity_by_fuel_toPlot.csv"

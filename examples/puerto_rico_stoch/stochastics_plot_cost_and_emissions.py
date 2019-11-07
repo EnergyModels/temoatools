@@ -171,15 +171,15 @@ def plot_comb(df_, figure_name_):
 
 # ======================================================================================================================
 
-folders = ['2019_10_30']
+folders = ['2019_11_07_full']
 
 col_order1 = ['Historical-Current-No Tax', 'Historical-Hardened-No Tax', 'Climate Change-Current-No Tax',
               'Climate Change-Hardened-No Tax']
 col_order2 = ['Historical-Current-Tax', 'Historical-Hardened-Tax', 'Climate Change-Current-Tax',
               'Climate Change-Hardened-Tax']
 
-plotCosts = False
-plotEmissions = False
+plotCosts = True
+plotEmissions = True
 plotComb = True
 
 # Naming conventions
