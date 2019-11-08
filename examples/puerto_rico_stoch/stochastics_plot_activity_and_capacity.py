@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-def plot(df_, rows_, row_labels_, figure_name_):
+def plot(df_, rows_, row_labels_, figure_name_, switch='activity'):
     # Set style and context using seaborn
     sns.set_style("white", {"font.family": "serif", "font.serif": ["Times", "Palatino", "serif"]})
     sns.set_context("paper")
@@ -66,13 +66,18 @@ def plot(df_, rows_, row_labels_, figure_name_):
 
                 # Y-axis labels
                 if j == 0:
-                    ax.set_ylabel(row_labels[i] +'\n(TWh/yr)')
-                    pass  # ax.tick_params(labelrotation=90)
+                    if switch == 'activity':
+                        ax.set_ylabel(row_labels[i] +'\n(TWh/yr)')
+                    elif switch == 'capacity':
+                        ax.set_ylabel(row_labels[i] +'\n(GW)')
                 else:
                     ax.set_ylabel('')
 
                 # Set Y limits
-                ax.set_ylim(bottom=0.0, top=20.0)
+                if switch == 'activity':
+                    ax.set_ylim(bottom=0.0, top=20.0)
+                elif switch == 'capacity':
+                    ax.set_ylim(bottom=0.0, top=3.0)
 
                 # Additional Labels
                 if i == 0:  # Top labels
@@ -96,7 +101,7 @@ def plot(df_, rows_, row_labels_, figure_name_):
 # ========================================================================
 
 # Alternate plotting function
-def plot2(df_, rows_, row_labels_, figure_name_):
+def plot2(df_, rows_, row_labels_, figure_name_,switch='activity'):
     # Set style and context using seaborn
     sns.set_style("white", {"font.family": "serif", "font.serif": ["Times", "Palatino", "serif"]})
     sns.set_context("paper")
@@ -158,13 +163,19 @@ def plot2(df_, rows_, row_labels_, figure_name_):
 
                 # Y-axis labels
                 if j == 0:
-                    ax.set_ylabel(row_labels[i] +'\n(TWh/yr)')
-                    # pass  # ax.tick_params(labelrotation=90)
+                    if switch == 'activity':
+                        ax.set_ylabel(row_labels[i] + '\n(TWh/yr)')
+                    elif switch == 'capacity':
+                        ax.set_ylabel(row_labels[i] + '\n(GW)')
                 else:
                     ax.set_ylabel('')
 
                 # Set Y limits
-                ax.set_ylim(bottom=0.0, top=20.0)
+                if switch == 'activity':
+                    ax.set_ylim(bottom=0.0, top=20.0)
+                elif switch == 'capacity':
+                    ax.set_ylim(bottom=0.0, top=3.0)
+
 
                 # Additional Labels
                 if i == 0:  # Top labels
@@ -192,11 +203,17 @@ folders = ['2019_11_07_full']
 
 # Naming conventions
 filename_activity_by_fuel = "activity_by_fuel_toPlot.csv"
+filename_capacity_by_fuel = "capacity_by_fuel_toPlot.csv"
 filename_activity_by_tech = "activity_by_tech_toPlot.csv"
-
+filename_capacity_by_tech = "capacity_by_tech_toPlot.csv"
 
 plotActivityFuel = True
+plotCapacityFuel = True
 plotActivityTech = True
+plotCapacityTech = True
+
+plotByYear = False
+plotByScenario = True
 
 # Set style and context using seaborn
 sns.set_style("white", {"font.family": "serif", "font.serif": ["Times", "Palatino", "serif"]})
@@ -220,14 +237,40 @@ for folder in folders:
         rows = ['Coal', 'Diesel', 'Oil', 'Natural Gas']
         row_labels = ['Coal', 'Diesel', 'Oil', 'Natural Gas']
         figure_name = 'activity_by_fuel_fossil_'
-        plot(df, rows, row_labels, figure_name)
-        plot2(df, rows, row_labels, figure_name)
+        if plotByYear:
+            plot(df, rows, row_labels, figure_name,switch='activity')
+        if plotByScenario:
+            plot2(df, rows, row_labels, figure_name,switch='activity')
 
         rows = ['Solar', 'Wind', 'Hydro', 'Battery', 'Biomass']
         row_labels = ['Solar', 'Wind', 'Hydro', 'Battery', 'Biomass']
         figure_name = 'activity_by_fuel_renewable_'
-        plot(df, rows, row_labels, figure_name)
-        plot2(df, rows, row_labels, figure_name)
+        if plotByYear:
+            plot(df, rows, row_labels, figure_name,switch='activity')
+        if plotByScenario:
+            plot2(df, rows, row_labels, figure_name,switch='activity')
+
+    # =====================================================
+    # Capacity by Fuel
+    # =====================================================
+    if plotCapacityFuel:
+        df = pd.read_csv(filename_capacity_by_fuel, index_col=0)
+
+        rows = ['Coal', 'Diesel', 'Oil', 'Natural Gas']
+        row_labels = ['Coal', 'Diesel', 'Oil', 'Natural Gas']
+        figure_name = 'capacity_by_fuel_fossil_'
+        if plotByYear:
+            plot(df, rows, row_labels, figure_name,switch='capacity')
+        if plotByScenario:
+            plot2(df, rows, row_labels, figure_name,switch='capacity')
+
+        rows = ['Solar', 'Wind', 'Hydro', 'Battery', 'Biomass']
+        row_labels = ['Solar', 'Wind', 'Hydro', 'Battery', 'Biomass']
+        figure_name = 'capacity_by_fuel_renewable_'
+        if plotByYear:
+            plot(df, rows, row_labels, figure_name,switch='capacity')
+        if plotByScenario:
+            plot2(df, rows, row_labels, figure_name,switch='capacity')
 
     # =====================================================
     # Activity by Tech
@@ -240,14 +283,42 @@ for folder in folders:
         row_labels = ["Exist.\nFossil", 'Cent.\nFossil', 'Dist.\nFossil', "Exist.\nRenewable", 'Cent.\nRenewable',
                       'Dist.\nRenewable']
         figure_name = 'activity_by_category_'
-        plot(df, rows, row_labels, figure_name)
-        plot2(df, rows, row_labels, figure_name)
+        if plotByYear:
+            plot(df, rows, row_labels, figure_name,switch='activity')
+        if plotByScenario:
+            plot2(df, rows, row_labels, figure_name,switch='activity')
 
         rows = ['TRANS', 'UGND_TRANS', 'DIST_COND', 'DIST_TWR', 'UGND_DIST']
         row_labels = ['Trans.', 'Ungd. Trans.', 'Dist. Cond.', 'Dist. Tower', 'Ungd Dist.']
         figure_name = 'activity_by_TD_'
-        plot(df, rows, row_labels, figure_name)
-        plot2(df, rows, row_labels, figure_name)
+        if plotByYear:
+            plot(df, rows, row_labels, figure_name,switch='activity')
+        if plotByScenario:
+            plot2(df, rows, row_labels, figure_name,switch='activity')
+
+    # =====================================================
+    # Capacity by Tech
+    # =====================================================
+    if plotCapacityTech:
+        df = pd.read_csv(filename_capacity_by_tech, index_col=0)
+
+        rows = ['Exist. Fossil', 'Cent. Fossil', 'Dist. Fossil', 'Exist. Renewable', 'Cent. Renewable',
+                'Dist. Renewable']
+        row_labels = ["Exist.\nFossil", 'Cent.\nFossil', 'Dist.\nFossil', "Exist.\nRenewable", 'Cent.\nRenewable',
+                      'Dist.\nRenewable']
+        figure_name = 'capacity_by_category_'
+        if plotByYear:
+            plot(df, rows, row_labels, figure_name,switch='capacity')
+        if plotByScenario:
+            plot2(df, rows, row_labels, figure_name,switch='capacity')
+
+        rows = ['TRANS', 'UGND_TRANS', 'DIST_COND', 'DIST_TWR', 'UGND_DIST']
+        row_labels = ['Trans.', 'Ungd. Trans.', 'Dist. Cond.', 'Dist. Tower', 'Ungd Dist.']
+        figure_name = 'capacity_by_TD_'
+        if plotByYear:
+            plot(df, rows, row_labels, figure_name,switch='capacity')
+        if plotByScenario:
+            plot2(df, rows, row_labels, figure_name,switch='capacity')
 
 # =================================================
 # Return to original directory
