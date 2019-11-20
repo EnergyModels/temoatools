@@ -56,16 +56,17 @@ sns.set_palette("colorblind")
 colors = sns.color_palette('colorblind')
 
 plt.plot(ms, dist_cond, label="Distribution line", color=colors[0])
-plt.plot(ms, dist_twr, label="Distribution tower", color=colors[5])
-plt.plot(ms, trans, label="Transmission", color=colors[4])
-
 plt.plot(ms, wind, label="Wind", color=colors[2])
+plt.plot(ms, dist_twr, label="Distribution tower", color=colors[5])
+
+plt.plot(ms, solar, label="Solar", color=colors[8])
+plt.plot(ms, coal_biomass, '--', label="Coal & biomass", color=colors[7])
 plt.plot(ms, battery,  label="Battery", color=colors[3])
 plt.plot(ms, hydro, '--', label="Hydro", color=colors[9])
 
-plt.plot(ms, coal_biomass, '--', label="Coal & biomass", color=colors[7])
-plt.plot(ms, solar, label="Solar", color=colors[8])
 plt.plot(ms, sub, '--', label="Substation", color=colors[6])
+
+plt.plot(ms, trans, label="Transmission", color=colors[4])
 plt.plot(ms, natgas_petrol, label="Natural gas, oil, \ndiesel & landfill gas", color=colors[1])
 plt.plot(ms, UGND, ':', label="Buried lines", color=colors[0])
 
