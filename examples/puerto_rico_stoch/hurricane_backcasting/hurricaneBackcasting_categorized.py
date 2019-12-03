@@ -84,9 +84,17 @@ custom_palette = [(0.380, 0.380, 0.380), (0.957, 0.451, 0.125), (.047, 0.149, 0.
                   (0.847, 0.000, 0.067)]  # Custom palette
 sns.set_style('whitegrid')
 sns.set_context('talk')
+
+
+
 probs2 = pd.melt(probs, id_vars=["Years"], var_name="Category", value_vars=["Low", "Medium", "High"])
+
+rename = {'Low': '1', 'Medium': '2-3', 'High': '4-5'}
+for key in rename.keys():
+    ind = probs2.loc[:, "Category"] == key
+    probs2.loc[ind, "Category"] = rename[key]
 ax = sns.catplot(x="Category", y="value", hue="Years", kind="bar", data=probs2)
-ax.set_xlabels('Storm Category (-)')
+ax.set_xlabels('Hurricane Category (-)')
 ax.set_ylabels('Probability (-)')
 plt.savefig("Hurricane_Probabilities_categorized.png", dpi=1000)
 
@@ -103,10 +111,14 @@ for year in years:
     slice = df.loc[(df.Year > start_year)]
     slice["Years"] = year
     comb_data = comb_data.append(slice)
+# Rename for plot
+for key in rename.keys():
+    ind = comb_data.loc[:, "Category"] == key
+    comb_data.loc[ind, "Category"] = rename[key]
 
 ax = sns.catplot(x="Category", y="MaxWind_mph", hue="Years", kind="bar", data=comb_data,
-                 order=["Low", "Medium", "High"])
-ax.set_xlabels('Storm Category (-)')
+                 order=["1", "2-3", "4-5"])
+ax.set_xlabels('Hurricane Category (-)')
 ax.set_ylabels('Maximum Windspeed (mph)')
 plt.savefig("Hurricane_Windspeeds_Comparison_categorized.png", dpi=1000)
 

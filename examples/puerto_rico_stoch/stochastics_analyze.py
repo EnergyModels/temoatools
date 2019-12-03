@@ -153,6 +153,12 @@ def analyze_results(metric, folder_db, folder_results, run_name, dbs, all_dbs, d
     # For activity results, change from temoa names to a more standard naming convention
     if metric == 'activity_by_fuel' or metric == 'activity_by_tech' or metric == 'capacity_by_fuel' or metric == 'capacity_by_tech':
         if metric == 'activity_by_fuel' or metric == 'capacity_by_fuel':
+            # other_renew = "Other renew"
+            # petrol = "Petroleum"
+            # type_shift = {"BIO": other_renew, "COAL_TAXED": "Coal", "DSL_TAXED": petrol, "ELC_CENTRAL": "Battery",
+            #               "ELC_DIST": "Battery", "HYDRO": other_renew, "MSW_LF_TAXED": other_renew,
+            #               "NATGAS_TAXED": "Natural gas", "OIL_TAXED": petrol, "SOLAR": "Solar", "WIND": "Wind"}
+
             type_shift = {"BIO": "Biomass", "COAL_TAXED": "Coal", "DSL_TAXED": "Diesel", "ELC_CENTRAL": "Battery",
                           "ELC_DIST": "Battery", "HYDRO": "Hydro", "MSW_LF_TAXED": "Landfill Gas",
                           "NATGAS_TAXED": "Natural Gas", "OIL_TAXED": "Oil", "SOLAR": "Solar", "WIND": "Wind"}
@@ -294,6 +300,8 @@ if __name__ == '__main__':
 
         metrics = ['costs_yearly', 'emissions_yearly', 'activity_by_fuel', 'activity_by_tech', 'capacity_by_fuel',
                    'capacity_by_tech']
+
+        metrics = [ 'activity_by_fuel']
 
         num_cores = multiprocessing.cpu_count() - 1  # Save one core for other processes
 
