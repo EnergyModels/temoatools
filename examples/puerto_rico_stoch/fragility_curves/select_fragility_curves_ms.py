@@ -75,7 +75,7 @@ plt.plot(ms, UGND, ':', label="Buried lines", color=colors[0])
 plt.legend(bbox_to_anchor=(1.0, 0.5), loc='center left', ncol=1, frameon=False)
 # plt.legend(bbox_to_anchor=(0.1, 0.6), loc='center left', ncol=1, frameon=True)
 plt.ylabel("Probability of damage (-)")
-plt.xlabel("Windspeed (m/s)")
+plt.xlabel("Windspeed ($ms^{-1}$)")
 
 # Add vertical lines for category cases
 y = [0, 1.02]
