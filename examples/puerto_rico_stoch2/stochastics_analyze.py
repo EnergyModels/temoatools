@@ -142,7 +142,8 @@ def analyze_results(metric, folder_db, folder_results, run_name, dbs, all_dbs, d
 
     # Load and Process data
     df = pd.read_csv(filename, index_col=0)
-    if metric == 'costs_yearly' or metric == 'emissions_yearly':
+    if metric == 'costs_yearly' or metric == 'emissions_yearly'\
+            or metric == 'activity_by_fuel' or metric == 'activity_by_tech':
         df = df.drop("prob", axis=1)
     for col in df.columns:
         if 'Unnamed' in col:
