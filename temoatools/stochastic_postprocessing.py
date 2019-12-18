@@ -73,9 +73,10 @@ def stoch_resample(path, filename, node_prob):
     # Remove scenario==solve
     df.drop(df.loc[df['scenario'] == "solve"].index, inplace=True)
 
-    # Create new column to store probabilities (prob)
-    df.loc[:, "prob"] = 0.0
-
+    # Create new columns
+    df.loc[:, "prob"] = 0.0 # to store probabilities (prob)
+    df.loc[:, "entry"] = 0 # to store entry number
+    entry = 0 # Reset entry number
     # Create a new dataframe to store results
     n_population = 10000
     df2 = pd.DataFrame()
@@ -89,6 +90,7 @@ def stoch_resample(path, filename, node_prob):
     # s = "D_#.S2s2s2s2"
 
     for s in df.loc[:, "scenario"].unique():
+
         # Find each row for this scenario
         indices = df.loc[:, "scenario"] == s
         # Find positions of '_' and 'S' in scenario name to identify case_num and p_case
@@ -108,6 +110,8 @@ def stoch_resample(path, filename, node_prob):
         # Copy repeats into a new database
         repeats = int(n_population * prob)
         for i in range(repeats):
+            entry = entry + 1
+            df.loc[indices, "entry"] = entry
             df2 = df2.append(df.loc[indices, :], ignore_index=True)
 
         # Update user on time elapsed
