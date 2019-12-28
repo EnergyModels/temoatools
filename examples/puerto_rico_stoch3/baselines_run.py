@@ -24,8 +24,9 @@ if __name__ == '__main__':
     # Model Inputs - without Carbon Pricing
     # =======================================================
     modelInputs_XLSX_list = ['data_T.xlsx', 'data_U.xlsx','data_W.xlsx', 'data_X.xlsx', 'data_Y.xlsx', 'data_Z.xlsx']
-    scenarioNames_list = [['T'],['U'],['WA', 'WB', 'WC', 'WD', 'WE'], ['XA', 'XB', 'XC', 'XD', 'XE'], ['YA', 'YB', 'YC', 'YD', 'YE'],
-        ['ZA', 'ZB', 'ZC', 'ZD', 'ZE']]
+    scenarioNames_list = [['T'],['U'],['WA', 'WB', 'WC', 'WD', 'WE', 'WF'], ['XA', 'XB', 'XC', 'XD', 'XE', 'XF'],
+                          ['YA', 'YB', 'YC', 'YD', 'YE', 'YF'],
+        ['ZA', 'ZB', 'ZC', 'ZD', 'ZE', 'ZF']]
 
     scenarioInputs = 'scenarios.xlsx'
     paths = 'paths.csv'
