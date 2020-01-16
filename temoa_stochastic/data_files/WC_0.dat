@@ -1,0 +1,1841 @@
+data ;
+
+set time_exist := 
+1953
+1959
+1960
+1962
+1964
+1965
+1966
+1967
+1968
+1969
+1971
+1972
+1973
+1975
+1976
+1997
+2000
+2002
+2008
+2009
+2012
+2015
+;
+
+set time_future := 
+2016
+2021
+2026
+2031
+2036
+2041
+;
+
+set time_season := 
+wet
+dry
+;
+
+set time_of_day := 
+hr01
+hr02
+hr03
+hr04
+hr05
+hr06
+hr07
+hr08
+hr09
+hr10
+hr11
+hr12
+hr13
+hr14
+hr15
+hr16
+hr17
+hr18
+hr19
+hr20
+hr21
+hr22
+hr23
+hr24
+;
+
+set tech_resource := 
+IMPCOAL
+IMPDSL
+IMPHYDRO
+IMPMSW_LF
+IMPOIL
+IMPNATGAS
+IMPSOLAR
+IMPWIND
+;
+
+set tech_production := 
+EX_COAL
+EX_DSL_SIMP
+EX_DSL_CC
+EX_OIL_TYPE1
+EX_OIL_TYPE2
+EX_OIL_TYPE3
+EX_HYDRO
+EX_MSW_LF
+EX_NG_CC
+EX_SOLPV
+EX_WIND
+ED_BATT
+ED_NG_CC
+ED_NG_OC
+TRANS
+SUB
+DIST_TWR
+DIST_COND
+LOCAL
+COAL_TAX
+DSL_TAX
+MSW_LF_TAX
+OIL_TAX
+NATGAS_TAX
+;
+
+set tech_storage := 
+ED_BATT
+;
+
+set tech_ramping := 
+EX_COAL
+EX_DSL_SIMP
+EX_DSL_CC
+EX_OIL_TYPE1
+EX_OIL_TYPE2
+EX_OIL_TYPE3
+ED_NG_CC
+;
+
+set commodity_physical := 
+ethos
+COAL
+DSL
+HYDRO
+MSW_LF
+OIL
+NATGAS
+SOLAR
+WIND
+ELC_CENTRAL
+ELC_SUB
+ELC_DIST
+ELC_DIST_MID
+ELC_LOCAL
+COAL_TAXED
+DSL_TAXED
+MSW_LF_TAXED
+OIL_TAXED
+NATGAS_TAXED
+;
+
+set commodity_emissions := 
+CO2
+;
+
+set commodity_demand := 
+ELC_DMD
+;
+
+param SegFrac := 
+    wet             hr01         0.0208335    
+    wet             hr02         0.0208335    
+    wet             hr03         0.0208335    
+    wet             hr04         0.0208335    
+    wet             hr05         0.0208335    
+    wet             hr06         0.0208335    
+    wet             hr07         0.0208335    
+    wet             hr08         0.0208335    
+    wet             hr09         0.0208335    
+    wet             hr10         0.0208335    
+    wet             hr11         0.0208335    
+    wet             hr12         0.0208335    
+    wet             hr13         0.0208335    
+    wet             hr14         0.0208335    
+    wet             hr15         0.0208335    
+    wet             hr16         0.0208335    
+    wet             hr17         0.0208335    
+    wet             hr18         0.0208335    
+    wet             hr19         0.0208335    
+    wet             hr20         0.0208335    
+    wet             hr21         0.0208335    
+    wet             hr22         0.0208335    
+    wet             hr23         0.0208335    
+    wet             hr24         0.020829499999999945    
+    dry             hr01         0.0208335    
+    dry             hr02         0.0208335    
+    dry             hr03         0.0208335    
+    dry             hr04         0.0208335    
+    dry             hr05         0.0208335    
+    dry             hr06         0.0208335    
+    dry             hr07         0.0208335    
+    dry             hr08         0.0208335    
+    dry             hr09         0.0208335    
+    dry             hr10         0.0208335    
+    dry             hr11         0.0208335    
+    dry             hr12         0.0208335    
+    dry             hr13         0.0208335    
+    dry             hr14         0.0208335    
+    dry             hr15         0.0208335    
+    dry             hr16         0.0208335    
+    dry             hr17         0.0208335    
+    dry             hr18         0.0208335    
+    dry             hr19         0.0208335    
+    dry             hr20         0.0208335    
+    dry             hr21         0.0208335    
+    dry             hr22         0.0208335    
+    dry             hr23         0.0208335    
+    dry             hr24         0.020829499999999945    
+;
+
+param DemandSpecificDistribution := 
+    wet             hr01             ELC_DMD         0.020776    
+    wet             hr02             ELC_DMD         0.019875    
+    wet             hr03             ELC_DMD         0.019292000000000004    
+    wet             hr04             ELC_DMD         0.018921000000000004    
+    wet             hr05             ELC_DMD         0.018921000000000004    
+    wet             hr06             ELC_DMD         0.019557    
+    wet             hr07             ELC_DMD         0.020458000000000004    
+    wet             hr08             ELC_DMD         0.020405    
+    wet             hr09             ELC_DMD         0.021465    
+    wet             hr10             ELC_DMD         0.022313    
+    wet             hr11             ELC_DMD         0.022843000000000002    
+    wet             hr12             ELC_DMD         0.023267000000000003    
+    wet             hr13             ELC_DMD         0.02332    
+    wet             hr14             ELC_DMD         0.023267000000000003    
+    wet             hr15             ELC_DMD         0.023214000000000002    
+    wet             hr16             ELC_DMD         0.023161    
+    wet             hr17             ELC_DMD         0.023108    
+    wet             hr18             ELC_DMD         0.022843000000000002    
+    wet             hr19             ELC_DMD         0.02385    
+    wet             hr20             ELC_DMD         0.02491    
+    wet             hr21             ELC_DMD         0.024592    
+    wet             hr22             ELC_DMD         0.024274    
+    wet             hr23             ELC_DMD         0.02332    
+    wet             hr24             ELC_DMD         0.022047999999999984    
+    dry             hr01             ELC_DMD         0.018424    
+    dry             hr02             ELC_DMD         0.017625    
+    dry             hr03             ELC_DMD         0.017107999999999998    
+    dry             hr04             ELC_DMD         0.016779    
+    dry             hr05             ELC_DMD         0.016779    
+    dry             hr06             ELC_DMD         0.017343    
+    dry             hr07             ELC_DMD         0.018142    
+    dry             hr08             ELC_DMD         0.018095    
+    dry             hr09             ELC_DMD         0.019035    
+    dry             hr10             ELC_DMD         0.019787    
+    dry             hr11             ELC_DMD         0.020256999999999997    
+    dry             hr12             ELC_DMD         0.020633    
+    dry             hr13             ELC_DMD         0.020679999999999997    
+    dry             hr14             ELC_DMD         0.020633    
+    dry             hr15             ELC_DMD         0.020585999999999997    
+    dry             hr16             ELC_DMD         0.020539    
+    dry             hr17             ELC_DMD         0.020492    
+    dry             hr18             ELC_DMD         0.020256999999999997    
+    dry             hr19             ELC_DMD         0.02115    
+    dry             hr20             ELC_DMD         0.02209    
+    dry             hr21             ELC_DMD         0.021807999999999998    
+    dry             hr22             ELC_DMD         0.021526    
+    dry             hr23             ELC_DMD         0.020679999999999997    
+    dry             hr24             ELC_DMD         0.019551999999999986    
+;
+
+param CapacityToActivity := 
+    EX_COAL         31.54    
+    EX_DSL_SIMP         31.54    
+    EX_DSL_CC         31.54    
+    EX_OIL_TYPE1         31.54    
+    EX_OIL_TYPE2         31.54    
+    EX_OIL_TYPE3         31.54    
+    EX_HYDRO         31.54    
+    EX_MSW_LF         31.54    
+    EX_NG_CC         31.54    
+    EX_SOLPV         31.54    
+    EX_WIND         31.54    
+    ED_BATT         31.54    
+    ED_NG_CC         31.54    
+    ED_NG_OC         31.54    
+    IMPCOAL         31.54    
+    IMPDSL         31.54    
+    IMPHYDRO         31.54    
+    IMPMSW_LF         31.54    
+    IMPOIL         31.54    
+    IMPNATGAS         31.54    
+    IMPSOLAR         31.54    
+    IMPWIND         31.54    
+    TRANS         31.54    
+    SUB         31.54    
+    DIST_TWR         31.54    
+    DIST_COND         31.54    
+    LOCAL         31.54    
+    COAL_TAX         31.54    
+    DSL_TAX         31.54    
+    MSW_LF_TAX         31.54    
+    OIL_TAX         31.54    
+    NATGAS_TAX         31.54    
+;
+
+param GlobalDiscountRate := 
+0.09
+;
+
+param EmissionActivity := 
+    CO2             ethos             IMPCOAL         2016         COAL         90.37    
+    CO2             ethos             IMPCOAL         2021         COAL         90.37    
+    CO2             ethos             IMPCOAL         2026         COAL         90.37    
+    CO2             ethos             IMPCOAL         2031         COAL         90.37    
+    CO2             ethos             IMPCOAL         2036         COAL         90.37    
+    CO2             ethos             IMPDSL         2016         DSL         69.34    
+    CO2             ethos             IMPDSL         2021         DSL         69.34    
+    CO2             ethos             IMPDSL         2026         DSL         69.34    
+    CO2             ethos             IMPDSL         2031         DSL         69.34    
+    CO2             ethos             IMPDSL         2036         DSL         69.34    
+    CO2             ethos             IMPMSW_LF         2016         MSW_LF         39.51    
+    CO2             ethos             IMPMSW_LF         2021         MSW_LF         39.51    
+    CO2             ethos             IMPMSW_LF         2026         MSW_LF         39.51    
+    CO2             ethos             IMPMSW_LF         2031         MSW_LF         39.51    
+    CO2             ethos             IMPMSW_LF         2036         MSW_LF         39.51    
+    CO2             ethos             IMPOIL         2016         OIL         67.58    
+    CO2             ethos             IMPOIL         2021         OIL         67.58    
+    CO2             ethos             IMPOIL         2026         OIL         67.58    
+    CO2             ethos             IMPOIL         2031         OIL         67.58    
+    CO2             ethos             IMPOIL         2036         OIL         67.58    
+    CO2             ethos             IMPNATGAS         2015         NATGAS         50.3    
+    CO2             ethos             IMPNATGAS         2016         NATGAS         50.3    
+    CO2             ethos             IMPNATGAS         2021         NATGAS         50.3    
+    CO2             ethos             IMPNATGAS         2026         NATGAS         50.3    
+    CO2             ethos             IMPNATGAS         2031         NATGAS         50.3    
+    CO2             ethos             IMPNATGAS         2036         NATGAS         50.3    
+;
+
+param Demand := 
+2016         ELC_DMD         75.24    
+2021         ELC_DMD         66.9996    
+2026         ELC_DMD         66.1032    
+2031         ELC_DMD         65.77    
+2036         ELC_DMD         65.47    
+;
+
+param MaxCapacity := 
+2016         EX_HYDRO         0.1027    
+2021         EX_HYDRO         0.1027    
+2026         EX_HYDRO         0.1027    
+2031         EX_HYDRO         0.1027    
+2036         EX_HYDRO         0.1027    
+;
+
+param LifetimeTech := 
+    EX_COAL         75.0    
+    EX_DSL_SIMP         50.0    
+    EX_DSL_CC         50.0    
+    EX_OIL_TYPE1         55.0    
+    EX_OIL_TYPE2         65.0    
+    EX_OIL_TYPE3         65.0    
+    EX_HYDRO         100.0    
+    EX_MSW_LF         45.0    
+    EX_NG_CC         55.0    
+    EX_SOLPV         30.0    
+    EX_WIND         30.0    
+    ED_BATT         15.0    
+    ED_NG_CC         55.0    
+    ED_NG_OC         55.0    
+    IMPCOAL         40.0    
+    IMPDSL         40.0    
+    IMPHYDRO         40.0    
+    IMPMSW_LF         40.0    
+    IMPOIL         40.0    
+    IMPNATGAS         40.0    
+    IMPSOLAR         40.0    
+    IMPWIND         40.0    
+    TRANS         30.0    
+    SUB         30.0    
+    DIST_TWR         30.0    
+    DIST_COND         30.0    
+    LOCAL         30.0    
+    COAL_TAX         30.0    
+    DSL_TAX         30.0    
+    MSW_LF_TAX         30.0    
+    OIL_TAX         30.0    
+    NATGAS_TAX         30.0    
+;
+
+param LifetimeLoanTech := 
+    EX_COAL         30.0    
+    EX_DSL_SIMP         30.0    
+    EX_DSL_CC         30.0    
+    EX_OIL_TYPE1         30.0    
+    EX_OIL_TYPE2         30.0    
+    EX_OIL_TYPE3         30.0    
+    EX_HYDRO         30.0    
+    EX_MSW_LF         30.0    
+    EX_NG_CC         30.0    
+    EX_SOLPV         30.0    
+    EX_WIND         30.0    
+    ED_BATT         15.0    
+    ED_NG_CC         30.0    
+    ED_NG_OC         30.0    
+    IMPCOAL         30.0    
+    IMPDSL         30.0    
+    IMPHYDRO         30.0    
+    IMPMSW_LF         30.0    
+    IMPOIL         30.0    
+    IMPNATGAS         30.0    
+    IMPSOLAR         30.0    
+    IMPWIND         30.0    
+    TRANS         30.0    
+    SUB         30.0    
+    DIST_TWR         30.0    
+    DIST_COND         30.0    
+    LOCAL         30.0    
+    COAL_TAX         30.0    
+    DSL_TAX         30.0    
+    MSW_LF_TAX         30.0    
+    OIL_TAX         30.0    
+    NATGAS_TAX         30.0    
+;
+
+param CapacityFactorTech := 
+    wet             hr01             EX_COAL         0.914    
+    wet             hr02             EX_COAL         0.914    
+    wet             hr03             EX_COAL         0.914    
+    wet             hr04             EX_COAL         0.914    
+    wet             hr05             EX_COAL         0.914    
+    wet             hr06             EX_COAL         0.914    
+    wet             hr07             EX_COAL         0.914    
+    wet             hr08             EX_COAL         0.914    
+    wet             hr09             EX_COAL         0.914    
+    wet             hr10             EX_COAL         0.914    
+    wet             hr11             EX_COAL         0.914    
+    wet             hr12             EX_COAL         0.914    
+    wet             hr13             EX_COAL         0.914    
+    wet             hr14             EX_COAL         0.914    
+    wet             hr15             EX_COAL         0.914    
+    wet             hr16             EX_COAL         0.914    
+    wet             hr17             EX_COAL         0.914    
+    wet             hr18             EX_COAL         0.914    
+    wet             hr19             EX_COAL         0.914    
+    wet             hr20             EX_COAL         0.914    
+    wet             hr21             EX_COAL         0.914    
+    wet             hr22             EX_COAL         0.914    
+    wet             hr23             EX_COAL         0.914    
+    wet             hr24             EX_COAL         0.914    
+    dry             hr01             EX_COAL         0.914    
+    dry             hr02             EX_COAL         0.914    
+    dry             hr03             EX_COAL         0.914    
+    dry             hr04             EX_COAL         0.914    
+    dry             hr05             EX_COAL         0.914    
+    dry             hr06             EX_COAL         0.914    
+    dry             hr07             EX_COAL         0.914    
+    dry             hr08             EX_COAL         0.914    
+    dry             hr09             EX_COAL         0.914    
+    dry             hr10             EX_COAL         0.914    
+    dry             hr11             EX_COAL         0.914    
+    dry             hr12             EX_COAL         0.914    
+    dry             hr13             EX_COAL         0.914    
+    dry             hr14             EX_COAL         0.914    
+    dry             hr15             EX_COAL         0.914    
+    dry             hr16             EX_COAL         0.914    
+    dry             hr17             EX_COAL         0.914    
+    dry             hr18             EX_COAL         0.914    
+    dry             hr19             EX_COAL         0.914    
+    dry             hr20             EX_COAL         0.914    
+    dry             hr21             EX_COAL         0.914    
+    dry             hr22             EX_COAL         0.914    
+    dry             hr23             EX_COAL         0.914    
+    dry             hr24             EX_COAL         0.914    
+    wet             hr01             EX_DSL_SIMP         0.76    
+    wet             hr02             EX_DSL_SIMP         0.76    
+    wet             hr03             EX_DSL_SIMP         0.76    
+    wet             hr04             EX_DSL_SIMP         0.76    
+    wet             hr05             EX_DSL_SIMP         0.76    
+    wet             hr06             EX_DSL_SIMP         0.76    
+    wet             hr07             EX_DSL_SIMP         0.76    
+    wet             hr08             EX_DSL_SIMP         0.76    
+    wet             hr09             EX_DSL_SIMP         0.76    
+    wet             hr10             EX_DSL_SIMP         0.76    
+    wet             hr11             EX_DSL_SIMP         0.76    
+    wet             hr12             EX_DSL_SIMP         0.76    
+    wet             hr13             EX_DSL_SIMP         0.76    
+    wet             hr14             EX_DSL_SIMP         0.76    
+    wet             hr15             EX_DSL_SIMP         0.76    
+    wet             hr16             EX_DSL_SIMP         0.76    
+    wet             hr17             EX_DSL_SIMP         0.76    
+    wet             hr18             EX_DSL_SIMP         0.76    
+    wet             hr19             EX_DSL_SIMP         0.76    
+    wet             hr20             EX_DSL_SIMP         0.76    
+    wet             hr21             EX_DSL_SIMP         0.76    
+    wet             hr22             EX_DSL_SIMP         0.76    
+    wet             hr23             EX_DSL_SIMP         0.76    
+    wet             hr24             EX_DSL_SIMP         0.76    
+    dry             hr01             EX_DSL_SIMP         0.76    
+    dry             hr02             EX_DSL_SIMP         0.76    
+    dry             hr03             EX_DSL_SIMP         0.76    
+    dry             hr04             EX_DSL_SIMP         0.76    
+    dry             hr05             EX_DSL_SIMP         0.76    
+    dry             hr06             EX_DSL_SIMP         0.76    
+    dry             hr07             EX_DSL_SIMP         0.76    
+    dry             hr08             EX_DSL_SIMP         0.76    
+    dry             hr09             EX_DSL_SIMP         0.76    
+    dry             hr10             EX_DSL_SIMP         0.76    
+    dry             hr11             EX_DSL_SIMP         0.76    
+    dry             hr12             EX_DSL_SIMP         0.76    
+    dry             hr13             EX_DSL_SIMP         0.76    
+    dry             hr14             EX_DSL_SIMP         0.76    
+    dry             hr15             EX_DSL_SIMP         0.76    
+    dry             hr16             EX_DSL_SIMP         0.76    
+    dry             hr17             EX_DSL_SIMP         0.76    
+    dry             hr18             EX_DSL_SIMP         0.76    
+    dry             hr19             EX_DSL_SIMP         0.76    
+    dry             hr20             EX_DSL_SIMP         0.76    
+    dry             hr21             EX_DSL_SIMP         0.76    
+    dry             hr22             EX_DSL_SIMP         0.76    
+    dry             hr23             EX_DSL_SIMP         0.76    
+    dry             hr24             EX_DSL_SIMP         0.76    
+    wet             hr01             EX_DSL_CC         0.8    
+    wet             hr02             EX_DSL_CC         0.8    
+    wet             hr03             EX_DSL_CC         0.8    
+    wet             hr04             EX_DSL_CC         0.8    
+    wet             hr05             EX_DSL_CC         0.8    
+    wet             hr06             EX_DSL_CC         0.8    
+    wet             hr07             EX_DSL_CC         0.8    
+    wet             hr08             EX_DSL_CC         0.8    
+    wet             hr09             EX_DSL_CC         0.8    
+    wet             hr10             EX_DSL_CC         0.8    
+    wet             hr11             EX_DSL_CC         0.8    
+    wet             hr12             EX_DSL_CC         0.8    
+    wet             hr13             EX_DSL_CC         0.8    
+    wet             hr14             EX_DSL_CC         0.8    
+    wet             hr15             EX_DSL_CC         0.8    
+    wet             hr16             EX_DSL_CC         0.8    
+    wet             hr17             EX_DSL_CC         0.8    
+    wet             hr18             EX_DSL_CC         0.8    
+    wet             hr19             EX_DSL_CC         0.8    
+    wet             hr20             EX_DSL_CC         0.8    
+    wet             hr21             EX_DSL_CC         0.8    
+    wet             hr22             EX_DSL_CC         0.8    
+    wet             hr23             EX_DSL_CC         0.8    
+    wet             hr24             EX_DSL_CC         0.8    
+    dry             hr01             EX_DSL_CC         0.8    
+    dry             hr02             EX_DSL_CC         0.8    
+    dry             hr03             EX_DSL_CC         0.8    
+    dry             hr04             EX_DSL_CC         0.8    
+    dry             hr05             EX_DSL_CC         0.8    
+    dry             hr06             EX_DSL_CC         0.8    
+    dry             hr07             EX_DSL_CC         0.8    
+    dry             hr08             EX_DSL_CC         0.8    
+    dry             hr09             EX_DSL_CC         0.8    
+    dry             hr10             EX_DSL_CC         0.8    
+    dry             hr11             EX_DSL_CC         0.8    
+    dry             hr12             EX_DSL_CC         0.8    
+    dry             hr13             EX_DSL_CC         0.8    
+    dry             hr14             EX_DSL_CC         0.8    
+    dry             hr15             EX_DSL_CC         0.8    
+    dry             hr16             EX_DSL_CC         0.8    
+    dry             hr17             EX_DSL_CC         0.8    
+    dry             hr18             EX_DSL_CC         0.8    
+    dry             hr19             EX_DSL_CC         0.8    
+    dry             hr20             EX_DSL_CC         0.8    
+    dry             hr21             EX_DSL_CC         0.8    
+    dry             hr22             EX_DSL_CC         0.8    
+    dry             hr23             EX_DSL_CC         0.8    
+    dry             hr24             EX_DSL_CC         0.8    
+    wet             hr01             EX_OIL_TYPE1         0.89    
+    wet             hr02             EX_OIL_TYPE1         0.89    
+    wet             hr03             EX_OIL_TYPE1         0.89    
+    wet             hr04             EX_OIL_TYPE1         0.89    
+    wet             hr05             EX_OIL_TYPE1         0.89    
+    wet             hr06             EX_OIL_TYPE1         0.89    
+    wet             hr07             EX_OIL_TYPE1         0.89    
+    wet             hr08             EX_OIL_TYPE1         0.89    
+    wet             hr09             EX_OIL_TYPE1         0.89    
+    wet             hr10             EX_OIL_TYPE1         0.89    
+    wet             hr11             EX_OIL_TYPE1         0.89    
+    wet             hr12             EX_OIL_TYPE1         0.89    
+    wet             hr13             EX_OIL_TYPE1         0.89    
+    wet             hr14             EX_OIL_TYPE1         0.89    
+    wet             hr15             EX_OIL_TYPE1         0.89    
+    wet             hr16             EX_OIL_TYPE1         0.89    
+    wet             hr17             EX_OIL_TYPE1         0.89    
+    wet             hr18             EX_OIL_TYPE1         0.89    
+    wet             hr19             EX_OIL_TYPE1         0.89    
+    wet             hr20             EX_OIL_TYPE1         0.89    
+    wet             hr21             EX_OIL_TYPE1         0.89    
+    wet             hr22             EX_OIL_TYPE1         0.89    
+    wet             hr23             EX_OIL_TYPE1         0.89    
+    wet             hr24             EX_OIL_TYPE1         0.89    
+    dry             hr01             EX_OIL_TYPE1         0.89    
+    dry             hr02             EX_OIL_TYPE1         0.89    
+    dry             hr03             EX_OIL_TYPE1         0.89    
+    dry             hr04             EX_OIL_TYPE1         0.89    
+    dry             hr05             EX_OIL_TYPE1         0.89    
+    dry             hr06             EX_OIL_TYPE1         0.89    
+    dry             hr07             EX_OIL_TYPE1         0.89    
+    dry             hr08             EX_OIL_TYPE1         0.89    
+    dry             hr09             EX_OIL_TYPE1         0.89    
+    dry             hr10             EX_OIL_TYPE1         0.89    
+    dry             hr11             EX_OIL_TYPE1         0.89    
+    dry             hr12             EX_OIL_TYPE1         0.89    
+    dry             hr13             EX_OIL_TYPE1         0.89    
+    dry             hr14             EX_OIL_TYPE1         0.89    
+    dry             hr15             EX_OIL_TYPE1         0.89    
+    dry             hr16             EX_OIL_TYPE1         0.89    
+    dry             hr17             EX_OIL_TYPE1         0.89    
+    dry             hr18             EX_OIL_TYPE1         0.89    
+    dry             hr19             EX_OIL_TYPE1         0.89    
+    dry             hr20             EX_OIL_TYPE1         0.89    
+    dry             hr21             EX_OIL_TYPE1         0.89    
+    dry             hr22             EX_OIL_TYPE1         0.89    
+    dry             hr23             EX_OIL_TYPE1         0.89    
+    dry             hr24             EX_OIL_TYPE1         0.89    
+    wet             hr01             EX_OIL_TYPE2         0.58    
+    wet             hr02             EX_OIL_TYPE2         0.58    
+    wet             hr03             EX_OIL_TYPE2         0.58    
+    wet             hr04             EX_OIL_TYPE2         0.58    
+    wet             hr05             EX_OIL_TYPE2         0.58    
+    wet             hr06             EX_OIL_TYPE2         0.58    
+    wet             hr07             EX_OIL_TYPE2         0.58    
+    wet             hr08             EX_OIL_TYPE2         0.58    
+    wet             hr09             EX_OIL_TYPE2         0.58    
+    wet             hr10             EX_OIL_TYPE2         0.58    
+    wet             hr11             EX_OIL_TYPE2         0.58    
+    wet             hr12             EX_OIL_TYPE2         0.58    
+    wet             hr13             EX_OIL_TYPE2         0.58    
+    wet             hr14             EX_OIL_TYPE2         0.58    
+    wet             hr15             EX_OIL_TYPE2         0.58    
+    wet             hr16             EX_OIL_TYPE2         0.58    
+    wet             hr17             EX_OIL_TYPE2         0.58    
+    wet             hr18             EX_OIL_TYPE2         0.58    
+    wet             hr19             EX_OIL_TYPE2         0.58    
+    wet             hr20             EX_OIL_TYPE2         0.58    
+    wet             hr21             EX_OIL_TYPE2         0.58    
+    wet             hr22             EX_OIL_TYPE2         0.58    
+    wet             hr23             EX_OIL_TYPE2         0.58    
+    wet             hr24             EX_OIL_TYPE2         0.58    
+    dry             hr01             EX_OIL_TYPE2         0.58    
+    dry             hr02             EX_OIL_TYPE2         0.58    
+    dry             hr03             EX_OIL_TYPE2         0.58    
+    dry             hr04             EX_OIL_TYPE2         0.58    
+    dry             hr05             EX_OIL_TYPE2         0.58    
+    dry             hr06             EX_OIL_TYPE2         0.58    
+    dry             hr07             EX_OIL_TYPE2         0.58    
+    dry             hr08             EX_OIL_TYPE2         0.58    
+    dry             hr09             EX_OIL_TYPE2         0.58    
+    dry             hr10             EX_OIL_TYPE2         0.58    
+    dry             hr11             EX_OIL_TYPE2         0.58    
+    dry             hr12             EX_OIL_TYPE2         0.58    
+    dry             hr13             EX_OIL_TYPE2         0.58    
+    dry             hr14             EX_OIL_TYPE2         0.58    
+    dry             hr15             EX_OIL_TYPE2         0.58    
+    dry             hr16             EX_OIL_TYPE2         0.58    
+    dry             hr17             EX_OIL_TYPE2         0.58    
+    dry             hr18             EX_OIL_TYPE2         0.58    
+    dry             hr19             EX_OIL_TYPE2         0.58    
+    dry             hr20             EX_OIL_TYPE2         0.58    
+    dry             hr21             EX_OIL_TYPE2         0.58    
+    dry             hr22             EX_OIL_TYPE2         0.58    
+    dry             hr23             EX_OIL_TYPE2         0.58    
+    dry             hr24             EX_OIL_TYPE2         0.58    
+    wet             hr01             EX_OIL_TYPE3         0.785    
+    wet             hr02             EX_OIL_TYPE3         0.785    
+    wet             hr03             EX_OIL_TYPE3         0.785    
+    wet             hr04             EX_OIL_TYPE3         0.785    
+    wet             hr05             EX_OIL_TYPE3         0.785    
+    wet             hr06             EX_OIL_TYPE3         0.785    
+    wet             hr07             EX_OIL_TYPE3         0.785    
+    wet             hr08             EX_OIL_TYPE3         0.785    
+    wet             hr09             EX_OIL_TYPE3         0.785    
+    wet             hr10             EX_OIL_TYPE3         0.785    
+    wet             hr11             EX_OIL_TYPE3         0.785    
+    wet             hr12             EX_OIL_TYPE3         0.785    
+    wet             hr13             EX_OIL_TYPE3         0.785    
+    wet             hr14             EX_OIL_TYPE3         0.785    
+    wet             hr15             EX_OIL_TYPE3         0.785    
+    wet             hr16             EX_OIL_TYPE3         0.785    
+    wet             hr17             EX_OIL_TYPE3         0.785    
+    wet             hr18             EX_OIL_TYPE3         0.785    
+    wet             hr19             EX_OIL_TYPE3         0.785    
+    wet             hr20             EX_OIL_TYPE3         0.785    
+    wet             hr21             EX_OIL_TYPE3         0.785    
+    wet             hr22             EX_OIL_TYPE3         0.785    
+    wet             hr23             EX_OIL_TYPE3         0.785    
+    wet             hr24             EX_OIL_TYPE3         0.785    
+    dry             hr01             EX_OIL_TYPE3         0.785    
+    dry             hr02             EX_OIL_TYPE3         0.785    
+    dry             hr03             EX_OIL_TYPE3         0.785    
+    dry             hr04             EX_OIL_TYPE3         0.785    
+    dry             hr05             EX_OIL_TYPE3         0.785    
+    dry             hr06             EX_OIL_TYPE3         0.785    
+    dry             hr07             EX_OIL_TYPE3         0.785    
+    dry             hr08             EX_OIL_TYPE3         0.785    
+    dry             hr09             EX_OIL_TYPE3         0.785    
+    dry             hr10             EX_OIL_TYPE3         0.785    
+    dry             hr11             EX_OIL_TYPE3         0.785    
+    dry             hr12             EX_OIL_TYPE3         0.785    
+    dry             hr13             EX_OIL_TYPE3         0.785    
+    dry             hr14             EX_OIL_TYPE3         0.785    
+    dry             hr15             EX_OIL_TYPE3         0.785    
+    dry             hr16             EX_OIL_TYPE3         0.785    
+    dry             hr17             EX_OIL_TYPE3         0.785    
+    dry             hr18             EX_OIL_TYPE3         0.785    
+    dry             hr19             EX_OIL_TYPE3         0.785    
+    dry             hr20             EX_OIL_TYPE3         0.785    
+    dry             hr21             EX_OIL_TYPE3         0.785    
+    dry             hr22             EX_OIL_TYPE3         0.785    
+    dry             hr23             EX_OIL_TYPE3         0.785    
+    dry             hr24             EX_OIL_TYPE3         0.785    
+    wet             hr01             EX_HYDRO         0.63    
+    wet             hr02             EX_HYDRO         0.63    
+    wet             hr03             EX_HYDRO         0.63    
+    wet             hr04             EX_HYDRO         0.63    
+    wet             hr05             EX_HYDRO         0.63    
+    wet             hr06             EX_HYDRO         0.63    
+    wet             hr07             EX_HYDRO         0.63    
+    wet             hr08             EX_HYDRO         0.63    
+    wet             hr09             EX_HYDRO         0.63    
+    wet             hr10             EX_HYDRO         0.63    
+    wet             hr11             EX_HYDRO         0.63    
+    wet             hr12             EX_HYDRO         0.63    
+    wet             hr13             EX_HYDRO         0.63    
+    wet             hr14             EX_HYDRO         0.63    
+    wet             hr15             EX_HYDRO         0.63    
+    wet             hr16             EX_HYDRO         0.63    
+    wet             hr17             EX_HYDRO         0.63    
+    wet             hr18             EX_HYDRO         0.63    
+    wet             hr19             EX_HYDRO         0.63    
+    wet             hr20             EX_HYDRO         0.63    
+    wet             hr21             EX_HYDRO         0.63    
+    wet             hr22             EX_HYDRO         0.63    
+    wet             hr23             EX_HYDRO         0.63    
+    wet             hr24             EX_HYDRO         0.63    
+    dry             hr01             EX_HYDRO         0.63    
+    dry             hr02             EX_HYDRO         0.63    
+    dry             hr03             EX_HYDRO         0.63    
+    dry             hr04             EX_HYDRO         0.63    
+    dry             hr05             EX_HYDRO         0.63    
+    dry             hr06             EX_HYDRO         0.63    
+    dry             hr07             EX_HYDRO         0.63    
+    dry             hr08             EX_HYDRO         0.63    
+    dry             hr09             EX_HYDRO         0.63    
+    dry             hr10             EX_HYDRO         0.63    
+    dry             hr11             EX_HYDRO         0.63    
+    dry             hr12             EX_HYDRO         0.63    
+    dry             hr13             EX_HYDRO         0.63    
+    dry             hr14             EX_HYDRO         0.63    
+    dry             hr15             EX_HYDRO         0.63    
+    dry             hr16             EX_HYDRO         0.63    
+    dry             hr17             EX_HYDRO         0.63    
+    dry             hr18             EX_HYDRO         0.63    
+    dry             hr19             EX_HYDRO         0.63    
+    dry             hr20             EX_HYDRO         0.63    
+    dry             hr21             EX_HYDRO         0.63    
+    dry             hr22             EX_HYDRO         0.63    
+    dry             hr23             EX_HYDRO         0.63    
+    dry             hr24             EX_HYDRO         0.63    
+    wet             hr01             EX_MSW_LF         0.56    
+    wet             hr02             EX_MSW_LF         0.56    
+    wet             hr03             EX_MSW_LF         0.56    
+    wet             hr04             EX_MSW_LF         0.56    
+    wet             hr05             EX_MSW_LF         0.56    
+    wet             hr06             EX_MSW_LF         0.56    
+    wet             hr07             EX_MSW_LF         0.56    
+    wet             hr08             EX_MSW_LF         0.56    
+    wet             hr09             EX_MSW_LF         0.56    
+    wet             hr10             EX_MSW_LF         0.56    
+    wet             hr11             EX_MSW_LF         0.56    
+    wet             hr12             EX_MSW_LF         0.56    
+    wet             hr13             EX_MSW_LF         0.56    
+    wet             hr14             EX_MSW_LF         0.56    
+    wet             hr15             EX_MSW_LF         0.56    
+    wet             hr16             EX_MSW_LF         0.56    
+    wet             hr17             EX_MSW_LF         0.56    
+    wet             hr18             EX_MSW_LF         0.56    
+    wet             hr19             EX_MSW_LF         0.56    
+    wet             hr20             EX_MSW_LF         0.56    
+    wet             hr21             EX_MSW_LF         0.56    
+    wet             hr22             EX_MSW_LF         0.56    
+    wet             hr23             EX_MSW_LF         0.56    
+    wet             hr24             EX_MSW_LF         0.56    
+    dry             hr01             EX_MSW_LF         0.56    
+    dry             hr02             EX_MSW_LF         0.56    
+    dry             hr03             EX_MSW_LF         0.56    
+    dry             hr04             EX_MSW_LF         0.56    
+    dry             hr05             EX_MSW_LF         0.56    
+    dry             hr06             EX_MSW_LF         0.56    
+    dry             hr07             EX_MSW_LF         0.56    
+    dry             hr08             EX_MSW_LF         0.56    
+    dry             hr09             EX_MSW_LF         0.56    
+    dry             hr10             EX_MSW_LF         0.56    
+    dry             hr11             EX_MSW_LF         0.56    
+    dry             hr12             EX_MSW_LF         0.56    
+    dry             hr13             EX_MSW_LF         0.56    
+    dry             hr14             EX_MSW_LF         0.56    
+    dry             hr15             EX_MSW_LF         0.56    
+    dry             hr16             EX_MSW_LF         0.56    
+    dry             hr17             EX_MSW_LF         0.56    
+    dry             hr18             EX_MSW_LF         0.56    
+    dry             hr19             EX_MSW_LF         0.56    
+    dry             hr20             EX_MSW_LF         0.56    
+    dry             hr21             EX_MSW_LF         0.56    
+    dry             hr22             EX_MSW_LF         0.56    
+    dry             hr23             EX_MSW_LF         0.56    
+    dry             hr24             EX_MSW_LF         0.56    
+    wet             hr01             EX_NG_CC         0.93    
+    wet             hr02             EX_NG_CC         0.93    
+    wet             hr03             EX_NG_CC         0.93    
+    wet             hr04             EX_NG_CC         0.93    
+    wet             hr05             EX_NG_CC         0.93    
+    wet             hr06             EX_NG_CC         0.93    
+    wet             hr07             EX_NG_CC         0.93    
+    wet             hr08             EX_NG_CC         0.93    
+    wet             hr09             EX_NG_CC         0.93    
+    wet             hr10             EX_NG_CC         0.93    
+    wet             hr11             EX_NG_CC         0.93    
+    wet             hr12             EX_NG_CC         0.93    
+    wet             hr13             EX_NG_CC         0.93    
+    wet             hr14             EX_NG_CC         0.93    
+    wet             hr15             EX_NG_CC         0.93    
+    wet             hr16             EX_NG_CC         0.93    
+    wet             hr17             EX_NG_CC         0.93    
+    wet             hr18             EX_NG_CC         0.93    
+    wet             hr19             EX_NG_CC         0.93    
+    wet             hr20             EX_NG_CC         0.93    
+    wet             hr21             EX_NG_CC         0.93    
+    wet             hr22             EX_NG_CC         0.93    
+    wet             hr23             EX_NG_CC         0.93    
+    wet             hr24             EX_NG_CC         0.93    
+    dry             hr01             EX_NG_CC         0.93    
+    dry             hr02             EX_NG_CC         0.93    
+    dry             hr03             EX_NG_CC         0.93    
+    dry             hr04             EX_NG_CC         0.93    
+    dry             hr05             EX_NG_CC         0.93    
+    dry             hr06             EX_NG_CC         0.93    
+    dry             hr07             EX_NG_CC         0.93    
+    dry             hr08             EX_NG_CC         0.93    
+    dry             hr09             EX_NG_CC         0.93    
+    dry             hr10             EX_NG_CC         0.93    
+    dry             hr11             EX_NG_CC         0.93    
+    dry             hr12             EX_NG_CC         0.93    
+    dry             hr13             EX_NG_CC         0.93    
+    dry             hr14             EX_NG_CC         0.93    
+    dry             hr15             EX_NG_CC         0.93    
+    dry             hr16             EX_NG_CC         0.93    
+    dry             hr17             EX_NG_CC         0.93    
+    dry             hr18             EX_NG_CC         0.93    
+    dry             hr19             EX_NG_CC         0.93    
+    dry             hr20             EX_NG_CC         0.93    
+    dry             hr21             EX_NG_CC         0.93    
+    dry             hr22             EX_NG_CC         0.93    
+    dry             hr23             EX_NG_CC         0.93    
+    dry             hr24             EX_NG_CC         0.93    
+    wet             hr01             EX_SOLPV         0.0    
+    wet             hr02             EX_SOLPV         0.0    
+    wet             hr03             EX_SOLPV         0.0    
+    wet             hr04             EX_SOLPV         0.0    
+    wet             hr05             EX_SOLPV         0.0    
+    wet             hr06             EX_SOLPV         0.0    
+    wet             hr07             EX_SOLPV         0.0    
+    wet             hr08             EX_SOLPV         0.0    
+    wet             hr09             EX_SOLPV         0.21177054169216    
+    wet             hr10             EX_SOLPV         0.3523667029036    
+    wet             hr11             EX_SOLPV         0.6502799805568    
+    wet             hr12             EX_SOLPV         0.8327173988452    
+    wet             hr13             EX_SOLPV         0.8307601423594    
+    wet             hr14             EX_SOLPV         0.7687146813588    
+    wet             hr15             EX_SOLPV         0.6224326269282    
+    wet             hr16             EX_SOLPV         0.5083871113244    
+    wet             hr17             EX_SOLPV         0.35630882052920004    
+    wet             hr18             EX_SOLPV         0.14626199350312    
+    wet             hr19             EX_SOLPV         0.0    
+    wet             hr20             EX_SOLPV         0.0    
+    wet             hr21             EX_SOLPV         0.0    
+    wet             hr22             EX_SOLPV         0.0    
+    wet             hr23             EX_SOLPV         0.0    
+    wet             hr24             EX_SOLPV         0.0    
+    dry             hr01             EX_SOLPV         0.0    
+    dry             hr02             EX_SOLPV         0.0    
+    dry             hr03             EX_SOLPV         0.0    
+    dry             hr04             EX_SOLPV         0.0    
+    dry             hr05             EX_SOLPV         0.0    
+    dry             hr06             EX_SOLPV         0.0    
+    dry             hr07             EX_SOLPV         0.0    
+    dry             hr08             EX_SOLPV         0.0014966704983582    
+    dry             hr09             EX_SOLPV         0.13812515870296    
+    dry             hr10             EX_SOLPV         0.340083723474    
+    dry             hr11             EX_SOLPV         0.5420229339756    
+    dry             hr12             EX_SOLPV         0.6611264677754    
+    dry             hr13             EX_SOLPV         0.7767964867256    
+    dry             hr14             EX_SOLPV         0.813132116797    
+    dry             hr15             EX_SOLPV         0.7430409240188    
+    dry             hr16             EX_SOLPV         0.6109194409538    
+    dry             hr17             EX_SOLPV         0.4309114402934    
+    dry             hr18             EX_SOLPV         0.2223446367824    
+    dry             hr19             EX_SOLPV         0.0    
+    dry             hr20             EX_SOLPV         0.0    
+    dry             hr21             EX_SOLPV         0.0    
+    dry             hr22             EX_SOLPV         0.0    
+    dry             hr23             EX_SOLPV         0.0    
+    dry             hr24             EX_SOLPV         0.0    
+    wet             hr01             EX_WIND         0.0    
+    wet             hr02             EX_WIND         0.19366263617448    
+    wet             hr03             EX_WIND         0.14845354352849    
+    wet             hr04             EX_WIND         0.16974941298887    
+    wet             hr05             EX_WIND         0.1704560806043    
+    wet             hr06             EX_WIND         0.06878630834657    
+    wet             hr07             EX_WIND         0.1035565091678    
+    wet             hr08             EX_WIND         0.14068019975845    
+    wet             hr09             EX_WIND         0.26741414095433    
+    wet             hr10             EX_WIND         0.4930811551216    
+    wet             hr11             EX_WIND         0.6094001780817    
+    wet             hr12             EX_WIND         0.6427606947569    
+    wet             hr13             EX_WIND         0.6122958540592001    
+    wet             hr14             EX_WIND         0.5769376824172    
+    wet             hr15             EX_WIND         0.48222831725449994    
+    wet             hr16             EX_WIND         0.45300837316799997    
+    wet             hr17             EX_WIND         0.4831430827044    
+    wet             hr18             EX_WIND         0.44067785389889996    
+    wet             hr19             EX_WIND         0.3574482545112    
+    wet             hr20             EX_WIND         0.29632378770185    
+    wet             hr21             EX_WIND         0.22165760671954998    
+    wet             hr22             EX_WIND         0.19626031054822    
+    wet             hr23             EX_WIND         0.17673558270644    
+    wet             hr24             EX_WIND         0.13528243482581    
+    dry             hr01             EX_WIND         0.0    
+    dry             hr02             EX_WIND         0.11849455695951    
+    dry             hr03             EX_WIND         0.16415199583324    
+    dry             hr04             EX_WIND         0.18323010209725002    
+    dry             hr05             EX_WIND         0.17023000550186    
+    dry             hr06             EX_WIND         0.16714779931555002    
+    dry             hr07             EX_WIND         0.14509811542319    
+    dry             hr08             EX_WIND         0.14900934852265    
+    dry             hr09             EX_WIND         0.21159310164865    
+    dry             hr10             EX_WIND         0.550893556559    
+    dry             hr11             EX_WIND         0.6019919176859    
+    dry             hr12             EX_WIND         0.6090360935225    
+    dry             hr13             EX_WIND         0.5921737516412    
+    dry             hr14             EX_WIND         0.5635631629048999    
+    dry             hr15             EX_WIND         0.5640972521244    
+    dry             hr16             EX_WIND         0.5696676661835    
+    dry             hr17             EX_WIND         0.5259254690378999    
+    dry             hr18             EX_WIND         0.527288696924    
+    dry             hr19             EX_WIND         0.40786145020950004    
+    dry             hr20             EX_WIND         0.26177818147297    
+    dry             hr21             EX_WIND         0.15439212227565    
+    dry             hr22             EX_WIND         0.057088013364510005    
+    dry             hr23             EX_WIND         0.06420374658357    
+    dry             hr24             EX_WIND         0.08108389420767    
+    wet             hr01             ED_BATT         0.5    
+    wet             hr02             ED_BATT         0.5    
+    wet             hr03             ED_BATT         0.5    
+    wet             hr04             ED_BATT         0.5    
+    wet             hr05             ED_BATT         0.5    
+    wet             hr06             ED_BATT         0.5    
+    wet             hr07             ED_BATT         0.5    
+    wet             hr08             ED_BATT         0.5    
+    wet             hr09             ED_BATT         0.5    
+    wet             hr10             ED_BATT         0.5    
+    wet             hr11             ED_BATT         0.5    
+    wet             hr12             ED_BATT         0.5    
+    wet             hr13             ED_BATT         0.5    
+    wet             hr14             ED_BATT         0.5    
+    wet             hr15             ED_BATT         0.5    
+    wet             hr16             ED_BATT         0.5    
+    wet             hr17             ED_BATT         0.5    
+    wet             hr18             ED_BATT         0.5    
+    wet             hr19             ED_BATT         0.5    
+    wet             hr20             ED_BATT         0.5    
+    wet             hr21             ED_BATT         0.5    
+    wet             hr22             ED_BATT         0.5    
+    wet             hr23             ED_BATT         0.5    
+    wet             hr24             ED_BATT         0.5    
+    dry             hr01             ED_BATT         0.5    
+    dry             hr02             ED_BATT         0.5    
+    dry             hr03             ED_BATT         0.5    
+    dry             hr04             ED_BATT         0.5    
+    dry             hr05             ED_BATT         0.5    
+    dry             hr06             ED_BATT         0.5    
+    dry             hr07             ED_BATT         0.5    
+    dry             hr08             ED_BATT         0.5    
+    dry             hr09             ED_BATT         0.5    
+    dry             hr10             ED_BATT         0.5    
+    dry             hr11             ED_BATT         0.5    
+    dry             hr12             ED_BATT         0.5    
+    dry             hr13             ED_BATT         0.5    
+    dry             hr14             ED_BATT         0.5    
+    dry             hr15             ED_BATT         0.5    
+    dry             hr16             ED_BATT         0.5    
+    dry             hr17             ED_BATT         0.5    
+    dry             hr18             ED_BATT         0.5    
+    dry             hr19             ED_BATT         0.5    
+    dry             hr20             ED_BATT         0.5    
+    dry             hr21             ED_BATT         0.5    
+    dry             hr22             ED_BATT         0.5    
+    dry             hr23             ED_BATT         0.5    
+    dry             hr24             ED_BATT         0.5    
+    wet             hr01             ED_NG_CC         0.87    
+    wet             hr02             ED_NG_CC         0.87    
+    wet             hr03             ED_NG_CC         0.87    
+    wet             hr04             ED_NG_CC         0.87    
+    wet             hr05             ED_NG_CC         0.87    
+    wet             hr06             ED_NG_CC         0.87    
+    wet             hr07             ED_NG_CC         0.87    
+    wet             hr08             ED_NG_CC         0.87    
+    wet             hr09             ED_NG_CC         0.87    
+    wet             hr10             ED_NG_CC         0.87    
+    wet             hr11             ED_NG_CC         0.87    
+    wet             hr12             ED_NG_CC         0.87    
+    wet             hr13             ED_NG_CC         0.87    
+    wet             hr14             ED_NG_CC         0.87    
+    wet             hr15             ED_NG_CC         0.87    
+    wet             hr16             ED_NG_CC         0.87    
+    wet             hr17             ED_NG_CC         0.87    
+    wet             hr18             ED_NG_CC         0.87    
+    wet             hr19             ED_NG_CC         0.87    
+    wet             hr20             ED_NG_CC         0.87    
+    wet             hr21             ED_NG_CC         0.87    
+    wet             hr22             ED_NG_CC         0.87    
+    wet             hr23             ED_NG_CC         0.87    
+    wet             hr24             ED_NG_CC         0.87    
+    dry             hr01             ED_NG_CC         0.87    
+    dry             hr02             ED_NG_CC         0.87    
+    dry             hr03             ED_NG_CC         0.87    
+    dry             hr04             ED_NG_CC         0.87    
+    dry             hr05             ED_NG_CC         0.87    
+    dry             hr06             ED_NG_CC         0.87    
+    dry             hr07             ED_NG_CC         0.87    
+    dry             hr08             ED_NG_CC         0.87    
+    dry             hr09             ED_NG_CC         0.87    
+    dry             hr10             ED_NG_CC         0.87    
+    dry             hr11             ED_NG_CC         0.87    
+    dry             hr12             ED_NG_CC         0.87    
+    dry             hr13             ED_NG_CC         0.87    
+    dry             hr14             ED_NG_CC         0.87    
+    dry             hr15             ED_NG_CC         0.87    
+    dry             hr16             ED_NG_CC         0.87    
+    dry             hr17             ED_NG_CC         0.87    
+    dry             hr18             ED_NG_CC         0.87    
+    dry             hr19             ED_NG_CC         0.87    
+    dry             hr20             ED_NG_CC         0.87    
+    dry             hr21             ED_NG_CC         0.87    
+    dry             hr22             ED_NG_CC         0.87    
+    dry             hr23             ED_NG_CC         0.87    
+    dry             hr24             ED_NG_CC         0.87    
+    wet             hr01             ED_NG_OC         0.3    
+    wet             hr02             ED_NG_OC         0.3    
+    wet             hr03             ED_NG_OC         0.3    
+    wet             hr04             ED_NG_OC         0.3    
+    wet             hr05             ED_NG_OC         0.3    
+    wet             hr06             ED_NG_OC         0.3    
+    wet             hr07             ED_NG_OC         0.3    
+    wet             hr08             ED_NG_OC         0.3    
+    wet             hr09             ED_NG_OC         0.3    
+    wet             hr10             ED_NG_OC         0.3    
+    wet             hr11             ED_NG_OC         0.3    
+    wet             hr12             ED_NG_OC         0.3    
+    wet             hr13             ED_NG_OC         0.3    
+    wet             hr14             ED_NG_OC         0.3    
+    wet             hr15             ED_NG_OC         0.3    
+    wet             hr16             ED_NG_OC         0.3    
+    wet             hr17             ED_NG_OC         0.3    
+    wet             hr18             ED_NG_OC         0.3    
+    wet             hr19             ED_NG_OC         0.3    
+    wet             hr20             ED_NG_OC         0.3    
+    wet             hr21             ED_NG_OC         0.3    
+    wet             hr22             ED_NG_OC         0.3    
+    wet             hr23             ED_NG_OC         0.3    
+    wet             hr24             ED_NG_OC         0.3    
+    dry             hr01             ED_NG_OC         0.3    
+    dry             hr02             ED_NG_OC         0.3    
+    dry             hr03             ED_NG_OC         0.3    
+    dry             hr04             ED_NG_OC         0.3    
+    dry             hr05             ED_NG_OC         0.3    
+    dry             hr06             ED_NG_OC         0.3    
+    dry             hr07             ED_NG_OC         0.3    
+    dry             hr08             ED_NG_OC         0.3    
+    dry             hr09             ED_NG_OC         0.3    
+    dry             hr10             ED_NG_OC         0.3    
+    dry             hr11             ED_NG_OC         0.3    
+    dry             hr12             ED_NG_OC         0.3    
+    dry             hr13             ED_NG_OC         0.3    
+    dry             hr14             ED_NG_OC         0.3    
+    dry             hr15             ED_NG_OC         0.3    
+    dry             hr16             ED_NG_OC         0.3    
+    dry             hr17             ED_NG_OC         0.3    
+    dry             hr18             ED_NG_OC         0.3    
+    dry             hr19             ED_NG_OC         0.3    
+    dry             hr20             ED_NG_OC         0.3    
+    dry             hr21             ED_NG_OC         0.3    
+    dry             hr22             ED_NG_OC         0.3    
+    dry             hr23             ED_NG_OC         0.3    
+    dry             hr24             ED_NG_OC         0.3    
+;
+
+param Efficiency := 
+    COAL_TAXED             EX_COAL         2002         ELC_CENTRAL         0.348    
+    DSL_TAXED             EX_DSL_SIMP         1973         ELC_CENTRAL         0.299    
+    DSL_TAXED             EX_DSL_SIMP         1997         ELC_CENTRAL         0.299    
+    DSL_TAXED             EX_DSL_SIMP         2009         ELC_CENTRAL         0.299    
+    DSL_TAXED             EX_DSL_CC         1975         ELC_CENTRAL         0.4    
+    DSL_TAXED             EX_DSL_CC         1976         ELC_CENTRAL         0.4    
+    DSL_TAXED             EX_DSL_CC         2008         ELC_CENTRAL         0.4    
+    OIL_TAXED             EX_OIL_TYPE1         1971         ELC_CENTRAL         0.353    
+    OIL_TAXED             EX_OIL_TYPE2         1960         ELC_CENTRAL         0.34600000000000003    
+    OIL_TAXED             EX_OIL_TYPE2         1962         ELC_CENTRAL         0.34600000000000003    
+    OIL_TAXED             EX_OIL_TYPE2         1969         ELC_CENTRAL         0.34600000000000003    
+    OIL_TAXED             EX_OIL_TYPE2         1972         ELC_CENTRAL         0.34600000000000003    
+    OIL_TAXED             EX_OIL_TYPE3         1959         ELC_CENTRAL         0.341    
+    OIL_TAXED             EX_OIL_TYPE3         1964         ELC_CENTRAL         0.341    
+    OIL_TAXED             EX_OIL_TYPE3         1965         ELC_CENTRAL         0.341    
+    OIL_TAXED             EX_OIL_TYPE3         1966         ELC_CENTRAL         0.341    
+    OIL_TAXED             EX_OIL_TYPE3         1967         ELC_CENTRAL         0.341    
+    OIL_TAXED             EX_OIL_TYPE3         1968         ELC_CENTRAL         0.341    
+    HYDRO             EX_HYDRO         1953         ELC_CENTRAL         0.368    
+    HYDRO             EX_HYDRO         2021         ELC_CENTRAL         0.368    
+    HYDRO             EX_HYDRO         2026         ELC_CENTRAL         0.368    
+    HYDRO             EX_HYDRO         2031         ELC_CENTRAL         0.368    
+    HYDRO             EX_HYDRO         2036         ELC_CENTRAL         0.368    
+    MSW_LF_TAXED             EX_MSW_LF         2015         ELC_CENTRAL         0.19    
+    NATGAS_TAXED             EX_NG_CC         2000         ELC_CENTRAL         0.455    
+    SOLAR             EX_SOLPV         2012         ELC_CENTRAL         0.368    
+    SOLAR             EX_SOLPV         2015         ELC_CENTRAL         0.368    
+    WIND             EX_WIND         2012         ELC_CENTRAL         0.368    
+    ELC_DIST             ED_BATT         2021         ELC_DIST         0.85    
+    ELC_DIST             ED_BATT         2026         ELC_DIST         0.85    
+    ELC_DIST             ED_BATT         2031         ELC_DIST         0.85    
+    ELC_DIST             ED_BATT         2036         ELC_DIST         0.85    
+    NATGAS_TAXED             ED_NG_CC         2021         ELC_DIST         0.5417000000000001    
+    NATGAS_TAXED             ED_NG_CC         2026         ELC_DIST         0.5417000000000001    
+    NATGAS_TAXED             ED_NG_CC         2031         ELC_DIST         0.5417000000000001    
+    NATGAS_TAXED             ED_NG_CC         2036         ELC_DIST         0.5417000000000001    
+    NATGAS_TAXED             ED_NG_OC         2021         ELC_DIST         0.376    
+    NATGAS_TAXED             ED_NG_OC         2026         ELC_DIST         0.376    
+    NATGAS_TAXED             ED_NG_OC         2031         ELC_DIST         0.376    
+    NATGAS_TAXED             ED_NG_OC         2036         ELC_DIST         0.376    
+    ethos             IMPCOAL         2016         COAL         1.0    
+    ethos             IMPCOAL         2021         COAL         1.0    
+    ethos             IMPCOAL         2026         COAL         1.0    
+    ethos             IMPCOAL         2031         COAL         1.0    
+    ethos             IMPCOAL         2036         COAL         1.0    
+    ethos             IMPDSL         2016         DSL         1.0    
+    ethos             IMPDSL         2021         DSL         1.0    
+    ethos             IMPDSL         2026         DSL         1.0    
+    ethos             IMPDSL         2031         DSL         1.0    
+    ethos             IMPDSL         2036         DSL         1.0    
+    ethos             IMPHYDRO         2016         HYDRO         1.0    
+    ethos             IMPHYDRO         2021         HYDRO         1.0    
+    ethos             IMPHYDRO         2026         HYDRO         1.0    
+    ethos             IMPHYDRO         2031         HYDRO         1.0    
+    ethos             IMPHYDRO         2036         HYDRO         1.0    
+    ethos             IMPMSW_LF         2016         MSW_LF         1.0    
+    ethos             IMPMSW_LF         2021         MSW_LF         1.0    
+    ethos             IMPMSW_LF         2026         MSW_LF         1.0    
+    ethos             IMPMSW_LF         2031         MSW_LF         1.0    
+    ethos             IMPMSW_LF         2036         MSW_LF         1.0    
+    ethos             IMPOIL         2016         OIL         1.0    
+    ethos             IMPOIL         2021         OIL         1.0    
+    ethos             IMPOIL         2026         OIL         1.0    
+    ethos             IMPOIL         2031         OIL         1.0    
+    ethos             IMPOIL         2036         OIL         1.0    
+    ethos             IMPNATGAS         2015         NATGAS         1.0    
+    ethos             IMPNATGAS         2016         NATGAS         1.0    
+    ethos             IMPNATGAS         2021         NATGAS         1.0    
+    ethos             IMPNATGAS         2026         NATGAS         1.0    
+    ethos             IMPNATGAS         2031         NATGAS         1.0    
+    ethos             IMPNATGAS         2036         NATGAS         1.0    
+    ethos             IMPSOLAR         2016         SOLAR         1.0    
+    ethos             IMPSOLAR         2021         SOLAR         1.0    
+    ethos             IMPSOLAR         2026         SOLAR         1.0    
+    ethos             IMPSOLAR         2031         SOLAR         1.0    
+    ethos             IMPSOLAR         2036         SOLAR         1.0    
+    ethos             IMPWIND         2016         WIND         1.0    
+    ethos             IMPWIND         2021         WIND         1.0    
+    ethos             IMPWIND         2026         WIND         1.0    
+    ethos             IMPWIND         2031         WIND         1.0    
+    ethos             IMPWIND         2036         WIND         1.0    
+    ELC_CENTRAL             TRANS         2015         ELC_SUB         0.993    
+    ELC_CENTRAL             TRANS         2016         ELC_SUB         0.993    
+    ELC_CENTRAL             TRANS         2021         ELC_SUB         0.993    
+    ELC_CENTRAL             TRANS         2026         ELC_SUB         0.993    
+    ELC_CENTRAL             TRANS         2031         ELC_SUB         0.993    
+    ELC_CENTRAL             TRANS         2036         ELC_SUB         0.993    
+    ELC_SUB             SUB         2015         ELC_DIST         0.996    
+    ELC_SUB             SUB         2016         ELC_DIST         0.996    
+    ELC_SUB             SUB         2021         ELC_DIST         0.996    
+    ELC_SUB             SUB         2026         ELC_DIST         0.996    
+    ELC_SUB             SUB         2031         ELC_DIST         0.996    
+    ELC_SUB             SUB         2036         ELC_DIST         0.996    
+    ELC_DIST_MID             DIST_TWR         2015         ELC_LOCAL         1.0    
+    ELC_DIST_MID             DIST_TWR         2016         ELC_LOCAL         1.0    
+    ELC_DIST_MID             DIST_TWR         2021         ELC_LOCAL         1.0    
+    ELC_DIST_MID             DIST_TWR         2026         ELC_LOCAL         1.0    
+    ELC_DIST_MID             DIST_TWR         2031         ELC_LOCAL         1.0    
+    ELC_DIST_MID             DIST_TWR         2036         ELC_LOCAL         1.0    
+    ELC_DIST             DIST_COND         2015         ELC_DIST_MID         0.9299999999999999    
+    ELC_DIST             DIST_COND         2016         ELC_DIST_MID         0.9299999999999999    
+    ELC_DIST             DIST_COND         2021         ELC_DIST_MID         0.9299999999999999    
+    ELC_DIST             DIST_COND         2026         ELC_DIST_MID         0.9299999999999999    
+    ELC_DIST             DIST_COND         2031         ELC_DIST_MID         0.9299999999999999    
+    ELC_DIST             DIST_COND         2036         ELC_DIST_MID         0.9299999999999999    
+    ELC_LOCAL             LOCAL         2016         ELC_DMD         1.0    
+    ELC_LOCAL             LOCAL         2021         ELC_DMD         1.0    
+    ELC_LOCAL             LOCAL         2026         ELC_DMD         1.0    
+    ELC_LOCAL             LOCAL         2031         ELC_DMD         1.0    
+    ELC_LOCAL             LOCAL         2036         ELC_DMD         1.0    
+    COAL             COAL_TAX         2016         COAL_TAXED         1.0    
+    COAL             COAL_TAX         2021         COAL_TAXED         1.0    
+    COAL             COAL_TAX         2026         COAL_TAXED         1.0    
+    COAL             COAL_TAX         2031         COAL_TAXED         1.0    
+    COAL             COAL_TAX         2036         COAL_TAXED         1.0    
+    DSL             DSL_TAX         2016         DSL_TAXED         1.0    
+    DSL             DSL_TAX         2021         DSL_TAXED         1.0    
+    DSL             DSL_TAX         2026         DSL_TAXED         1.0    
+    DSL             DSL_TAX         2031         DSL_TAXED         1.0    
+    DSL             DSL_TAX         2036         DSL_TAXED         1.0    
+    MSW_LF             MSW_LF_TAX         2016         MSW_LF_TAXED         1.0    
+    MSW_LF             MSW_LF_TAX         2021         MSW_LF_TAXED         1.0    
+    MSW_LF             MSW_LF_TAX         2026         MSW_LF_TAXED         1.0    
+    MSW_LF             MSW_LF_TAX         2031         MSW_LF_TAXED         1.0    
+    MSW_LF             MSW_LF_TAX         2036         MSW_LF_TAXED         1.0    
+    OIL             OIL_TAX         2016         OIL_TAXED         1.0    
+    OIL             OIL_TAX         2021         OIL_TAXED         1.0    
+    OIL             OIL_TAX         2026         OIL_TAXED         1.0    
+    OIL             OIL_TAX         2031         OIL_TAXED         1.0    
+    OIL             OIL_TAX         2036         OIL_TAXED         1.0    
+    NATGAS             NATGAS_TAX         2016         NATGAS_TAXED         1.0    
+    NATGAS             NATGAS_TAX         2021         NATGAS_TAXED         1.0    
+    NATGAS             NATGAS_TAX         2026         NATGAS_TAXED         1.0    
+    NATGAS             NATGAS_TAX         2031         NATGAS_TAXED         1.0    
+    NATGAS             NATGAS_TAX         2036         NATGAS_TAXED         1.0    
+;
+
+param ExistingCapacity := 
+    EX_COAL         2002     0.454    
+    EX_DSL_SIMP         1973     0.378    
+    EX_DSL_SIMP         1997     0.2475    
+    EX_DSL_SIMP         2009     0.22    
+    EX_DSL_CC         1975     0.296    
+    EX_DSL_CC         1976     0.296    
+    EX_DSL_CC         2008     0.44    
+    EX_OIL_TYPE1         1971     0.9    
+    EX_OIL_TYPE2         1960     0.085    
+    EX_OIL_TYPE2         1962     0.085    
+    EX_OIL_TYPE2         1969     0.41    
+    EX_OIL_TYPE2         1972     0.41    
+    EX_OIL_TYPE3         1959     0.17    
+    EX_OIL_TYPE3         1964     0.2    
+    EX_OIL_TYPE3         1965     0.1    
+    EX_OIL_TYPE3         1966     0.1    
+    EX_OIL_TYPE3         1967     0.216    
+    EX_OIL_TYPE3         1968     0.216    
+    EX_HYDRO         1953     0.1    
+    EX_MSW_LF         2015     0.0024    
+    EX_NG_CC         2000     0.507    
+    EX_SOLPV         2012     0.0221    
+    EX_SOLPV         2015     0.03    
+    EX_WIND         2012     0.102    
+    IMPNATGAS         2015     1.92    
+    TRANS         2015     3.08    
+    SUB         2015     3.068    
+    DIST_TWR         2015     2.853    
+    DIST_COND         2015     2.853    
+;
+
+param CostInvest := 
+    EX_HYDRO         2021     3935.0    
+    EX_HYDRO         2026     3935.0    
+    EX_HYDRO         2031     3935.0    
+    EX_HYDRO         2036     3935.0    
+    ED_BATT         2021     1284.0    
+    ED_BATT         2026     1284.0    
+    ED_BATT         2031     1284.0    
+    ED_BATT         2036     1284.0    
+    ED_NG_CC         2021     860.9    
+    ED_NG_CC         2026     860.9    
+    ED_NG_CC         2031     860.9    
+    ED_NG_CC         2036     860.9    
+    ED_NG_OC         2021     305.2    
+    ED_NG_OC         2026     305.2    
+    ED_NG_OC         2031     305.2    
+    ED_NG_OC         2036     305.2    
+    IMPNATGAS         2016     63.3    
+    IMPNATGAS         2021     63.3    
+    IMPNATGAS         2026     63.3    
+    IMPNATGAS         2031     63.3    
+    IMPNATGAS         2036     63.3    
+    TRANS         2016     2084.1332580463013    
+    TRANS         2021     2084.1332580463013    
+    TRANS         2026     2084.1332580463013    
+    TRANS         2031     2084.1332580463013    
+    TRANS         2036     2084.1332580463013    
+    SUB         2016     688.3963494132986    
+    SUB         2021     688.3963494132986    
+    SUB         2026     688.3963494132986    
+    SUB         2031     688.3963494132986    
+    SUB         2036     688.3963494132986    
+    DIST_TWR         2016     539.8035484786272    
+    DIST_TWR         2021     539.8035484786272    
+    DIST_TWR         2026     539.8035484786272    
+    DIST_TWR         2031     539.8035484786272    
+    DIST_TWR         2036     539.8035484786272    
+    DIST_COND         2016     323.88212908717634    
+    DIST_COND         2021     323.88212908717634    
+    DIST_COND         2026     323.88212908717634    
+    DIST_COND         2031     323.88212908717634    
+    DIST_COND         2036     323.88212908717634    
+;
+
+param CostFixed := 
+2016         EX_COAL         2002     75.97    
+2021         EX_COAL         2002     75.97    
+2026         EX_COAL         2002     75.97    
+2031         EX_COAL         2002     75.97    
+2036         EX_COAL         2002     75.97    
+2016         EX_DSL_SIMP         1973     19.599999999999998    
+2016         EX_DSL_SIMP         1997     19.599999999999998    
+2016         EX_DSL_SIMP         2009     19.599999999999998    
+2021         EX_DSL_SIMP         1973     19.599999999999998    
+2021         EX_DSL_SIMP         1997     19.599999999999998    
+2021         EX_DSL_SIMP         2009     19.599999999999998    
+2026         EX_DSL_SIMP         1997     19.599999999999998    
+2026         EX_DSL_SIMP         2009     19.599999999999998    
+2031         EX_DSL_SIMP         1997     19.599999999999998    
+2031         EX_DSL_SIMP         2009     19.599999999999998    
+2036         EX_DSL_SIMP         1997     19.599999999999998    
+2036         EX_DSL_SIMP         2009     19.599999999999998    
+2016         EX_DSL_CC         1975     24.633333333333336    
+2016         EX_DSL_CC         1976     24.633333333333336    
+2016         EX_DSL_CC         2008     24.633333333333336    
+2021         EX_DSL_CC         1975     24.633333333333336    
+2021         EX_DSL_CC         1976     24.633333333333336    
+2021         EX_DSL_CC         2008     24.633333333333336    
+2026         EX_DSL_CC         2008     24.633333333333336    
+2031         EX_DSL_CC         2008     24.633333333333336    
+2036         EX_DSL_CC         2008     24.633333333333336    
+2016         EX_OIL_TYPE1         1971     30.57    
+2021         EX_OIL_TYPE1         1971     30.57    
+2016         EX_OIL_TYPE2         1960     34.31    
+2016         EX_OIL_TYPE2         1962     34.31    
+2016         EX_OIL_TYPE2         1969     34.31    
+2016         EX_OIL_TYPE2         1972     34.31    
+2021         EX_OIL_TYPE2         1960     34.31    
+2021         EX_OIL_TYPE2         1962     34.31    
+2021         EX_OIL_TYPE2         1969     34.31    
+2021         EX_OIL_TYPE2         1972     34.31    
+2026         EX_OIL_TYPE2         1962     34.31    
+2026         EX_OIL_TYPE2         1969     34.31    
+2026         EX_OIL_TYPE2         1972     34.31    
+2031         EX_OIL_TYPE2         1969     34.31    
+2031         EX_OIL_TYPE2         1972     34.31    
+2036         EX_OIL_TYPE2         1972     34.31    
+2016         EX_OIL_TYPE3         1959     45.56    
+2016         EX_OIL_TYPE3         1964     45.56    
+2016         EX_OIL_TYPE3         1965     45.56    
+2016         EX_OIL_TYPE3         1966     45.56    
+2016         EX_OIL_TYPE3         1967     45.56    
+2016         EX_OIL_TYPE3         1968     45.56    
+2021         EX_OIL_TYPE3         1959     45.56    
+2021         EX_OIL_TYPE3         1964     45.56    
+2021         EX_OIL_TYPE3         1965     45.56    
+2021         EX_OIL_TYPE3         1966     45.56    
+2021         EX_OIL_TYPE3         1967     45.56    
+2021         EX_OIL_TYPE3         1968     45.56    
+2026         EX_OIL_TYPE3         1964     45.56    
+2026         EX_OIL_TYPE3         1965     45.56    
+2026         EX_OIL_TYPE3         1966     45.56    
+2026         EX_OIL_TYPE3         1967     45.56    
+2026         EX_OIL_TYPE3         1968     45.56    
+2031         EX_OIL_TYPE3         1967     45.56    
+2031         EX_OIL_TYPE3         1968     45.56    
+2016         EX_HYDRO         1953     43.0    
+2021         EX_HYDRO         1953     43.0    
+2021         EX_HYDRO         2021     43.0    
+2026         EX_HYDRO         1953     43.0    
+2026         EX_HYDRO         2021     43.0    
+2026         EX_HYDRO         2026     43.0    
+2031         EX_HYDRO         1953     43.0    
+2031         EX_HYDRO         2021     43.0    
+2031         EX_HYDRO         2026     43.0    
+2031         EX_HYDRO         2031     43.0    
+2036         EX_HYDRO         1953     43.0    
+2036         EX_HYDRO         2021     43.0    
+2036         EX_HYDRO         2026     43.0    
+2036         EX_HYDRO         2031     43.0    
+2036         EX_HYDRO         2036     43.0    
+2016         EX_MSW_LF         2015     425.4    
+2021         EX_MSW_LF         2015     425.4    
+2026         EX_MSW_LF         2015     425.4    
+2031         EX_MSW_LF         2015     425.4    
+2036         EX_MSW_LF         2015     425.4    
+2016         EX_NG_CC         2000     18.1    
+2021         EX_NG_CC         2000     18.1    
+2026         EX_NG_CC         2000     18.1    
+2031         EX_NG_CC         2000     18.1    
+2036         EX_NG_CC         2000     18.1    
+2016         EX_SOLPV         2012     13.0    
+2016         EX_SOLPV         2015     13.0    
+2021         EX_SOLPV         2012     13.0    
+2021         EX_SOLPV         2015     13.0    
+2026         EX_SOLPV         2012     13.0    
+2026         EX_SOLPV         2015     13.0    
+2031         EX_SOLPV         2012     13.0    
+2031         EX_SOLPV         2015     13.0    
+2036         EX_SOLPV         2012     13.0    
+2036         EX_SOLPV         2015     13.0    
+2016         EX_WIND         2012     42.0    
+2021         EX_WIND         2012     42.0    
+2026         EX_WIND         2012     42.0    
+2031         EX_WIND         2012     42.0    
+2036         EX_WIND         2012     42.0    
+2021         ED_BATT         2021     32.1    
+2026         ED_BATT         2021     32.1    
+2026         ED_BATT         2026     32.1    
+2031         ED_BATT         2021     32.1    
+2031         ED_BATT         2026     32.1    
+2031         ED_BATT         2031     32.1    
+2036         ED_BATT         2026     32.1    
+2036         ED_BATT         2031     32.1    
+2036         ED_BATT         2036     32.1    
+2021         ED_NG_CC         2021     11.0    
+2026         ED_NG_CC         2021     11.0    
+2026         ED_NG_CC         2026     11.0    
+2031         ED_NG_CC         2021     11.0    
+2031         ED_NG_CC         2026     11.0    
+2031         ED_NG_CC         2031     11.0    
+2036         ED_NG_CC         2021     11.0    
+2036         ED_NG_CC         2026     11.0    
+2036         ED_NG_CC         2031     11.0    
+2036         ED_NG_CC         2036     11.0    
+2021         ED_NG_OC         2021     12.0    
+2026         ED_NG_OC         2021     12.0    
+2026         ED_NG_OC         2026     12.0    
+2031         ED_NG_OC         2021     12.0    
+2031         ED_NG_OC         2026     12.0    
+2031         ED_NG_OC         2031     12.0    
+2036         ED_NG_OC         2021     12.0    
+2036         ED_NG_OC         2026     12.0    
+2036         ED_NG_OC         2031     12.0    
+2036         ED_NG_OC         2036     12.0    
+;
+
+param CostVariable := 
+2016         EX_COAL         2002     1.919    
+2021         EX_COAL         2002     1.919    
+2026         EX_COAL         2002     1.919    
+2031         EX_COAL         2002     1.919    
+2036         EX_COAL         2002     1.919    
+2016         EX_DSL_SIMP         1973     2.838    
+2016         EX_DSL_SIMP         1997     2.838    
+2016         EX_DSL_SIMP         2009     2.838    
+2021         EX_DSL_SIMP         1973     2.838    
+2021         EX_DSL_SIMP         1997     2.838    
+2021         EX_DSL_SIMP         2009     2.838    
+2026         EX_DSL_SIMP         1997     2.838    
+2026         EX_DSL_SIMP         2009     2.838    
+2031         EX_DSL_SIMP         1997     2.838    
+2031         EX_DSL_SIMP         2009     2.838    
+2036         EX_DSL_SIMP         1997     2.838    
+2036         EX_DSL_SIMP         2009     2.838    
+2016         EX_DSL_CC         1975     0.993    
+2016         EX_DSL_CC         1976     0.993    
+2016         EX_DSL_CC         2008     0.993    
+2021         EX_DSL_CC         1975     0.993    
+2021         EX_DSL_CC         1976     0.993    
+2021         EX_DSL_CC         2008     0.993    
+2026         EX_DSL_CC         2008     0.993    
+2031         EX_DSL_CC         2008     0.993    
+2036         EX_DSL_CC         2008     0.993    
+2016         EX_OIL_TYPE1         1971     0.597    
+2021         EX_OIL_TYPE1         1971     0.597    
+2016         EX_OIL_TYPE2         1960     0.722    
+2016         EX_OIL_TYPE2         1962     0.722    
+2016         EX_OIL_TYPE2         1969     0.722    
+2016         EX_OIL_TYPE2         1972     0.722    
+2021         EX_OIL_TYPE2         1960     0.722    
+2021         EX_OIL_TYPE2         1962     0.722    
+2021         EX_OIL_TYPE2         1969     0.722    
+2021         EX_OIL_TYPE2         1972     0.722    
+2026         EX_OIL_TYPE2         1962     0.722    
+2026         EX_OIL_TYPE2         1969     0.722    
+2026         EX_OIL_TYPE2         1972     0.722    
+2031         EX_OIL_TYPE2         1969     0.722    
+2031         EX_OIL_TYPE2         1972     0.722    
+2036         EX_OIL_TYPE2         1972     0.722    
+2016         EX_OIL_TYPE3         1959     1.029    
+2016         EX_OIL_TYPE3         1964     1.029    
+2016         EX_OIL_TYPE3         1965     1.029    
+2016         EX_OIL_TYPE3         1966     1.029    
+2016         EX_OIL_TYPE3         1967     1.029    
+2016         EX_OIL_TYPE3         1968     1.029    
+2021         EX_OIL_TYPE3         1959     1.029    
+2021         EX_OIL_TYPE3         1964     1.029    
+2021         EX_OIL_TYPE3         1965     1.029    
+2021         EX_OIL_TYPE3         1966     1.029    
+2021         EX_OIL_TYPE3         1967     1.029    
+2021         EX_OIL_TYPE3         1968     1.029    
+2026         EX_OIL_TYPE3         1964     1.029    
+2026         EX_OIL_TYPE3         1965     1.029    
+2026         EX_OIL_TYPE3         1966     1.029    
+2026         EX_OIL_TYPE3         1967     1.029    
+2026         EX_OIL_TYPE3         1968     1.029    
+2031         EX_OIL_TYPE3         1967     1.029    
+2031         EX_OIL_TYPE3         1968     1.029    
+2016         EX_HYDRO         1953     0.0    
+2021         EX_HYDRO         1953     0.0    
+2021         EX_HYDRO         2021     0.0    
+2026         EX_HYDRO         1953     0.0    
+2026         EX_HYDRO         2021     0.0    
+2026         EX_HYDRO         2026     0.0    
+2031         EX_HYDRO         1953     0.0    
+2031         EX_HYDRO         2021     0.0    
+2031         EX_HYDRO         2026     0.0    
+2031         EX_HYDRO         2031     0.0    
+2036         EX_HYDRO         1953     0.0    
+2036         EX_HYDRO         2021     0.0    
+2036         EX_HYDRO         2026     0.0    
+2036         EX_HYDRO         2031     0.0    
+2036         EX_HYDRO         2036     0.0    
+2016         EX_MSW_LF         2015     2.631    
+2021         EX_MSW_LF         2015     2.631    
+2026         EX_MSW_LF         2015     2.631    
+2031         EX_MSW_LF         2015     2.631    
+2036         EX_MSW_LF         2015     2.631    
+2016         EX_NG_CC         2000     0.0    
+2021         EX_NG_CC         2000     0.0    
+2026         EX_NG_CC         2000     0.0    
+2031         EX_NG_CC         2000     0.0    
+2036         EX_NG_CC         2000     0.0    
+2016         EX_SOLPV         2012     0.0    
+2016         EX_SOLPV         2015     0.0    
+2021         EX_SOLPV         2012     0.0    
+2021         EX_SOLPV         2015     0.0    
+2026         EX_SOLPV         2012     0.0    
+2026         EX_SOLPV         2015     0.0    
+2031         EX_SOLPV         2012     0.0    
+2031         EX_SOLPV         2015     0.0    
+2036         EX_SOLPV         2012     0.0    
+2036         EX_SOLPV         2015     0.0    
+2016         EX_WIND         2012     0.0    
+2021         EX_WIND         2012     0.0    
+2026         EX_WIND         2012     0.0    
+2031         EX_WIND         2012     0.0    
+2036         EX_WIND         2012     0.0    
+2021         ED_BATT         2021     0.0    
+2026         ED_BATT         2021     0.0    
+2026         ED_BATT         2026     0.0    
+2031         ED_BATT         2021     0.0    
+2031         ED_BATT         2026     0.0    
+2031         ED_BATT         2031     0.0    
+2036         ED_BATT         2026     0.0    
+2036         ED_BATT         2031     0.0    
+2036         ED_BATT         2036     0.0    
+2021         ED_NG_CC         2021     0.833    
+2026         ED_NG_CC         2021     0.833    
+2026         ED_NG_CC         2026     0.833    
+2031         ED_NG_CC         2021     0.833    
+2031         ED_NG_CC         2026     0.833    
+2031         ED_NG_CC         2031     0.833    
+2036         ED_NG_CC         2021     0.833    
+2036         ED_NG_CC         2026     0.833    
+2036         ED_NG_CC         2031     0.833    
+2036         ED_NG_CC         2036     0.833    
+2021         ED_NG_OC         2021     1.944    
+2026         ED_NG_OC         2021     1.944    
+2026         ED_NG_OC         2026     1.944    
+2031         ED_NG_OC         2021     1.944    
+2031         ED_NG_OC         2026     1.944    
+2031         ED_NG_OC         2031     1.944    
+2036         ED_NG_OC         2021     1.944    
+2036         ED_NG_OC         2026     1.944    
+2036         ED_NG_OC         2031     1.944    
+2036         ED_NG_OC         2036     1.944    
+2016         IMPCOAL         2016     4.03    
+2021         IMPCOAL         2016     4.6042326912622435    
+2021         IMPCOAL         2021     4.6042326912622435    
+2026         IMPCOAL         2016     5.260287512478403    
+2026         IMPCOAL         2021     5.260287512478403    
+2026         IMPCOAL         2026     5.260287512478403    
+2031         IMPCOAL         2016     6.009823258161688    
+2031         IMPCOAL         2021     6.009823258161688    
+2031         IMPCOAL         2026     6.009823258161688    
+2031         IMPCOAL         2031     6.009823258161688    
+2036         IMPCOAL         2016     6.866159978644222    
+2036         IMPCOAL         2021     6.866159978644222    
+2036         IMPCOAL         2026     6.866159978644222    
+2036         IMPCOAL         2031     6.866159978644222    
+2036         IMPCOAL         2036     6.866159978644222    
+2016         IMPDSL         2016     11.46    
+2021         IMPDSL         2016     13.156797516219621    
+2021         IMPDSL         2021     13.156797516219621    
+2026         IMPDSL         2016     15.104827302164288    
+2026         IMPDSL         2021     15.104827302164288    
+2026         IMPDSL         2026     15.104827302164288    
+2031         IMPDSL         2016     17.341287463528918    
+2031         IMPDSL         2021     17.341287463528918    
+2031         IMPDSL         2026     17.341287463528918    
+2031         IMPDSL         2031     17.341287463528918    
+2036         IMPDSL         2016     19.908883754642904    
+2036         IMPDSL         2021     19.908883754642904    
+2036         IMPDSL         2026     19.908883754642904    
+2036         IMPDSL         2031     19.908883754642904    
+2036         IMPDSL         2036     19.908883754642904    
+2016         IMPHYDRO         2016     0.0    
+2021         IMPHYDRO         2016     0.0    
+2021         IMPHYDRO         2021     0.0    
+2026         IMPHYDRO         2016     0.0    
+2026         IMPHYDRO         2021     0.0    
+2026         IMPHYDRO         2026     0.0    
+2031         IMPHYDRO         2016     0.0    
+2031         IMPHYDRO         2021     0.0    
+2031         IMPHYDRO         2026     0.0    
+2031         IMPHYDRO         2031     0.0    
+2036         IMPHYDRO         2016     0.0    
+2036         IMPHYDRO         2021     0.0    
+2036         IMPHYDRO         2026     0.0    
+2036         IMPHYDRO         2031     0.0    
+2036         IMPHYDRO         2036     0.0    
+2016         IMPMSW_LF         2016     0.0    
+2021         IMPMSW_LF         2016     0.0    
+2021         IMPMSW_LF         2021     0.0    
+2026         IMPMSW_LF         2016     0.0    
+2026         IMPMSW_LF         2021     0.0    
+2026         IMPMSW_LF         2026     0.0    
+2031         IMPMSW_LF         2016     0.0    
+2031         IMPMSW_LF         2021     0.0    
+2031         IMPMSW_LF         2026     0.0    
+2031         IMPMSW_LF         2031     0.0    
+2036         IMPMSW_LF         2016     0.0    
+2036         IMPMSW_LF         2021     0.0    
+2036         IMPMSW_LF         2026     0.0    
+2036         IMPMSW_LF         2031     0.0    
+2036         IMPMSW_LF         2036     0.0    
+2016         IMPOIL         2016     7.19    
+2021         IMPOIL         2016     8.355431266381727    
+2021         IMPOIL         2021     8.355431266381727    
+2026         IMPOIL         2016     9.709767962062498    
+2026         IMPOIL         2021     9.709767962062498    
+2026         IMPOIL         2026     9.709767962062498    
+2031         IMPOIL         2016     11.283629877542221    
+2031         IMPOIL         2021     11.283629877542221    
+2031         IMPOIL         2026     11.283629877542221    
+2031         IMPOIL         2031     11.283629877542221    
+2036         IMPOIL         2016     13.112599982906161    
+2036         IMPOIL         2021     13.112599982906161    
+2036         IMPOIL         2026     13.112599982906161    
+2036         IMPOIL         2031     13.112599982906161    
+2036         IMPOIL         2036     13.112599982906161    
+2016         IMPNATGAS         2015     7.62    
+2016         IMPNATGAS         2016     7.62    
+2021         IMPNATGAS         2015     8.442003836677351    
+2021         IMPNATGAS         2016     8.442003836677351    
+2021         IMPNATGAS         2021     8.442003836677351    
+2026         IMPNATGAS         2015     9.352680942057104    
+2026         IMPNATGAS         2016     9.352680942057104    
+2026         IMPNATGAS         2021     9.352680942057104    
+2026         IMPNATGAS         2026     9.352680942057104    
+2031         IMPNATGAS         2015     10.361596902370765    
+2031         IMPNATGAS         2016     10.361596902370765    
+2031         IMPNATGAS         2021     10.361596902370765    
+2031         IMPNATGAS         2026     10.361596902370765    
+2031         IMPNATGAS         2031     10.361596902370765    
+2036         IMPNATGAS         2015     11.479349186865901    
+2036         IMPNATGAS         2016     11.479349186865901    
+2036         IMPNATGAS         2021     11.479349186865901    
+2036         IMPNATGAS         2026     11.479349186865901    
+2036         IMPNATGAS         2031     11.479349186865901    
+2036         IMPNATGAS         2036     11.479349186865901    
+2016         IMPSOLAR         2016     0.0    
+2021         IMPSOLAR         2016     0.0    
+2021         IMPSOLAR         2021     0.0    
+2026         IMPSOLAR         2016     0.0    
+2026         IMPSOLAR         2021     0.0    
+2026         IMPSOLAR         2026     0.0    
+2031         IMPSOLAR         2016     0.0    
+2031         IMPSOLAR         2021     0.0    
+2031         IMPSOLAR         2026     0.0    
+2031         IMPSOLAR         2031     0.0    
+2036         IMPSOLAR         2016     0.0    
+2036         IMPSOLAR         2021     0.0    
+2036         IMPSOLAR         2026     0.0    
+2036         IMPSOLAR         2031     0.0    
+2036         IMPSOLAR         2036     0.0    
+2016         IMPWIND         2016     0.0    
+2021         IMPWIND         2016     0.0    
+2021         IMPWIND         2021     0.0    
+2026         IMPWIND         2016     0.0    
+2026         IMPWIND         2021     0.0    
+2026         IMPWIND         2026     0.0    
+2031         IMPWIND         2016     0.0    
+2031         IMPWIND         2021     0.0    
+2031         IMPWIND         2026     0.0    
+2031         IMPWIND         2031     0.0    
+2036         IMPWIND         2016     0.0    
+2036         IMPWIND         2021     0.0    
+2036         IMPWIND         2026     0.0    
+2036         IMPWIND         2031     0.0    
+2036         IMPWIND         2036     0.0    
+2016         TRANS         2015     0.86    
+2016         TRANS         2016     0.86    
+2021         TRANS         2015     0.86    
+2021         TRANS         2016     0.86    
+2021         TRANS         2021     0.86    
+2026         TRANS         2015     0.86    
+2026         TRANS         2016     0.86    
+2026         TRANS         2021     0.86    
+2026         TRANS         2026     0.86    
+2031         TRANS         2015     0.86    
+2031         TRANS         2016     0.86    
+2031         TRANS         2021     0.86    
+2031         TRANS         2026     0.86    
+2031         TRANS         2031     0.86    
+2036         TRANS         2015     0.86    
+2036         TRANS         2016     0.86    
+2036         TRANS         2021     0.86    
+2036         TRANS         2026     0.86    
+2036         TRANS         2031     0.86    
+2036         TRANS         2036     0.86    
+2016         DIST_TWR         2015     0.0    
+2016         DIST_TWR         2016     0.0    
+2021         DIST_TWR         2015     0.0    
+2021         DIST_TWR         2016     0.0    
+2021         DIST_TWR         2021     0.0    
+2026         DIST_TWR         2015     0.0    
+2026         DIST_TWR         2016     0.0    
+2026         DIST_TWR         2021     0.0    
+2026         DIST_TWR         2026     0.0    
+2031         DIST_TWR         2015     0.0    
+2031         DIST_TWR         2016     0.0    
+2031         DIST_TWR         2021     0.0    
+2031         DIST_TWR         2026     0.0    
+2031         DIST_TWR         2031     0.0    
+2036         DIST_TWR         2015     0.0    
+2036         DIST_TWR         2016     0.0    
+2036         DIST_TWR         2021     0.0    
+2036         DIST_TWR         2026     0.0    
+2036         DIST_TWR         2031     0.0    
+2036         DIST_TWR         2036     0.0    
+2016         DIST_COND         2015     1.15    
+2016         DIST_COND         2016     1.15    
+2021         DIST_COND         2015     1.15    
+2021         DIST_COND         2016     1.15    
+2021         DIST_COND         2021     1.15    
+2026         DIST_COND         2015     1.15    
+2026         DIST_COND         2016     1.15    
+2026         DIST_COND         2021     1.15    
+2026         DIST_COND         2026     1.15    
+2031         DIST_COND         2015     1.15    
+2031         DIST_COND         2016     1.15    
+2031         DIST_COND         2021     1.15    
+2031         DIST_COND         2026     1.15    
+2031         DIST_COND         2031     1.15    
+2036         DIST_COND         2015     1.15    
+2036         DIST_COND         2016     1.15    
+2036         DIST_COND         2021     1.15    
+2036         DIST_COND         2026     1.15    
+2036         DIST_COND         2031     1.15    
+2036         DIST_COND         2036     1.15    
+2016         COAL_TAX         2016     0.0    
+2021         COAL_TAX         2016     0.0    
+2021         COAL_TAX         2021     0.0    
+2026         COAL_TAX         2016     0.0    
+2026         COAL_TAX         2021     0.0    
+2026         COAL_TAX         2026     0.0    
+2031         COAL_TAX         2016     0.0    
+2031         COAL_TAX         2021     0.0    
+2031         COAL_TAX         2026     0.0    
+2031         COAL_TAX         2031     0.0    
+2036         COAL_TAX         2016     0.0    
+2036         COAL_TAX         2021     0.0    
+2036         COAL_TAX         2026     0.0    
+2036         COAL_TAX         2031     0.0    
+2036         COAL_TAX         2036     0.0    
+2016         DSL_TAX         2016     0.0    
+2021         DSL_TAX         2016     0.0    
+2021         DSL_TAX         2021     0.0    
+2026         DSL_TAX         2016     0.0    
+2026         DSL_TAX         2021     0.0    
+2026         DSL_TAX         2026     0.0    
+2031         DSL_TAX         2016     0.0    
+2031         DSL_TAX         2021     0.0    
+2031         DSL_TAX         2026     0.0    
+2031         DSL_TAX         2031     0.0    
+2036         DSL_TAX         2016     0.0    
+2036         DSL_TAX         2021     0.0    
+2036         DSL_TAX         2026     0.0    
+2036         DSL_TAX         2031     0.0    
+2036         DSL_TAX         2036     0.0    
+2016         MSW_LF_TAX         2016     0.0    
+2021         MSW_LF_TAX         2016     0.0    
+2021         MSW_LF_TAX         2021     0.0    
+2026         MSW_LF_TAX         2016     0.0    
+2026         MSW_LF_TAX         2021     0.0    
+2026         MSW_LF_TAX         2026     0.0    
+2031         MSW_LF_TAX         2016     0.0    
+2031         MSW_LF_TAX         2021     0.0    
+2031         MSW_LF_TAX         2026     0.0    
+2031         MSW_LF_TAX         2031     0.0    
+2036         MSW_LF_TAX         2016     0.0    
+2036         MSW_LF_TAX         2021     0.0    
+2036         MSW_LF_TAX         2026     0.0    
+2036         MSW_LF_TAX         2031     0.0    
+2036         MSW_LF_TAX         2036     0.0    
+2016         OIL_TAX         2016     0.0    
+2021         OIL_TAX         2016     0.0    
+2021         OIL_TAX         2021     0.0    
+2026         OIL_TAX         2016     0.0    
+2026         OIL_TAX         2021     0.0    
+2026         OIL_TAX         2026     0.0    
+2031         OIL_TAX         2016     0.0    
+2031         OIL_TAX         2021     0.0    
+2031         OIL_TAX         2026     0.0    
+2031         OIL_TAX         2031     0.0    
+2036         OIL_TAX         2016     0.0    
+2036         OIL_TAX         2021     0.0    
+2036         OIL_TAX         2026     0.0    
+2036         OIL_TAX         2031     0.0    
+2036         OIL_TAX         2036     0.0    
+2016         NATGAS_TAX         2016     0.0    
+2021         NATGAS_TAX         2016     0.0    
+2021         NATGAS_TAX         2021     0.0    
+2026         NATGAS_TAX         2016     0.0    
+2026         NATGAS_TAX         2021     0.0    
+2026         NATGAS_TAX         2026     0.0    
+2031         NATGAS_TAX         2016     0.0    
+2031         NATGAS_TAX         2021     0.0    
+2031         NATGAS_TAX         2026     0.0    
+2031         NATGAS_TAX         2031     0.0    
+2036         NATGAS_TAX         2016     0.0    
+2036         NATGAS_TAX         2021     0.0    
+2036         NATGAS_TAX         2026     0.0    
+2036         NATGAS_TAX         2031     0.0    
+2036         NATGAS_TAX         2036     0.0    
+;
+
+param RampUp := 
+    EX_COAL         0.01    
+    EX_DSL_SIMP         1.0    
+    EX_DSL_CC         0.93    
+    EX_OIL_TYPE1         0.67    
+    EX_OIL_TYPE2         0.73    
+    EX_OIL_TYPE3         0.92    
+    ED_NG_CC         1.0    
+;
+
+param RampDown := 
+    EX_COAL         0.01    
+    EX_DSL_SIMP         1.0    
+    EX_DSL_CC         0.93    
+    EX_OIL_TYPE1         0.67    
+    EX_OIL_TYPE2         0.73    
+    EX_OIL_TYPE3         0.92    
+    ED_NG_CC         1.0    
+;
+

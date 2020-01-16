@@ -15,24 +15,19 @@ to test:
 > import temoatools as tt
 
 # Stochastic optimization
-Instructions to run examples/puerto_rico_stoch:
+Instructions to run examples/puerto_rico_stoch.
 
 1) Install python and required packages
     1) Install python 2.7 (using anaconda2), https://www.anaconda.com/distribution/#download-section
     2) Install pyomo version 4.3 (using anaconda2 prompt)
         >pip install pyomo==4.3
     3) Update pyomo using legacy files
-        1) Go to the temoa_stochastic/legacy_files folder to find ef_writer_script_old.py. 
+        1) Go to the temoa_stochastic/tools/legacy_files folder to find ef_writer_script_old.py. 
         Copy paste this script at: ../anaconda/lib/python2.7/site-packages/pyomo/pysp
-        2) Go to the temoa_stochastic/legacy_files folder to find scenariomodels.py.
+        2) Go to the temoa_stochastic/tools/legacy_files folder to find scenariomodels.py.
         Copy paste this script at: ../anaconda/lib/python2.7/site-packages/pyomo/pysp/util 
-    4) Install temoa
-        1) copy temoa_stochastic folder to C:\\temoa_stochastic
-        2) Change directory to the temoa folder
-            >cd C:\\temoa_stochastic
-        2) Install using pip command
-            >pip install .
-    5) Install temoatools (instructions above)
+    4) Install temoatools (instructions above). This will include copying a version of temoa (temoa_stochastic) that has been modified for this analysis
+    5) Install a linear solver such as CPLEX, additional information can be found here: https://temoacloud.com/download/
 
 2) Enter/update simulation data in examples/puerto_rico_stoch/data folder. Scenarios_overview.ppt/.pdf provides background on cases simulated
     1) paths.xls - provides paths to anaconda2 and temoa installation
