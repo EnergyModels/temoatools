@@ -1,3 +1,4 @@
+from __future__ import print_function
 import temoatools as tt
 
 # file is expected to be in a sub-directory named 'data'

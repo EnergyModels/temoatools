@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 import multiprocessing
 from joblib import Parallel, delayed, parallel_backend
@@ -25,7 +26,7 @@ def evaluateModelSensitivity(modelInputs, scenarioXLSX, scenarioName, temoa_path
     # Analyze Results
     folder = os.getcwd() + '\\databases'
     db = model_filename + '.sqlite'
-    print "db: " + db
+    print("db: " + db)
     yearlyCosts, LCOE = tt.getCosts(folder, db)
     yearlyEmissions, avgEmissions = tt.getEmissions(folder, db)
 

@@ -16,7 +16,7 @@ for year in np.arange(1979, 2016, 1):
         s['MaxWind_Kts'] = 0.0
         s['MaxWind_mph'] = 0.0
         df = df.append(s, ignore_index=True)
-        print year
+        print(year)
 
 # Storm Category Analysis
 

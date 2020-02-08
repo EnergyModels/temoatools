@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 import pandas as pd
 import temoatools as tt
@@ -312,7 +313,7 @@ if __name__ == '__main__':
 
     # Iterate through each run
     for run_name in run_names:
-        print run_name
+        print(run_name)
         folder_db = db_folder + "\\" + run_name
         folder_results = result_folder + "\\" + run_name
 
