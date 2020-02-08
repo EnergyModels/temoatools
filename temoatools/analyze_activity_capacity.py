@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 import sqlite3
 import pandas as pd
@@ -145,7 +146,7 @@ def SingleDB(folder,db,switch='fuel',group={},sectorName='electric',saveData='N'
     os.chdir(folder)
     
     if debug ==True:
-        print db
+        print(db)
         
     # Connect to Database
     con = sqlite3.connect(db)

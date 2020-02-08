@@ -6,8 +6,9 @@
       <excludeFolder url="file://$MODULE_DIR$/examples/puerto_rico/configs" />
       <excludeFolder url="file://$MODULE_DIR$/examples/puerto_rico/databases" />
       <excludeFolder url="file://$MODULE_DIR$/examples/puerto_rico/sensitivity" />
+      <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Python 3.7 (temoatools)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">

@@ -25,8 +25,8 @@ def run(model_filename, temoa_paths, saveEXCEL=False, data_path='data',debug=Fal
     Temoa_Dir = df.loc['Temoa_Dir','path']
 
     if debug==True:
-        print "Conda_Batch: " + Conda_Batch
-        print "Temoa_Dir  : " + Temoa_Dir
+        print("Conda_Batch: " + Conda_Batch)
+        print("Temoa_Dir  : " + Temoa_Dir)
 
     # Model Directory
     model_directory = workDir + "\\databases"
@@ -43,7 +43,7 @@ def run(model_filename, temoa_paths, saveEXCEL=False, data_path='data',debug=Fal
     config_file = CreateConfigFile(model_directory, model_filename, saveEXCEL=saveEXCEL,debug=debug)
 
     if debug==True:
-        print "config_file: " + config_file
+        print("config_file: " + config_file)
 
     # Directory to hold configuration files
     batchDir = workDir + "\\batch"
@@ -57,7 +57,7 @@ def run(model_filename, temoa_paths, saveEXCEL=False, data_path='data',debug=Fal
     batchPath = CreateBatchFile(model_filename, configDir, config_file, Conda_Batch, Temoa_Dir,debug=debug)
 
     if debug==True:
-        print "batchPath: " + batchPath
+        print("batchPath: " + batchPath)
 
     # Run Batch File
     os.system(batchPath)
@@ -72,7 +72,7 @@ def run(model_filename, temoa_paths, saveEXCEL=False, data_path='data',debug=Fal
         try:
             os.remove(xlsDir)
         except:
-            print "Warning: Unable to delete: " + xlsDir
+            print("Warning: Unable to delete: " + xlsDir)
     #        os.chdir(Temoa_Dir)
     #        os.chdir('db_io\\'+model_filename + '_solve_model')
     #        shutil.move('solve.xls',model_directory+'\\'+model_filename+'.xls')
@@ -88,7 +88,7 @@ def CreateBatchFile(model_filename, configDir, config_file, Conda_Batch, Temoa_D
     # Create Batch File
     batchFile = "run_" + remove_ext(model_filename) + ".bat"
     if debug==True:
-        print "batchFile: " + batchFile
+        print("batchFile: " + batchFile)
     f = open(batchFile, "w")
     f.write(
         "call " + Conda_Batch + " \n")  # Activate Conda2 Environment, example: C:\\Users\\jab6ft\\AppData\\Local\\Continuum\\anaconda2\\Scripts\\activate.bat
@@ -113,7 +113,7 @@ def CreateConfigFile(model_directory, model_filename, saveEXCEL=False, saveTEXTF
     # Write Config File
     config_file = "config_" + remove_ext(model_filename) + ".txt"
     if debug==True:
-        print "config_file: " + config_file
+        print("config_file: " + str(config_file))
     f = open(config_file, "w")
     # ---
     f.write(

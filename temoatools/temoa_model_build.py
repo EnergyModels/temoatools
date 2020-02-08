@@ -69,14 +69,14 @@ def build(modelInputs, scenarioXLSX, scenarioName, outFilename, sensitivity={}, 
 
     # Apply Sensitvity to inputs
     if debug == True:
-        print sensitivity
+        print(sensitivity)
     if not len(
             sensitivity) == 0:  # if dictionary is empty, it will evaluae to false, and no senstivity will be performed
         inputs, local = applySensitivity(inputs, sensitivity, local)
 
     # Apply Monte Carlo to inputs
     if debug == True:
-        print MCinputs
+        print(MCinputs)
     if not len(MCinputs) == 0:  # if dictionary is empty, it will evaluae to false, and no monte carlo will be performed
         for i in range(len(MCinputs)):
             inputs, local = applySensitivity(inputs, MCinputs.loc[i, :], local)
@@ -994,7 +994,7 @@ def applySensitivity(inputs, sensitivity, local):
             entry = entry.set_index(index)
 
         if debug == True:
-            print entry
+            print(entry)
 
         # Modify specified value
         multiplier = 1.0 + sensitivity['multiplier'] / 100.0
