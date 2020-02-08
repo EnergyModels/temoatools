@@ -1,4 +1,3 @@
-from __future__ import print_function
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -10,9 +9,9 @@ import temoatools as tt
 # =============================================================================#
 
 # Fragility Curves to compare
-curves = {"trans": ["trans_UK_base", "trans_UK_robust","trans_TX"],
+curves = {"trans": ["trans_UK_base", "trans_UK_robust", "trans_TX"],
           "sub": ["sub_MX", "sub_HAZUS_severe_k1", "sub_HAZUS_severe_k2", "sub_HAZUS_severe_k3", "sub_HAZUS_severe_k4",
-                  "sub_HAZUS_severe_k5"], "dist": ["dist_cond_TX","dist_TX", "dist_20yr", "dist_40yr", "dist_60yr"],
+                  "sub_HAZUS_severe_k5"], "dist": ["dist_cond_TX", "dist_TX", "dist_20yr", "dist_40yr", "dist_60yr"],
           "wind": ["wind_yaw", "wind_nonyaw"], "solar": ["solar_res", "solar_utility"],
           "coal_biomass": ["secbh_moderate", "secbh_severe", "secbh_destr"],
           "natgas_petrol": ["secbm_moderate", "secbm_severe", "secbm_destr"],
@@ -27,19 +26,19 @@ groups = {"trans": group1, "sub": group1, "dist": group1, "wind": group2, "solar
           "natgas_petrol": group3, "battery": group3, "hydro": group2, }
 
 # ================================#
-# Calculate damage across a range of windspeeds
+# Calculate damage across a range of wind speeds
 # ================================#
 
 cols = ["tech", "curve", "group", "wind_mph", "p_failure"]
 df = pd.DataFrame(columns=cols)
-wind_mph = np.arange(0, 200, 2)
+wind_mph = np.arange(1, 200, 2)
 
 for tech in curves.keys():
     for curve in curves[tech]:
         p_failure = tt.fragility(wind_mph, curve=curve)
 
         for w, p in zip(wind_mph, p_failure):
-            s = pd.Series()
+            s = pd.Series(dtype='float64')
             s["tech"] = tech
             s["curve"] = curve
             s["group"] = groups[tech]

@@ -1,8 +1,7 @@
-from __future__ import print_function
+# from __future__ import print_function
 import os
 import sqlite3
 import pandas as pd
-from help_functions import create_results_dir
 
 debug = False
 resolution = 1000  # DPI

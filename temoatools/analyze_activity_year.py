@@ -1,9 +1,6 @@
-from __future__ import print_function
 import os
 import sqlite3
 import pandas as pd
-import matplotlib.pyplot as plt
-from help_functions import create_results_dir
 
 debug = False
 resolution = 1000  # DPI

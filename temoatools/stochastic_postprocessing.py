@@ -1,4 +1,3 @@
-from __future__ import print_function
 import os
 import pandas as pd
 import time
@@ -7,7 +6,7 @@ import time
 # ===========================================
 # Expand stochastic results
 #
-# If running the stochastic model with the same hurricane windspeeds
+# If running the stochastic model with the same hurricane wind speeds
 # but different probabilities, then instead of re-running the temoa solution
 # the results can be copied and weighted to get new distributions
 # ===========================================
@@ -46,6 +45,7 @@ def stoch_expand(path, filename, db_shift):
     # Return to original folder
     os.chdir(cwd)
 
+
 # ===========================================
 # Resample stochastic results
 #
@@ -74,9 +74,9 @@ def stoch_resample(path, filename, node_prob):
     df.drop(df.loc[df['scenario'] == "solve"].index, inplace=True)
 
     # Create new columns
-    df.loc[:, "prob"] = 0.0 # to store probabilities (prob)
-    df.loc[:, "entry"] = 0 # to store entry number
-    entry = 0 # Reset entry number
+    df.loc[:, "prob"] = 0.0  # to store probabilities (prob)
+    df.loc[:, "entry"] = 0  # to store entry number
+    entry = 0  # Reset entry number
     # Create a new dataframe to store results
     n_population = 10000
     df2 = pd.DataFrame()

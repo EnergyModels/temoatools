@@ -1,13 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Nov 16 18:21:13 2018
-
-@author: benne
-"""
-
-# =======================================================
-# Imports
-# =======================================================
 import temoatools as tt
 
 # =======================================================
@@ -18,7 +8,7 @@ scenarioInputs = 'scenarios.xlsx'
 scenarioName = 'A'
 paths = 'paths.csv'
 sensitivityInputs = 'sensitivityVariables.xlsx'
-sensitivityMultiplier = 10.0 # percent perturbation*
+sensitivityMultiplier = 10.0  # percent perturbation*
 
 # Select which approach to use (both do the same thing, one makes the steps more clear)
 option = 2
@@ -31,10 +21,11 @@ modelInputs = tt.move_data_to_db(modelInputs_XLSX, path='data')
 # Create monte carlo cases
 n_cases = 1
 caseNum = 0
-cases = tt.createMonteCarloCases(scenarioInputs, scenarioName, sensitivityInputs,sensitivityMultiplier,n_cases=n_cases)
+cases = tt.createMonteCarloCases(scenarioInputs, scenarioName, sensitivityInputs, sensitivityMultiplier,
+                                 n_cases=n_cases)
 cols = ['type', 'variable', 'tech', caseNum]
-MCinputs = cases.loc[:,cols]
-MCinputs = MCinputs.rename(columns={caseNum:'multiplier'})
+MCinputs = cases.loc[:, cols]
+MCinputs = MCinputs.rename(columns={caseNum: 'multiplier'})
 
 # =======================================================
 # Option 1 - Run Temoa Model Builder with single function

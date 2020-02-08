@@ -1,13 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Nov 17 16:06:40 2018
-
-@author: benne
-"""
-debug = False
-# =============================================================================
-# Imports
-# =============================================================================
 import os
 import shutil
 import sqlite3
@@ -16,6 +6,7 @@ import copy
 import numpy as np
 import temoatools as tt
 
+debug = False
 # =============================================================================
 # Table structures used for inputs, local variables and temoa(outputs)
 # =============================================================================
@@ -233,22 +224,22 @@ def processScenarios(scenarioXLSX, scenarioName, local, path):
     os.chdir(path)
 
     # Unpack PowerPlants
-    df = pd.read_excel(scenarioXLSX, sheetname='PowerPlants')
+    df = pd.read_excel(scenarioXLSX, sheet_name='PowerPlants')
     ind = df.loc[:, scenarioName] == 'Y'
     local['plants_to_include'] = df.Scenario[ind]
 
     # Unpack Fuels
-    df = pd.read_excel(scenarioXLSX, sheetname='Fuels')
+    df = pd.read_excel(scenarioXLSX, sheet_name='Fuels')
     ind = df.loc[:, scenarioName] == 'Y'
     local['fuels_to_include'] = df.Scenario[ind]
 
     # Unpack Connections
-    df = pd.read_excel(scenarioXLSX, sheetname='Connections')
+    df = pd.read_excel(scenarioXLSX, sheet_name='Connections')
     ind = df.loc[:, scenarioName] == 'Y'
     local['connections_to_include'] = df.Scenario[ind]
 
     # Unpack SolverSettings (all or Y/N)
-    df = pd.read_excel(scenarioXLSX, sheetname='SolverSettings')
+    df = pd.read_excel(scenarioXLSX, sheet_name='SolverSettings')
     df = df.set_index('Scenario')
     # Option to include baseload constraint (Does not work with LCOE script)
     local['include_baseload'] = df.loc['include_baseload', scenarioName]
@@ -762,22 +753,22 @@ def createSensitivityCases(scenarioXLSX, scenarioName, sensitivityInputs, multip
     # Move to directory with inputs
     os.chdir(path)
     # Globals
-    df = pd.read_excel(sensitivityInputs, sheetname='Globals')
+    df = pd.read_excel(sensitivityInputs, sheet_name='Globals')
     ind = df.loc[:, 'include'] == 'Y'
     params['global_vars'] = df.variable[ind]
 
     # PowerPlants
-    df = pd.read_excel(sensitivityInputs, sheetname='PowerPlants')
+    df = pd.read_excel(sensitivityInputs, sheet_name='PowerPlants')
     ind = df.loc[:, 'include'] == 'Y'
     params['plant_vars'] = df.variable[ind]
 
     # Fuels
-    df = pd.read_excel(sensitivityInputs, sheetname='Fuels')
+    df = pd.read_excel(sensitivityInputs, sheet_name='Fuels')
     ind = df.loc[:, 'include'] == 'Y'
     params['fuel_vars'] = df.variable[ind]
 
     # Connections
-    df = pd.read_excel(sensitivityInputs, sheetname='Connections')
+    df = pd.read_excel(sensitivityInputs, sheet_name='Connections')
     ind = df.loc[:, 'include'] == 'Y'
     params['conn_vars'] = df.variable[ind]
 
@@ -864,22 +855,22 @@ def createMonteCarloCases(scenarioXLSX, scenarioName, sensitivityInputs, multipl
     os.chdir(path)
 
     # Globals
-    df = pd.read_excel(sensitivityInputs, sheetname='Globals')
+    df = pd.read_excel(sensitivityInputs, sheet_name='Globals')
     ind = df.loc[:, 'include'] == 'Y'
     params['global_vars'] = df.variable[ind]
 
     # PowerPlants
-    df = pd.read_excel(sensitivityInputs, sheetname='PowerPlants')
+    df = pd.read_excel(sensitivityInputs, sheet_name='PowerPlants')
     ind = df.loc[:, 'include'] == 'Y'
     params['plant_vars'] = df.variable[ind]
 
     # Fuels
-    df = pd.read_excel(sensitivityInputs, sheetname='Fuels')
+    df = pd.read_excel(sensitivityInputs, sheet_name='Fuels')
     ind = df.loc[:, 'include'] == 'Y'
     params['fuel_vars'] = df.variable[ind]
 
     # Connections
-    df = pd.read_excel(sensitivityInputs, sheetname='Connections')
+    df = pd.read_excel(sensitivityInputs, sheet_name='Connections')
     ind = df.loc[:, 'include'] == 'Y'
     params['conn_vars'] = df.variable[ind]
 

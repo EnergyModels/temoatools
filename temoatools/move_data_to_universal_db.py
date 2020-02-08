@@ -1,13 +1,10 @@
-# -*- coding: utf-8 -*-
+
 """
 Moves XLS into DB format using DB_Schema.db
 
 Written by Jeff Bennett, 11/16/2018
 JAB6ft@virginia.edu
 """
-#=============================================================================
-# Imports
-#=============================================================================
 import os
 import shutil
 import sqlite3
@@ -59,7 +56,7 @@ def move_data_to_db(XLSX,path='.'):
         sheet_col  = sheet[1]
         
         # Read XLS sheet
-        df = pd.read_excel(XLSX,sheetname = sheet_name)
+        df = pd.read_excel(XLSX,sheet_name = sheet_name)
         df = df.drop([0]) # Remove first row (units)
         
         # Create SQL command based on number of entries

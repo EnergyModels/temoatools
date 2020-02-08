@@ -1,7 +1,8 @@
 from setuptools import setup
 
 setup(name='temoatools',
-      version='1.1.0',
+      version='2.0.0',
+      python_requires='>=3',
       description='Modeling tools to support electric sector analyses in Temoa',
       url='https://github.com/EnergyModels/temoatools',
       author='Jeff Bennett',
@@ -9,4 +10,4 @@ setup(name='temoatools',
       packages=['temoatools'],
       zip_safe=False,
       include_package_data=True,
-      install_requires=['pandas', 'numpy', 'matplotlib', 'seaborn','joblib'])
+      install_requires=['pandas', 'numpy', 'matplotlib', 'seaborn', 'joblib', 'scipy'])

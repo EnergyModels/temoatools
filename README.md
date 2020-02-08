@@ -1,3 +1,42 @@
+# temoatools assumptions
+
+# costs do not change with time
+1) costs do not change with time
+    1) fixed costs
+    2) variable costs
+    3) capital costs
+2) demand is only electric sector
+
+
+# temoatools installation - python 3
+
+
+1) install temoa following instructions on temoaproject.org
+2) install seaborn library
+    1) option 1 - anaconda navigator
+    2) option 2 - pip
+        1) start anaconda prompt
+        2) activate environment
+        > conda activate temoa-py3
+        3) install using pip
+        >pip install seaborn
+
+install as a python package for anaconda distribution
+
+1) git clone to target folder
+2) From within anaconda2 prompt
+    1) Change directory to the temoatools folder
+        >cd C:\\temoatools
+    2) Install using pip command
+        >pip install .
+
+temoatools should now be available as a package
+
+to test:
+> import temoatools as tt
+
+
+
 # temoatools installation
 
 install as a python package for anaconda distribution
