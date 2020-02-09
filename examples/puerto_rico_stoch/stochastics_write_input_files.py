@@ -1,4 +1,3 @@
-from __future__ import print_function
 import os
 import shutil
 import temoatools as tt
@@ -142,9 +141,9 @@ for case in range(n_cases):
         f = open(filename, "w")
         # ---
         f.write(
-            "#-----------------------------------------------------                                                          \n")
-        f.write(
-            "# This is an automatically generated configuration file for Temoa using temoatools github.com/EnergyModels/temoatools\n")
+            "#-----------------------------------------------------\n")
+        f.write("# This is an automatically generated configuration file for Temoa using")
+        f.write(" temoatools github.com/EnergyModels/temoatools\n")
         f.write("# It allows you to specify (and document) all run-time model options\n")
         f.write("# Legal chars in path: a-z A-Z 0-9 - _ \ / . :\n")
         f.write("# Comment out non-mandatory options to omit them\n")

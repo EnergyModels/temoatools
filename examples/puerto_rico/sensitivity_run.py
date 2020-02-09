@@ -1,5 +1,4 @@
 import os
-import multiprocessing
 from joblib import Parallel, delayed, parallel_backend
 import pandas as pd
 import temoatools as tt
@@ -83,7 +82,6 @@ if __name__ == '__main__':
     # ====================================
     # Perform Simulations
     # ====================================
-    num_cores = multiprocessing.cpu_count() - 1  # Save one core for other processes
 
     for scenarioName in scenarioNames:
         # Create sensitivity cases
@@ -100,7 +98,7 @@ if __name__ == '__main__':
 
         # Perform simulations in parallel
         with parallel_backend('multiprocessing', n_jobs=num_cores):
-            outputs = Parallel(n_jobs=num_cores, verbose=5)(
+            outputs = Parallel(n_jobs=-2, verbose=5)(
                 delayed(evaluateModelSensitivity)(modelInputs, scenarioInputs, scenarioName, paths, cases, caseNum) for
                 caseNum in range(n_cases))
 

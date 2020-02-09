@@ -6,7 +6,6 @@ import temoatools as tt
 modelInputs_XLSX = 'data.xlsx'
 scenarioInputs = 'scenarios.xlsx'
 scenarioName = 'A'
-paths = 'paths.csv'
 sensitivityInputs = 'sensitivityVariables.xlsx'
 sensitivityMultiplier = 10.0  # percent perturbation*
 

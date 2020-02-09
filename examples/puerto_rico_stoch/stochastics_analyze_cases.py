@@ -1,8 +1,6 @@
-from __future__ import print_function
 import os
 import pandas as pd
 import temoatools as tt
-import multiprocessing
 from joblib import Parallel, delayed, parallel_backend
 
 
@@ -134,7 +132,7 @@ def analyze_results(metric, folder_db, folder_results, run_name, dbs, all_dbs, d
     # Load and Process data
     df = pd.read_csv(filename, index_col=0)
     if metric == 'costs_yearly' or metric == 'emissions_yearly':
-        df = df.drop(["prob","entry"], axis=1)
+        df = df.drop(["prob", "entry"], axis=1)
     for col in df.columns:
         if 'Unnamed' in col:
             df = df.drop(col, axis=1)
@@ -320,11 +318,9 @@ if __name__ == '__main__':
         metrics = ['costs_yearly', 'emissions_yearly', 'activity_by_fuel', 'activity_by_tech', 'capacity_by_fuel',
                    'capacity_by_tech']
 
-        num_cores = multiprocessing.cpu_count() - 1  # Save one core for other processes
-
         # Perform simulations in parallel
-        with parallel_backend('multiprocessing', n_jobs=num_cores):
-            Parallel(n_jobs=num_cores, verbose=5)(
+        with parallel_backend('multiprocessing', n_jobs=-2):
+            Parallel(n_jobs=-2, verbose=5)(
                 delayed(analyze_results)(metric, folder_db, folder_results, run_name, dbs, all_dbs, db_shift, node_prob,
                                          tech_group_dict, prob_type_dict, infra_dict, carbon_tax_dict) for metric in
                 metrics)

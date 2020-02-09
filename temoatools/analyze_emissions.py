@@ -2,7 +2,6 @@
 import os
 import sqlite3
 import pandas as pd
-import matplotlib.pyplot as plt
 
 debug = False
 resolution = 1000  # DPI

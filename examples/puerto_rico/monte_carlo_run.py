@@ -1,5 +1,4 @@
 import os
-import multiprocessing
 from joblib import Parallel, delayed, parallel_backend
 import pandas as pd
 import temoatools as tt
@@ -8,7 +7,7 @@ import temoatools as tt
 # =======================================================
 # Function to evaluate a single model
 # =======================================================
-def evaluateMonteCarlo(modelInputs, scenarioXLSX, scenarioName, temoa_paths, cases, caseNum):
+def evaluateMonteCarlo(modelInputs, scenarioXLSX, scenarioName, temoa_path, cases, caseNum):
     # Unique filename
     model_filename = scenarioName + '_MC_' + str(caseNum)
 
@@ -21,7 +20,7 @@ def evaluateMonteCarlo(modelInputs, scenarioXLSX, scenarioName, temoa_paths, cas
     tt.build(modelInputs, scenarioXLSX, scenarioName, model_filename, MCinputs=MCinputs, path='data')
 
     # Run Model
-    tt.run(model_filename, temoa_paths, saveEXCEL=False)
+    tt.run(model_filename, temoa_path=temoa_path, saveEXCEL=False)
 
     # Analyze Results
     folder = os.getcwd() + '\\Databases'
@@ -83,7 +82,6 @@ if __name__ == '__main__':
     scenarioInputs = 'scenarios.xlsx'
     scenarioNames = ['A', 'B', 'C', 'D']
     scenarioNames = ['D']
-    paths = 'paths.csv'
     sensitivityInputs = 'sensitivityVariables.xlsx'
     sensitivityMultiplier = 10.0  # percent perturbation
 
@@ -105,11 +103,10 @@ if __name__ == '__main__':
     # ====================================
     # Perform Simulations
     # ====================================
-    num_cores = multiprocessing.cpu_count() - 1  # Save one core for other processes
 
     for scenarioName in scenarioNames:
         # Create monte carlo cases
-        n_cases = 1000
+        n_cases = 10
         cases = tt.createMonteCarloCases(scenarioInputs, scenarioName, sensitivityInputs, sensitivityMultiplier,
                                          n_cases=n_cases, path='data')
 
@@ -119,9 +116,9 @@ if __name__ == '__main__':
         os.chdir(workDir)
 
         # Perform simulations in parallel
-        with parallel_backend('multiprocessing', n_jobs=num_cores):
-            outputs = Parallel(n_jobs=num_cores, verbose=5)(
-                delayed(evaluateMonteCarlo)(modelInputs, scenarioInputs, scenarioName, paths, cases, caseNum) for
+        with parallel_backend('multiprocessing', n_jobs=-2):
+            outputs = Parallel(n_jobs=-2, verbose=5)(
+                delayed(evaluateMonteCarlo)(modelInputs, scenarioInputs, scenarioName, temoa_path, cases, caseNum) for
                 caseNum in range(n_cases))
 
         # Save results to a csv
