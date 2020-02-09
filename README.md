@@ -1,5 +1,5 @@
 # temoatools
-The temoatools package is designed to complement the @TemoaProject by 
+The temoatools package is designed to complement the @github/TemoaProject by 
 providing methods to help with the creation and analysis of the .sqlite databases used by temoa.
 Specifically, users provide inputs in excel, which are then moved into .sqlite databases based 
 on several simplifying assumptions (listed below). Methods are provided for creating, running and analyzing
@@ -30,7 +30,7 @@ These instructions are for a clean installation of Temoa and temoatools.
 
 1) install anaconda3 https://www.anaconda.com/distribution/#download-section
 
-2) install temoa @TemoaProject
+2) install temoa
     1) following instructions on https://temoaproject.org using temoa-py3 environment
     2) record path to temoa
 
