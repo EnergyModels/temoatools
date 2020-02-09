@@ -1,10 +1,10 @@
-# from __future__ import print_function
 import os
 import sqlite3
 import pandas as pd
+import temoatools as tt
 
 debug = False
-resolution = 1000  # DPI
+resolution = 600  # DPI
 
 
 # ==============================================================================
@@ -28,6 +28,8 @@ def getCapacity(folders, dbs, switch='fuel', sector_name='electric', save_data='
     #    outputs:
     #    1) capacity     - pandas DataFrame holding capacity for each model year
     # ==============================================================================
+    print("Analyzing capacity")
+
     # Save original directory
     wrkdir = os.getcwd()
 
@@ -59,7 +61,7 @@ def getCapacity(folders, dbs, switch='fuel', sector_name='electric', save_data='
 
     # Directory to hold results
     if save_data == 'Y' or create_plots == 'Y':
-        create_results_dir(wrkdir=wrkdir, run_name=run_name)
+        tt.create_results_dir(wrkdir=wrkdir, run_name=run_name)
 
     # Save results to Excel
     if save_data == 'Y':
@@ -73,19 +75,30 @@ def getCapacity(folders, dbs, switch='fuel', sector_name='electric', save_data='
 
     # Create plots
     if create_plots == 'Y':
+        import matplotlib.pyplot as plt
+        import seaborn as sns
+
+        # new figure
+        plt.figure()
+        # set aesthetics
+        sns.set_style("white", {"font.family": "serif", "font.serif": ["Times", "Palatino", "serif"]})
+        sns.set_context("paper")
+        sns.set_style("ticks", {"xtick.major.size": 8, "ytick.major.size": 8})
+
+        # wide to long
+        df2 = pd.melt(capacity, id_vars=['database', 'scenario', 'fuelOrTech'], var_name='var', value_name='value')
+        # plot
+        sns.relplot(x='var', y='value', hue='database', data=df2, kind='line', col='fuelOrTech', col_wrap=4)
+
+        # save
         if switch == 'fuel':
-            titlename = 'By fuel'
             savename = 'capacity_by_fuel.png'
         elif switch == 'tech':
-            titlename = 'By tech'
             savename = 'capacity_by_tech.png'
-        # Plot
-        ax = capacity.plot.bar(stacked=True, title=titlename)
-        ax.set_xlabel("Year [-]")
-        ax.set_ylabel("Activity [GWh]")
-        # Save
-        fig = ax.get_figure()
-        fig.savefig(savename, dpi=resolution)
+        plt.savefig(savename, dpi=resolution)
+
+        # close figure
+        plt.close()
 
     # Return to original directory
     os.chdir(wrkdir)
@@ -105,7 +118,7 @@ def SingleDB(folder, db, switch='fuel', sector_name='electric'):
     #    outputs:
     #    1) capacity     - pandas DataFrame holding capacity for each model year
     # ==============================================================================
-    print("Analyzing db: ", db)
+    print("\tAnalyzing db: ", db)
 
     # save original folder
     origDir = os.getcwd()

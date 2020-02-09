@@ -1,9 +1,10 @@
 import os
 import sqlite3
 import pandas as pd
+import temoatools as tt
 
 debug = False
-resolution = 1000  # DPI
+resolution = 600  # DPI
 
 
 # ==============================================================================
@@ -22,6 +23,8 @@ def getActivity(folders, dbs, switch='fuel', sector_name='electric', save_data='
     #    outputs:
     #    1) activity     - pandas DataFrame holding capacity for each model year
     # ==============================================================================
+    print("Analyzing activity by year")
+
     # Save original directory
     wrkdir = os.getcwd()
 
@@ -53,7 +56,7 @@ def getActivity(folders, dbs, switch='fuel', sector_name='electric', save_data='
 
     # Directory to hold results
     if save_data == 'Y' or create_plots == 'Y':
-        create_results_dir(wrkdir=wrkdir, run_name=run_name)
+        tt.create_results_dir(wrkdir=wrkdir, run_name=run_name)
 
     # Save results to CSV
     if save_data == 'Y':
@@ -62,28 +65,33 @@ def getActivity(folders, dbs, switch='fuel', sector_name='electric', save_data='
             savename = 'activity_by_fuel.csv'
         else:
             savename = 'activity_by_tech.csv'
-        activity.to_csv(
-            savename)  # Create connection to excel  # writer = pd.ExcelWriter(savename)  # activity.to_excel(writer, "Activity")  # for db in dbs:  #     activity[name(db)].to_excel(writer,db)  # Save  # writer.save()  # activity.to_csv('activity.csv')
+        activity.to_csv(savename)
 
     if create_plots == 'Y':
-        # Create plots
-        # n_subplots = len(dbs)
-        # if n_subplots == 1:
-        # db = dbs[0]
-        if switch == 'fuel':
-            titlename = 'By fuel'
-        else:
-            titlename = 'By tech'
-        ax = activity.plot.bar(stacked=True, title=titlename)
-        ax.set_xlabel("Year [-]")
-        ax.set_ylabel("Activity [GWh]")
+        import matplotlib.pyplot as plt
+        import seaborn as sns
 
+        # new figure
+        plt.figure()
+        # set aesthetics
+        sns.set_style("white", {"font.family": "serif", "font.serif": ["Times", "Palatino", "serif"]})
+        sns.set_context("talk")
+        # sns.set_style("ticks", {"xtick.major.size": 8, "ytick.major.size": 8})
+
+        # wide to long
+        df2 = pd.melt(activity, id_vars=['database', 'scenario', 'fuelOrTech'], var_name='var', value_name='value')
+        # plot
+        sns.relplot(x='var', y='value', hue='database', data=df2, kind='line', col='fuelOrTech', col_wrap=4)
+
+        # save
         if switch == 'fuel':
-            savename = 'Results_yearlyActivity_byFuel.png'
+            savename = 'yearlyActivity_byFuel.png'
         else:
-            savename = 'Results_yearlyActivity_byTech.png'
-        fig = ax.get_figure()
-        fig.savefig(savename, dpi=resolution)
+            savename = 'yearlyActivity_byTech.png'
+        plt.savefig(savename, dpi=resolution)
+
+        # close figure
+        plt.close()
 
     # Return to original directory
     os.chdir(wrkdir)
@@ -103,7 +111,7 @@ def SingleDB(folder, db, switch='fuel', sector_name='electric', conversion=277.7
     #    outputs:
     #    1) activity     - pandas DataFrame holding capacity for each model year
     # ==============================================================================
-    print("Analyzing db: ", db)
+    print("\tAnalyzing db: ", db)
 
     # save original folder
     origDir = os.getcwd()

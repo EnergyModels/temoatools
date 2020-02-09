@@ -1,9 +1,10 @@
 import os
 import sqlite3
 import pandas as pd
+import temoatools as tt
 
 debug = False
-resolution = 1000  # DPI
+resolution = 600  # DPI
 
 
 # ==============================================================================
@@ -22,6 +23,8 @@ def getCosts(folders, dbs, elc_dmd='ELC_DMD', conversion=0.359971, save_data='N'
     #    1) yearlyCosts     - pandas DataFrame holding yearly_costs
     #    2) LCOE            - dictionary holding LCOE, calculated wrt first model year
     # ==============================================================================
+    print("Analyzing costs")
+
     # Save original directory
     wrkdir = os.getcwd()
 
@@ -58,39 +61,36 @@ def getCosts(folders, dbs, elc_dmd='ELC_DMD', conversion=0.359971, save_data='N'
 
     # Directory to hold results
     if save_data == 'Y' or create_plots == 'Y':
-        create_results_dir(wrkdir=wrkdir, run_name=run_name)
+        tt.create_results_dir(wrkdir=wrkdir, run_name=run_name)
 
     # Save results to CSV
     if save_data == 'Y':
-        # savename = 'Results_Costs.xls'
-        # Create connection to excel
-        # writer = pd.ExcelWriter(savename)
-        # Write data
-        # yearlyCosts.to_excel(writer, 'yearlyCosts')
-        # LCOE.to_excel(writer, 'LCOE')
         yearlyCosts.to_csv('costs_yearly.csv')
         LCOE.to_csv('LCOE.csv')
-        # Save
-        # writer.save()
 
     # Plot Results
     if create_plots == 'Y':
-        # yearlyCosts
-        titlename = 'Yearly Costs'
-        ax = yearlyCosts.plot(stacked=False, title=titlename)
+        import matplotlib.pyplot as plt
+        import seaborn as sns
+
+        # new figure
+        plt.figure()
+        # set aesthetics
+        sns.set_style("white", {"font.family": "serif", "font.serif": ["Times", "Palatino", "serif"]})
+        sns.set_context("paper")
+        sns.set_style("ticks", {"xtick.major.size": 8, "ytick.major.size": 8})
+
+        # wide to long
+        df2 = pd.melt(yearlyCosts, id_vars=['database', 'scenario'], var_name='var', value_name='value')
+        # plot
+        ax = sns.lineplot(x='var', y='value', hue='database', data=df2)
         ax.set_xlabel("Year [-]")
         ax.set_ylabel("Costs [cents/kWh]")
         fig = ax.get_figure()
         fig.savefig('costs_yearly.png', dpi=resolution)
 
-        # LCOE
-        titlename = 'LCOE'
-        # df_LCOE = pd.DataFrame.from_dict(LCOE,orient='index')
-        ax = LCOE.plot.bar(stacked=False, title=titlename)
-        ax.set_xlabel("Scenario [-]")
-        ax.set_ylabel("Levelized Cost of Electricity [cents/kWh]")
-        fig = ax.get_figure()
-        fig.savefig('LCOE.png', dpi=resolution)
+        # close figure
+        plt.close()
 
     # Return to original directory
     os.chdir(wrkdir)
@@ -111,7 +111,7 @@ def SingleDB(folder, db, elc_dmd='ELC_DMD', conversion=0.359971):
     #    1) yearlyCosts     - pandas Series holding yearly costs
     #    2) LCOE            - LCOE (float), calculated wrt first model year
     # ==============================================================================
-    print("Analyzing db: ", db)
+    print("\tAnalyzing db: ", db)
 
     # Save original directory
     origDir = os.getcwd()
@@ -244,7 +244,7 @@ def SingleDB(folder, db, elc_dmd='ELC_DMD', conversion=0.359971):
     # Iterate through scenarios
     # ------------
     for s in scenarios:
-        print("\tAnalyzing Scenario: ", s)
+        print("\t\tAnalyzing Scenario: ", s)
 
         # Create dataframe to hold yearly costs (initialized to zero)
         rows = t_periods

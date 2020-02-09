@@ -1,10 +1,10 @@
-# from __future__ import print_function
 import os
 import sqlite3
 import pandas as pd
+import temoatools as tt
 
 debug = False
-resolution = 1000  # DPI
+resolution = 600  # DPI
 
 
 # ==============================================================================
@@ -23,6 +23,7 @@ def getEmissions(folders, dbs, conversion=1E-6, save_data='N', create_plots='N',
     #    1) yearlyEmissions     - pandas DataFrame holding yearly emissions
     #    2) avgEmissions        - dictionary holding average emissions
     # ==============================================================================
+    print("Analyzing emissions")
 
     # Save original directory
     wrkdir = os.getcwd()
@@ -67,39 +68,39 @@ def getEmissions(folders, dbs, conversion=1E-6, save_data='N', create_plots='N',
 
     # Directory to hold results
     if save_data == 'Y' or create_plots == 'Y':
-        create_results_dir(wrkdir=wrkdir, run_name=run_name)
+        tt.create_results_dir(wrkdir=wrkdir, run_name=run_name)
 
     # Save results to CSV
     if save_data == 'Y':
-        # savename = 'Results_Emissions.xls'
-        # Create connection to excel
-        # writer = pd.ExcelWriter(savename)
-        # Write data
-        # yearlyEmissions.to_excel(writer, 'yearlyEmissions')
         yearlyEmissions.to_csv('emissions_yearly.csv')
         avgEmissions.to_csv('emissions_average.csv')
-        # Save
-        # writer.save()
 
     # Plot Results
     if create_plots == 'Y':
+        import matplotlib.pyplot as plt
+        import seaborn as sns
+
+        # new figure
+        plt.figure()
+        # set aesthetics
+        sns.set_style("white", {"font.family": "serif", "font.serif": ["Times", "Palatino", "serif"]})
+        sns.set_context("paper")
+        sns.set_style("ticks", {"xtick.major.size": 8, "ytick.major.size": 8})
+
+        # wide to long
+        df2 = pd.melt(yearlyEmissions, id_vars=['database', 'scenario'], var_name='var', value_name='value')
+        # plot
+        ax = sns.lineplot(x='var', y='value', hue='database', data=df2)
+
         # yearlyEmissions
-        titlename = 'Yearly Emissions'
-        ax = yearlyEmissions.plot(stacked=False, title=titlename)
         ax.set_xlabel("Year [-]")
-        ax.set_ylabel("Emissions [Mton]")
+        ax.set_ylabel("Emissions [kton]")
         fig = ax.get_figure()
         savename = 'emissions_yearly.png'
         fig.savefig(savename, dpi=resolution)
 
-        # avgEmissions
-        titlename = 'Average Emissions'
-        ax = avgEmissions.plot.bar(stacked=False, title=titlename)
-        ax.set_xlabel("Scenario [-]")
-        ax.set_ylabel("Average Emissions [Mton]")
-        fig = ax.get_figure()
-        savename = 'emissions_average.png'
-        fig.savefig(savename, dpi=resolution)
+        # close figure
+        plt.close()
 
     # Return to original directory
     os.chdir(wrkdir)
@@ -119,7 +120,7 @@ def SingleDB(folder, db, conversion=1E-6):
     #    1) yearlyEmissions     - pandas DataFrame holding yearly emissions
     #    2) avgEmissions        - dictionary holding average emissions
     # ==============================================================================
-    print("Analyzing db: ", db)
+    print("\tAnalyzing db: ", db)
 
     # Save original directory
     origDir = os.getcwd()
@@ -171,7 +172,7 @@ def SingleDB(folder, db, conversion=1E-6):
 
     # Iterate through scenarios
     for s in scenarios:
-        print("\tAnalyzing Scenario: ", s)
+        print("\t\tAnalyzing Scenario: ", s)
         # Review db_Output_Emissions to fill data frame
         for scenario, sector, t_period, emissions_comm, tech, vintage, emissions in db_Output_Emissions:
             if scenario == s:

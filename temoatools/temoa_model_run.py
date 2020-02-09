@@ -36,20 +36,20 @@ def run(model_filename, temoa_path='C:/temoa/temoa', saveEXCEL=False, debug=Fals
     except:
         print(command)
 
-    # Move saveEXCEL file
-    if saveEXCEL:
-
-        xlsDir = Temoa_Dir + '\\db_io\\' + model_filename + '_solve_model'
-        os.chdir(xlsDir)
-        shutil.move('solve.xls', model_directory + '\\' + model_filename + '.xls')
-        os.chdir(workDir)
-        try:
-            os.remove(xlsDir)
-        except:
-            print("Warning: Unable to delete: " + xlsDir)
-            #        os.chdir(Temoa_Dir)
-        os.chdir('db_io\\' + model_filename + '_solve_model')
-        shutil.move('solve.xls', model_directory + '\\' + model_filename + '.xls')
+    # # Move saveEXCEL file
+    # if saveEXCEL:
+    #
+    #     xlsDir = Temoa_Dir + '\\db_io\\' + model_filename + '_solve_model'
+    #     os.chdir(xlsDir)
+    #     shutil.move('solve.xls', model_directory + '\\' + model_filename + '.xls')
+    #     os.chdir(workDir)
+    #     try:
+    #         os.remove(xlsDir)
+    #     except:
+    #         print("Warning: Unable to delete: " + xlsDir)
+    #         #        os.chdir(Temoa_Dir)
+    #     os.chdir('db_io\\' + model_filename + '_solve_model')
+    #     shutil.move('solve.xls', model_directory + '\\' + model_filename + '.xls')
 
     # Return to working directory
     os.chdir(workDir)

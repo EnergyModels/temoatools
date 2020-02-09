@@ -8,7 +8,6 @@ from .temoa_model_build import build
 from .temoa_model_build import createSensitivityCases
 from .temoa_model_build import createMonteCarloCases
 from .temoa_model_run import run
-from .analyze_activity_capacity import getActCap
 from .analyze_activity_tod import getActivityTOD
 from .analyze_activity_year import getActivity
 from .analyze_capacity import getCapacity

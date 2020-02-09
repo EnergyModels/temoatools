@@ -5,7 +5,7 @@ from joblib import Parallel, delayed, parallel_backend
 # =======================================================
 # Function to evaluate a single model
 # =======================================================
-def evaluateModel(modelInputs, scenarioInputs, scenarioName, paths):
+def evaluateModel(modelInputs, scenarioInputs, scenarioName, temoa_path):
     # Unique filename
     model_filename = scenarioName
 
@@ -14,7 +14,7 @@ def evaluateModel(modelInputs, scenarioInputs, scenarioName, paths):
 
     # Run Model
     saveEXCEL = True
-    tt.run(model_filename, paths, saveEXCEL=True, data_path='data', debug=False)
+    tt.run(model_filename, saveEXCEL=False, temoa_path=temoa_path, debug=False)
 
 
 if __name__ == '__main__':
@@ -22,13 +22,11 @@ if __name__ == '__main__':
     # =======================================================
     # Model Inputs - without Carbon Pricing
     # =======================================================
-    modelInputs_XLSX_list = ['data_T.xlsx', 'data_U.xlsx','data_W.xlsx', 'data_X.xlsx', 'data_Y.xlsx', 'data_Z.xlsx']
-    scenarioNames_list = [['T'],['U'],['WA', 'WB', 'WC', 'WD', 'WE', 'WF'], ['XA', 'XB', 'XC', 'XD', 'XE', 'XF'],
-                          ['YA', 'YB', 'YC', 'YD', 'YE', 'YF'],
-        ['ZA', 'ZB', 'ZC', 'ZD', 'ZE', 'ZF']]
+    modelInputs_XLSX_list = ['data.xlsx']
+    scenarioNames_list = [['A', 'B', 'C', 'D', 'E', 'F']]
+    temoa_path = 'C:/temoa/temoa'  # path to temoa directory that contains temoa_model/
 
     scenarioInputs = 'scenarios.xlsx'
-    paths = 'paths.csv'
 
     for modelInputs_XLSX, scenarioNames in zip(modelInputs_XLSX_list, scenarioNames_list):
 
@@ -44,11 +42,11 @@ if __name__ == '__main__':
 
         if option == 1:
             # Perform single simulation
-            evaluateModel(modelInputs, scenarioInputs, scenarioNames[0], paths)
+            evaluateModel(modelInputs, scenarioInputs, scenarioNames[0], temoa_path)
 
         elif option == 2:
             # Perform simulations in parallel
             with parallel_backend('multiprocessing', n_jobs=-2):
                 Parallel(n_jobs=-2, verbose=5)(
-                    delayed(evaluateModel)(modelInputs, scenarioInputs, scenarioName, paths) for scenarioName in
+                    delayed(evaluateModel)(modelInputs, scenarioInputs, scenarioName, temoa_path) for scenarioName in
                     scenarioNames)

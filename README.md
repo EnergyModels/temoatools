@@ -3,7 +3,8 @@ The temoatools package is designed to complement the @github/TemoaProject by
 providing methods to help with the creation and analysis of the .sqlite databases used by temoa.
 Specifically, users provide inputs in excel, which are then moved into .sqlite databases based 
 on several simplifying assumptions (listed below). Methods are provided for creating, running and analyzing
-single, sensitivity, Monte Carlo, and stochastic runs using parallelization libraries.
+baseline scenarios, sensitivity studies, Monte Carlo studies, and stochastic optimization runs using 
+parallelization libraries.
 
 More details:
 1) temoatools simplifying assumptions

@@ -1,10 +1,11 @@
+# TODO - keep this?
 import os
 import sqlite3
 import pandas as pd
-import matplotlib.pyplot as plt
+import temoatools as tt
 
 debug = False
-resolution = 1000  # DPI
+resolution = 600  # DPI
 
 
 # ==============================================================================
@@ -30,6 +31,8 @@ def getActivityTOD(folders, dbs, switch='fuel', sectorName='electric', saveData=
     #    2) plots - optional
     #    3) Data  - optional
     # ==============================================================================
+    print("Analyzing activity by time of day (TOD)")
+
     # If only a single db and folder provided, change to a list
     if type(dbs) == str and type(folders) == str:
         dbs = [dbs]
@@ -52,6 +55,30 @@ def getActivityTOD(folders, dbs, switch='fuel', sectorName='electric', saveData=
     for folder, db in zip(folders, dbs):
         activity[name(db)] = SingleDB(folder, db, switch=switch, sectorName=sectorName, saveData=saveData,
                                       createPlots=createPlots, conversion=conversion)
+
+    # if saveData == 'Y':
+        # do something
+    if createPlots == 'Y':
+
+        import matplotlib.pyplot as plt
+        import seaborn as sns
+
+        # new figure
+        plt.figure()
+
+        # set aesthetics
+        sns.set_style("white", {"font.family": "serif", "font.serif": ["Times", "Palatino", "serif"]})
+        sns.set_context("talk")
+        # sns.set_style("ticks", {"xtick.major.size": 8, "ytick.major.size": 8})
+
+
+        # create plot
+
+        fig = ax.get_figure()
+        fig.savefig('costs_yearly.png', dpi=resolution)
+
+        # close figure
+        plt.close()
 
     return activity
 
