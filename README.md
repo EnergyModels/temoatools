@@ -1,6 +1,4 @@
 # temoatools assumptions
-
-# costs do not change with time
 1) costs do not change with time
     1) fixed costs
     2) variable costs
@@ -9,49 +7,38 @@
 
 
 # temoatools installation - python 3
+install as a python package for anaconda3
 
+1) install anaconda3 https://www.anaconda.com/distribution/#download-section
 
-1) install temoa following instructions on temoaproject.org
-2) install seaborn library
-    1) option 1 - anaconda navigator
-    2) option 2 - pip
-        1) start anaconda prompt
-        2) activate environment
-        > conda activate temoa-py3
-        3) install using pip
-        >pip install seaborn
+2) install temoa 
+    1) following instructions on https://temoaproject.org using temoa-py3 environment
+    2) record path to temoa
 
-install as a python package for anaconda distribution
+3) download temoatools
 
-1) git clone to target folder
-2) From within anaconda2 prompt
-    1) Change directory to the temoatools folder
-        >cd C:\\temoatools
-    2) Install using pip command
-        >pip install .
-
-temoatools should now be available as a package
-
-to test:
-> import temoatools as tt
-
-
-
-# temoatools installation
-
-install as a python package for anaconda distribution
-
-1) git clone to target folder
-2) From within anaconda2 prompt
-    1) Change directory to the temoatools folder
-        >cd C:\\temoatools
-    2) Install using pip command
-        >pip install .
-
-temoatools should now be available as a package
+4) install temoatools using pip
+    1) start anaconda prompt
+    2) activate environment
+    > conda activate temoa-py3
+    3) navigate to temoatools directory
+    > cd C:/temoatools/temoatools
+    4) install using pip
+    >pip install .
+                                                                                                                                                                                                                              >
+5) modifications to temoa
+    1) comment out lines 548-551 of temoa_run.py
+        > try:  # make compatible with Python 2.7 or 3
+	    >    raw_input() # Give the user a chance to confirm input
+	    > except:
+        >    input()"
 
 to test:
 > import temoatools as tt
+
+# Usage notes
+As of 2/8/2020, temoa currently does not output results to excel, therefore set saveEXCEL to False in temoatools.run()
+
 
 # Stochastic optimization
 Instructions to run examples/puerto_rico_stoch.

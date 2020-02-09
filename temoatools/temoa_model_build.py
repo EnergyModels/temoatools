@@ -224,6 +224,7 @@ def processScenarios(scenarioXLSX, scenarioName, local, path):
     os.chdir(path)
 
     # Unpack PowerPlants
+    print(os.getcwd())
     df = pd.read_excel(scenarioXLSX, sheet_name='PowerPlants')
     ind = df.loc[:, scenarioName] == 'Y'
     local['plants_to_include'] = df.Scenario[ind]
@@ -831,7 +832,7 @@ def createSensitivityCases(scenarioXLSX, scenarioName, sensitivityInputs, multip
 # =============================================================================
 # Create Sensitivity Inputs
 # =============================================================================
-def createMonteCarloCases(scenarioXLSX, scenarioName, sensitivityInputs, multiplier, n_cases=100, path='.'):
+def createMonteCarloCases(scenarioXLSX, scenarioName, sensitivityInputs, multiplier, n_cases=100, path='data'):
     params = {}
 
     # ----------
@@ -880,7 +881,7 @@ def createMonteCarloCases(scenarioXLSX, scenarioName, sensitivityInputs, multipl
     # Create sensitivity cases
     # ----------
     # Create Empty DataFrame
-    cols = ['type', 'variable', 'tech'] + range(n_cases)
+    cols = ['type', 'variable', 'tech'] + list(range(n_cases))
     df = pd.DataFrame(columns=cols)
     count = 0
 

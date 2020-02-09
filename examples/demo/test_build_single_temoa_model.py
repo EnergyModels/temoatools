@@ -6,7 +6,6 @@ import temoatools as tt
 modelInputs_XLSX = 'data.xlsx'
 scenarioInputs = 'scenarios.xlsx'
 scenarioName = 'A'
-paths = 'paths.csv'
 
 # Select which approach to use (both do the same thing, one makes the steps more clear)
 option = 2

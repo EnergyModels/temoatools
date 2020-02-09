@@ -1,25 +1,25 @@
 import os
-import pandas as pd
 import shutil
+import temoatools as tt
 
 
 # ============================================================================#
 # Run Temoa Model using a batch File
 # ============================================================================#
-def run(model_filename, temoa_paths, saveEXCEL=False, data_path='data', debug=False):
+def run(model_filename, temoa_path='C:/temoa/temoa', saveEXCEL=False, data_path='data', debug=False):
     # Keep track of main(working) directory
     workDir = os.getcwd()
 
-    # Unpack temoa_paths
-    os.chdir(data_path)
-    df = pd.read_csv(temoa_paths, delimiter=',')
-    df = df.set_index('name')
-    Conda_Batch = df.loc['Conda_batch', 'path']
-    Temoa_Dir = df.loc['Temoa_Dir', 'path']
+    # # Unpack temoa_paths
+    # os.chdir(data_path)
+    # df = pd.read_csv(temoa_paths, delimiter=',')
+    # df = df.set_index('name')
+    # Conda_Batch = df.loc['Conda_batch', 'path']
+    # Temoa_Dir = df.loc['Temoa_Dir', 'path']
 
-    if debug == True:
-        print("Conda_Batch: " + Conda_Batch)
-        print("Temoa_Dir  : " + Temoa_Dir)
+    # if debug == True:
+    #     print("Conda_Batch: " + Conda_Batch)
+    #     print("Temoa_Dir  : " + Temoa_Dir)
 
     # Model Directory
     model_directory = workDir + "\\databases"
@@ -38,35 +38,45 @@ def run(model_filename, temoa_paths, saveEXCEL=False, data_path='data', debug=Fa
     if debug == True:
         print("config_file: " + config_file)
 
-    # Directory to hold configuration files
-    batchDir = workDir + "\\batch"
+    # Run temoa
+    command = 'python ' + temoa_path + '/temoa_model/ --config=' + configDir + '/' + config_file
+    if debug==True:
+        print(command)
     try:
-        os.stat(batchDir)
+        os.system(command)
     except:
-        os.mkdir(batchDir)
-    os.chdir(batchDir)
+        print(command)
+    # os.system('python temoa_model/ --config=temoa_model/config_sample')
+
+    # Directory to hold configuration files
+    # batchDir = workDir + "\\batch"
+    # try:
+    #     os.stat(batchDir)
+    # except:
+    #     os.mkdir(batchDir)
+    # os.chdir(batchDir)
 
     # Create Batch File
-    batchPath = CreateBatchFile(model_filename, configDir, config_file, Conda_Batch, Temoa_Dir, debug=debug)
+    # batchPath = CreateBatchFile(model_filename, configDir, config_file, Conda_Batch, Temoa_Dir, debug=debug)
 
-    if debug == True:
-        print("batchPath: " + batchPath)
+    # if debug == True:
+    #     print("batchPath: " + batchPath)
 
     # Run Batch File
-    os.system(batchPath)
-
-    # Move saveEXCEL file
-    if saveEXCEL == True:
-
-        xlsDir = Temoa_Dir + '\\db_io\\' + model_filename + '_solve_model'
-        os.chdir(xlsDir)
-        shutil.move('solve.xls', model_directory + '\\' + model_filename + '.xls')
-        os.chdir(workDir)
-        try:
-            os.remove(xlsDir)
-        except:
-            print("Warning: Unable to delete: " + xlsDir)
-    #        os.chdir(Temoa_Dir)
+    # os.system(batchPath)
+    #
+    # # Move saveEXCEL file
+    # if saveEXCEL == True:
+    #
+    #     xlsDir = Temoa_Dir + '\\db_io\\' + model_filename + '_solve_model'
+    #     os.chdir(xlsDir)
+    #     shutil.move('solve.xls', model_directory + '\\' + model_filename + '.xls')
+    #     os.chdir(workDir)
+    #     try:
+    #         os.remove(xlsDir)
+    #     except:
+    #         print("Warning: Unable to delete: " + xlsDir)
+    # #        os.chdir(Temoa_Dir)
     #        os.chdir('db_io\\'+model_filename + '_solve_model')
     #        shutil.move('solve.xls',model_directory+'\\'+model_filename+'.xls')
 
@@ -79,7 +89,7 @@ def run(model_filename, temoa_paths, saveEXCEL=False, data_path='data', debug=Fa
 # ============================================================================#
 def CreateBatchFile(model_filename, configDir, config_file, Conda_Batch, Temoa_Dir, debug=False):
     # Create Batch File
-    batchFile = "run_" + remove_ext(model_filename) + ".bat"
+    batchFile = "run_" + tt.remove_ext(model_filename) + ".bat"
     if debug == True:
         print("batchFile: " + batchFile)
     f = open(batchFile, "w")
@@ -102,10 +112,10 @@ def CreateBatchFile(model_filename, configDir, config_file, Conda_Batch, Temoa_D
 def CreateConfigFile(model_directory, model_filename, saveEXCEL=False, saveTEXTFILE=False, keep_pyomo_lp_file=False,
                      debug=False):
     # Locate Database
-    dBpath = model_directory + "\\" + remove_ext(model_filename) + '.sqlite'
+    dBpath = model_directory + "\\" + tt.remove_ext(model_filename) + '.sqlite'
 
     # Write Config File
-    config_file = "config_" + remove_ext(model_filename) + ".txt"
+    config_file = "config_" + tt.remove_ext(model_filename) + ".txt"
     if debug == True:
         print("config_file: " + str(config_file))
     f = open(config_file, "w")
@@ -152,7 +162,7 @@ def CreateConfigFile(model_directory, model_filename, saveEXCEL=False, saveTEXTF
     f.write(
         "# This is the location where database files reside                                                              \n")
     f.write(
-        "--path_to_db_io=db_io                                                                                           \n")
+        "--path_to_db_io="+model_directory  +"                                                                                           \n")
     f.write(
         "                                                                                                                \n")
     f.write(

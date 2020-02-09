@@ -22,7 +22,7 @@ modelInputs = tt.move_data_to_db(modelInputs_XLSX, path='data')
 n_cases = 1
 caseNum = 0
 cases = tt.createMonteCarloCases(scenarioInputs, scenarioName, sensitivityInputs, sensitivityMultiplier,
-                                 n_cases=n_cases)
+                                 n_cases=n_cases, path='data')
 cols = ['type', 'variable', 'tech', caseNum]
 MCinputs = cases.loc[:, cols]
 MCinputs = MCinputs.rename(columns={caseNum: 'multiplier'})

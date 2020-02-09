@@ -4,25 +4,25 @@ from joblib import Parallel, delayed, parallel_backend
 import pandas as pd
 import temoatools as tt
 
-#=======================================================
-# Function to evaluate a single model
-#=======================================================
-def evaluateMonteCarlo(modelInputs, scenarioXLSX, scenarioName, temoa_paths, cases, caseNum):  
 
+# =======================================================
+# Function to evaluate a single model
+# =======================================================
+def evaluateMonteCarlo(modelInputs, scenarioXLSX, scenarioName, temoa_paths, cases, caseNum):
     # Unique filename
     model_filename = scenarioName + '_MC_' + str(caseNum)
-    
+
     # Prepare monte carlo inputs
     cols = ['type', 'variable', 'tech', caseNum]
-    MCinputs = cases.ix[:,cols]
-    MCinputs = MCinputs.rename(columns={caseNum:'multiplier'})
-    
+    MCinputs = cases.ix[:, cols]
+    MCinputs = MCinputs.rename(columns={caseNum: 'multiplier'})
+
     # Build Model
-    tt.build(modelInputs,scenarioXLSX,scenarioName,model_filename,MCinputs=MCinputs,path='data')
+    tt.build(modelInputs, scenarioXLSX, scenarioName, model_filename, MCinputs=MCinputs, path='data')
 
     # Run Model
-    tt.run(model_filename,temoa_paths,saveEXCEL=False)
-    
+    tt.run(model_filename, temoa_paths, saveEXCEL=False)
+
     # Analyze Results
     folder = os.getcwd() + '\\Databases'
     db = model_filename + '.sqlite'
@@ -34,11 +34,10 @@ def evaluateMonteCarlo(modelInputs, scenarioXLSX, scenarioName, temoa_paths, cas
     saveData = 'N'  # Do not save data as a csv or xls
     sectorName = 'electric'  # Name of sector to be analyzed
     switch = 'fuel'
-    capacityByFuel = tt.getCapacity(folder, db, switch=switch, sectorName=sectorName, saveData=saveData,
-                                    createPlots=createPlots)
+    capacityByFuel = tt.getCapacity(folder, db, switch=switch)
     key = capacityByFuel.keys()[0]
     cap = capacityByFuel[key]
-    ActivityByYearFuel = tt.getActivity(folder, db, switch=switch,sectorName=sectorName,saveData=saveData,createPlots=createPlots)
+    ActivityByYearFuel = tt.getActivity(folder, db, switch=switch)
     key = ActivityByYearFuel.keys()[0]
     act = ActivityByYearFuel[key]
 
@@ -52,10 +51,10 @@ def evaluateMonteCarlo(modelInputs, scenarioXLSX, scenarioName, temoa_paths, cas
 
     # Package Outputs
     output = pd.Series()
-    output['db']              = db
-    output['caseNum']         = caseNum
-    output['LCOE']            = LCOE
-    output['avgEmissions']    = avgEmissions
+    output['db'] = db
+    output['caseNum'] = caseNum
+    output['LCOE'] = LCOE
+    output['avgEmissions'] = avgEmissions
     for ind in yearlyCosts.index:
         label = 'cost-' + str(ind)
         output[label] = yearlyCosts.loc[ind]
@@ -66,64 +65,67 @@ def evaluateMonteCarlo(modelInputs, scenarioXLSX, scenarioName, temoa_paths, cas
     for ind in cap.index:
         for col in cap.columns:
             label = 'cap_' + str(col) + '-' + str(ind)
-            output[label] = cap.loc[ind,col]
+            output[label] = cap.loc[ind, col]
     # ActivityByYearFuel
     for ind in act.index:
         for col in act.columns:
             label = 'act_' + str(col) + '-' + str(ind)
-            output[label] = act.loc[ind,col]
+            output[label] = act.loc[ind, col]
     return output
-    
+
+
 if __name__ == '__main__':
-    
-    #=======================================================
+
+    # =======================================================
     # Model Inputs
-    #=======================================================
-    modelInputs_XLSX        = 'data.xlsx'
-    scenarioInputs          = 'scenarios.xlsx'
-    scenarioNames           = ['A','B','C','D']
+    # =======================================================
+    modelInputs_XLSX = 'data.xlsx'
+    scenarioInputs = 'scenarios.xlsx'
+    scenarioNames = ['A', 'B', 'C', 'D']
     scenarioNames = ['D']
-    paths                   = 'paths.csv'
-    sensitivityInputs       = 'sensitivityVariables.xlsx'
-    sensitivityMultiplier   = 10.0 # percent perturbation
-    
-    #=======================================================
+    paths = 'paths.csv'
+    sensitivityInputs = 'sensitivityVariables.xlsx'
+    sensitivityMultiplier = 10.0  # percent perturbation
+
+    # =======================================================
     # Move modelInputs_XLSX to database
-    #=======================================================
+    # =======================================================
     modelInputs = tt.move_data_to_db(modelInputs_XLSX, path='data')
-    
-    #=======================================================
+
+    # =======================================================
     # Create directory to hold inputs and outputs
-    #=======================================================
+    # =======================================================
     workDir = os.getcwd()
     sensDir = workDir + "\\monteCarlo"
     try:
         os.stat(sensDir)
     except:
         os.mkdir(sensDir)
-            
-    #====================================    
+
+    # ====================================
     # Perform Simulations
-    #====================================
-    num_cores = multiprocessing.cpu_count() -1 # Save one core for other processes
-    
+    # ====================================
+    num_cores = multiprocessing.cpu_count() - 1  # Save one core for other processes
+
     for scenarioName in scenarioNames:
-    
         # Create monte carlo cases
         n_cases = 1000
-        cases = tt.createMonteCarloCases(scenarioInputs, scenarioName, sensitivityInputs,sensitivityMultiplier,n_cases=n_cases,path='data')
-        
+        cases = tt.createMonteCarloCases(scenarioInputs, scenarioName, sensitivityInputs, sensitivityMultiplier,
+                                         n_cases=n_cases, path='data')
+
         # Save cases
         os.chdir(sensDir)
-        cases.to_csv('MonteCarloInputs_'+scenarioName+'.csv')
+        cases.to_csv('MonteCarloInputs_' + scenarioName + '.csv')
         os.chdir(workDir)
-                
+
         # Perform simulations in parallel
         with parallel_backend('multiprocessing', n_jobs=num_cores):
-            outputs = Parallel(n_jobs=num_cores,verbose=5)(delayed(evaluateMonteCarlo)(modelInputs, scenarioInputs, scenarioName, paths, cases, caseNum) for caseNum in range(n_cases))
+            outputs = Parallel(n_jobs=num_cores, verbose=5)(
+                delayed(evaluateMonteCarlo)(modelInputs, scenarioInputs, scenarioName, paths, cases, caseNum) for
+                caseNum in range(n_cases))
 
         # Save results to a csv
         os.chdir(sensDir)
         df = pd.DataFrame(outputs)
-        df.to_csv('MonteCarloResults_'+scenarioName+'.csv')
+        df.to_csv('MonteCarloResults_' + scenarioName + '.csv')
         os.chdir(workDir)

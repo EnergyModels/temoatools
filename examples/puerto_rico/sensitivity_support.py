@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Dec 14 11:05:29 2018
 
-@author: jab6ft
-"""
-
-#------------------------
+# ------------------------
 # Methods to help format variable and technology names for plotting
-#------------------------
+# ------------------------
 def removeCamelHump(label):
     newLabel = ''
     for s in label:
@@ -16,6 +11,7 @@ def removeCamelHump(label):
         else:
             newLabel = newLabel + s
     return newLabel
+
 
 def formatPlantName(label):
     # Determine Vintage
@@ -27,9 +23,9 @@ def formatPlantName(label):
         vintage = '(New, Regional)'
     elif label[0:2] == 'EI':
         vintage = '(New, Small-scale)'
-    else: # If not specified, do not format
+    else:  # If not specified, do not format
         return label
-    
+
     # Determine Tech
     if label[3:] == 'BATT':
         tech = 'Battery'
@@ -59,14 +55,15 @@ def formatPlantName(label):
         tech = 'Solar PV Plant'
     elif label[3:] == 'WIND':
         tech = 'Wind Plant'
-    else: # If not specified, do not format
+    else:  # If not specified, do not format
         return label
-        
+
     newLabel = tech + vintage
-    
+
     return newLabel
 
-def formatFuelName(label):    
+
+def formatFuelName(label):
     # Determine Tech
     if label == 'BIO':
         tech = 'Biomass'
@@ -86,10 +83,11 @@ def formatFuelName(label):
         tech = 'Solar'
     elif label == 'WIND':
         tech = 'Wind'
-    else: # If not specified, do not format
+    else:  # If not specified, do not format
         return label
-    
+
     return tech
+
 
 def formatConnName(label):
     # Determine Vintage
@@ -99,7 +97,7 @@ def formatConnName(label):
         tech = 'Distribution'
     elif label == 'LOCAL':
         tech = 'Local Connection'
-    else: # If not specified, do not format
+    else:  # If not specified, do not format
         return label
-  
+
     return tech
