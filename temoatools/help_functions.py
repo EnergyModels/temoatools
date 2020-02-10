@@ -1,5 +1,5 @@
 import os
-
+from pathlib import Path
 
 # -----------------------------------------------------
 # Remove filetype from filename
@@ -19,9 +19,9 @@ def remove_ext(filename):
 # -----------------------------------------------------
 # Directory to hold results
 # -----------------------------------------------------
-def create_results_dir(wrkdir='.', run_name=''):
+def create_results_dir(wrkdir=Path('.'), run_name=''):
     # General results directory
-    resultdir = wrkdir + "\\results"
+    resultdir = os.path.join(wrkdir, "results")
     try:
         os.stat(resultdir)
     except:
@@ -29,7 +29,7 @@ def create_results_dir(wrkdir='.', run_name=''):
 
     # Results directory specifically for casename
     if len(run_name) > 0:
-        resultdir = wrkdir + "\\results" + "\\" + run_name
+        resultdir = os.path.join(resultdir, run_name)
         try:
             os.stat(resultdir)
         except:

@@ -1,5 +1,6 @@
 import temoatools as tt
 from joblib import Parallel, delayed, parallel_backend
+from pathlib import Path
 
 
 # =======================================================
@@ -14,7 +15,7 @@ def evaluateModel(modelInputs, scenarioInputs, scenarioName, temoa_path):
 
     # Run Model
     saveEXCEL = True
-    tt.run(model_filename, saveEXCEL=False, temoa_path=temoa_path, debug=False)
+    tt.run(model_filename, saveEXCEL=False, temoa_path=temoa_path, debug=True)
 
 
 if __name__ == '__main__':
@@ -24,7 +25,7 @@ if __name__ == '__main__':
     # =======================================================
     modelInputs_XLSX_list = ['data.xlsx']
     scenarioNames_list = [['A', 'B', 'C', 'D', 'E', 'F']]
-    temoa_path = 'C:/temoa/temoa'  # path to temoa directory that contains temoa_model/
+    temoa_path = Path('C:/temoa/temoa')  # path to temoa directory that contains temoa_model/
 
     scenarioInputs = 'scenarios.xlsx'
 
@@ -37,7 +38,7 @@ if __name__ == '__main__':
 
         # ====================================
         # Perform Simulations
-        option = 2  # 1 - Run single, 2 - Run all
+        option = 1  # 1 - Run single, 2 - Run all
         # ====================================
 
         if option == 1:

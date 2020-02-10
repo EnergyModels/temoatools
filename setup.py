@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='temoatools',
-      version='2.0.0',
+      version='2.0.1',
       python_requires='>=3.7.3',
       description='Modeling tools to support electric sector analyses in Temoa',
       url='https://github.com/EnergyModels/temoatools',

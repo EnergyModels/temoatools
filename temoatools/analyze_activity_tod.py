@@ -179,13 +179,8 @@ def SingleDB(folder, db, switch='fuel', sectorName='electric', saveData='N', cre
     rows = sorted(tods)
 
     # Directory to hold results
-    if saveData == 'Y' or createPlots == 'Y':
-        resultsDir = origDir + "\\results"
-        try:
-            os.stat(resultsDir)
-        except:
-            os.mkdir(resultsDir)
-        os.chdir(resultsDir)
+    if save_data == 'Y' or create_plots == 'Y':
+        tt.create_results_dir(wrkdir=wrkdir, run_name=run_name)
 
     # Create plot
     if createPlots == 'Y':

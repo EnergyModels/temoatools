@@ -5,6 +5,7 @@ import pandas as pd
 import copy
 import numpy as np
 import temoatools as tt
+from pathlib import Path
 
 debug = False
 # =============================================================================
@@ -48,7 +49,7 @@ demand_commodity = 'ELC_DMD'
 # =============================================================================
 # Function to build a temoa model
 # =============================================================================
-def build(modelInputs, scenarioXLSX, scenarioName, outFilename, sensitivity={}, MCinputs={}, path='.'):
+def build(modelInputs, scenarioXLSX, scenarioName, outFilename, sensitivity={}, MCinputs={}, path=Path('.')):
     # Get empty dictionary of local variables
     local = getEmptyLocalDict()
 
@@ -155,7 +156,7 @@ def Write2Temoa(outputs, outFilename):
     workDir = os.getcwd()
 
     # Directory to hold empty (unrun) database files
-    databaseDir = workDir + "\\databases"
+    databaseDir = os.path.join(workDir, "databases")
     try:
         os.stat(databaseDir)
     except:
@@ -163,8 +164,9 @@ def Write2Temoa(outputs, outFilename):
 
     # Create New SQL File
     # Set Filenames
-    emptydB = tt.resource_path + "\\db_schema_temoa_mod.sqlite"
-    outputdB = databaseDir + '\\' + outFilename + '.sqlite'
+    emptydB = os.path.join(tt.resource_path, "db_schema_temoa_mod.sqlite")
+    outfilename_w_ext = outFilename + '.sqlite'
+    outputdB = os.path.join(databaseDir, outfilename_w_ext)
 
     # Delete old *.sqlite file (if it already exists) and copy/rename copy of temoa_schema.sqlite
     if os.path.isfile(outputdB):
@@ -731,7 +733,7 @@ def processTech(inputs, local, outputs, tech):
 # =============================================================================
 # Create Sensitivity Inputs
 # =============================================================================
-def createSensitivityCases(scenarioXLSX, scenarioName, sensitivityInputs, multiplier, path='.'):
+def createSensitivityCases(scenarioXLSX, scenarioName, sensitivityInputs, multiplier, path=Path('.')):
     params = {}
 
     # ----------

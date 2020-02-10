@@ -6,7 +6,7 @@ import temoatools as tt
 # ===============
 
 onlySimple = False
-folder = dbFolder = os.getcwd() + '\\Databases'
+folder = os.path.join(os.getcwd(), 'databases')
 dbs = ["A.sqlite", "B.sqlite", "C.sqlite", "D.sqlite", "E.sqlite", "F.sqlite"]
 
 createPlots = 'Y'  # Create default plots

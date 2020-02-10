@@ -11,9 +11,10 @@ import sqlite3
 import pandas as pd
 import numpy as np
 import temoatools as tt
+from pathlib import Path
 
 
-def move_data_to_db(XLSX,path='.'):
+def move_data_to_db(XLSX,path=Path('.')):
     
     #=============================================================================
     # Begin Function
@@ -23,7 +24,7 @@ def move_data_to_db(XLSX,path='.'):
 
     # Empty db with set schema (expected to be within the same folder)
 
-    emptydB  = tt.resource_path + "\\db_schema_universal.db"
+    emptydB  = os.path.join(tt.resource_path, "db_schema_universal.db")
     
     # Create output filename using inputfilename
     outputdB = tt.remove_ext(XLSX) + ".db"

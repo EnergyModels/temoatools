@@ -1,20 +1,21 @@
 import os
 import shutil
 import temoatools as tt
+from pathlib import Path
 
 
 # ============================================================================#
 # Run Temoa Model using a config File
 # ============================================================================#
-def run(model_filename, temoa_path='C:/temoa/temoa', saveEXCEL=False, debug=False, solver=''):
+def run(model_filename, temoa_path=Path('C:/temoa/temoa'), saveEXCEL=False, debug=False, solver=''):
     # Keep track of main(working) directory
     workDir = os.getcwd()
 
     # Model Directory
-    model_directory = workDir + "\\databases"
+    model_directory = os.path.join(workDir, "databases")
 
     # Directory to hold configuration files
-    configDir = workDir + "\\configs"
+    configDir = os.path.join(workDir, "configs")
     try:
         os.stat(configDir)
     except:
@@ -28,7 +29,12 @@ def run(model_filename, temoa_path='C:/temoa/temoa', saveEXCEL=False, debug=Fals
         print("config_file: " + config_file)
 
     # Run temoa
-    command = 'python ' + temoa_path + '/temoa_model/ --config=' + configDir + '/' + config_file
+    temoa_path_full = os.path.join(temoa_path, 'temoa_model')
+    config_path_full = os.path.join(configDir, config_file)
+    command = 'python ' + str(temoa_path_full) + ' --config=' + str(config_path_full) # TODO
+
+
+    # command = 'python ' + str(temoa_path) + '/temoa_model/ --config=' + configDir + '/' + config_file # TODO
     if debug:
         print(command)
     try:
@@ -61,7 +67,8 @@ def run(model_filename, temoa_path='C:/temoa/temoa', saveEXCEL=False, debug=Fals
 def CreateConfigFile(model_directory, model_filename, saveEXCEL=False, saveTEXTFILE=False, keep_pyomo_lp_file=False,
                      debug=False, solver=''):
     # Locate Database
-    dBpath = model_directory + "\\" + tt.remove_ext(model_filename) + '.sqlite'
+    full_filename = tt.remove_ext(model_filename) + '.sqlite'
+    dBpath = os.path.join(model_directory, full_filename)
 
     # Write Config File
     config_file = "config_" + tt.remove_ext(model_filename) + ".txt"
