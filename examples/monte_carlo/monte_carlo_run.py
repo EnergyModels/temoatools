@@ -1,13 +1,38 @@
+# ======================================================================================================================
+# monte_carlo_run.py
+# Jeff Bennett, jab6ft@virginia.edu
+#
+# This script provides an example of using Temoatools to build and run Monte Carlo simluations using Temoa models.
+# The approach remains from the baselins example to build models from two .xlsx files. The first
+# provides all possible system and technology data (named data.xlsx in the example). The second specifies scenarios
+# that make use of specified combinations of technology data (named Scenarios.xlsx in the example).
+#
+# Required inputs (lines 46-50)
+#   temoa_path - path to Temoa directory that contains temoa_model/
+#   project_path - path to directory that contains this file (expects a subdirectory within named data)
+#   modelInputs_XLSX_list - list that contains the *.xlsx file with model data (within data subdirectory)
+#   scenarioInputs - TODO
+#   scenarioNames_list - names of each scenario to perform a monte carlo simulation with (named within ScenarioInputs file)
+#   sensitivityInputs  TODO
+#   sensitivityMultiplier - percent perturbation TODO
+#
+# Outputs (paths are all relative to project_path) TODO
+#   data/data.db - universal database that contains input data in a .sqlite database TODO
+#   configs/config_*.txt - a separate configuration file for each Temoa run
+#   databases/*.dat - a separate .sqlite database for each Temoa run
+#   databases/*.sqlite - a separate .sqlite database for each Temoa run
+# ======================================================================================================================
 import os
 from joblib import Parallel, delayed, parallel_backend
 import pandas as pd
 import temoatools as tt
 from pathlib import Path
 
+
 # =======================================================
 # Function to evaluate a single model
 # =======================================================
-def evaluateMonteCarlo(modelInputs, scenarioXLSX, scenarioName, temoa_path, cases, caseNum):
+def evaluateMonteCarlo(modelInputs, scenarioXLSX, scenarioName, temoa_path, project_path, cases, caseNum):
     # Unique filename
     model_filename = scenarioName + '_MC_' + str(caseNum)
 
@@ -17,13 +42,13 @@ def evaluateMonteCarlo(modelInputs, scenarioXLSX, scenarioName, temoa_path, case
     MCinputs = MCinputs.rename(columns={caseNum: 'multiplier'})
 
     # Build Model
-    tt.build(modelInputs, scenarioXLSX, scenarioName, model_filename, MCinputs=MCinputs, path='data')
+    tt.build(modelInputs, scenarioXLSX, scenarioName, model_filename, MCinputs=MCinputs, path=project_path)
 
     # Run Model
     tt.run(model_filename, temoa_path=temoa_path, saveEXCEL=False)
 
     # Analyze Results
-    folder = os.getcwd() + '\\Databases'
+    folder = os.getcwd() + '\\Databases'  # TODO
     db = model_filename + '.sqlite'
     yearlyCosts, LCOE = tt.getCosts(folder, db)
     yearlyEmissions, avgEmissions = tt.getEmissions(folder, db)
@@ -78,17 +103,18 @@ if __name__ == '__main__':
     # =======================================================
     # Model Inputs
     # =======================================================
+    temoa_path = Path('C:/temoa/temoa')
+    project_path = Path('C:/Users/benne/PycharmProjects/temoatools/examples/monte_carlo')
     modelInputs_XLSX = 'data.xlsx'
     scenarioInputs = 'scenarios.xlsx'
     scenarioNames = ['A', 'B', 'C', 'D']
-    temoa_path = Path('C:/temoa/temoa')  # path to temoa directory that contains temoa_model/
     sensitivityInputs = 'sensitivityVariables.xlsx'
     sensitivityMultiplier = 10.0  # percent perturbation
 
     # =======================================================
     # Move modelInputs_XLSX to database
     # =======================================================
-    modelInputs = tt.move_data_to_db(modelInputs_XLSX, path='data')
+    modelInputs = tt.move_data_to_db(modelInputs_XLSX, path=project_path)
 
     # =======================================================
     # Create directory to hold inputs and outputs
@@ -108,7 +134,7 @@ if __name__ == '__main__':
         # Create monte carlo cases
         n_cases = 10
         cases = tt.createMonteCarloCases(scenarioInputs, scenarioName, sensitivityInputs, sensitivityMultiplier,
-                                         n_cases=n_cases, path='data')
+                                         n_cases=n_cases, path=project_path)
 
         # Save cases
         os.chdir(sensDir)
@@ -118,7 +144,8 @@ if __name__ == '__main__':
         # Perform simulations in parallel
         with parallel_backend('multiprocessing', n_jobs=-2):
             outputs = Parallel(n_jobs=-2, verbose=5)(
-                delayed(evaluateMonteCarlo)(modelInputs, scenarioInputs, scenarioName, temoa_path, cases, caseNum) for
+                delayed(evaluateMonteCarlo)(modelInputs, scenarioInputs, scenarioName, temoa_path, project_path, cases,
+                                            caseNum) for
                 caseNum in range(n_cases))
 
         # Save results to a csv

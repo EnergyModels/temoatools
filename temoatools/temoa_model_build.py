@@ -50,24 +50,26 @@ demand_commodity = 'ELC_DMD'
 # Function to build a temoa model
 # =============================================================================
 def build(modelInputs, scenarioXLSX, scenarioName, outFilename, sensitivity={}, MCinputs={}, path=Path('.')):
+
+    data_path = os.path.join(path, 'data')
     # Get empty dictionary of local variables
     local = getEmptyLocalDict()
 
     # Process scenarios
-    local = processScenarios(scenarioXLSX, scenarioName, local, path)
+    local = processScenarios(scenarioXLSX, scenarioName, local, data_path)
 
     # Read-in inputs as dictionary
-    inputs = inputs2Dict(modelInputs, path)
+    inputs = inputs2Dict(modelInputs, data_path)
 
     # Apply Sensitvity to inputs
-    if debug == True:
+    if debug:
         print(sensitivity)
     if not len(
             sensitivity) == 0:  # if dictionary is empty, it will evaluae to false, and no senstivity will be performed
         inputs, local = applySensitivity(inputs, sensitivity, local)
 
     # Apply Monte Carlo to inputs
-    if debug == True:
+    if debug:
         print(MCinputs)
     if not len(MCinputs) == 0:  # if dictionary is empty, it will evaluae to false, and no monte carlo will be performed
         for i in range(len(MCinputs)):

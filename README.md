@@ -44,8 +44,8 @@ These instructions are for a clean installation of Temoa and temoatools.
     3) navigate to temoatools directory
     > cd project_folder/temoatools
     4) install using pip
-    >pip install .
-                                                                                                                                                                                                                              >
+    >pip install .                                                                                                                                                                                                                     >
+
 5) Make modifications to temoa source code for running simulations in parallel from a terminal
     1) comment out lines 548-551 of temoa_run.py
         -     try:  # make compatible with Python 2.7 or 3

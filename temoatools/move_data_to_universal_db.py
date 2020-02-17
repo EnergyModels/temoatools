@@ -19,8 +19,11 @@ def move_data_to_db(XLSX,path=Path('.')):
     #=============================================================================
     # Begin Function
     #=============================================================================
+    data_path = os.path.join(path, 'data')
+    print(data_path)
+
     workDir = os.getcwd()
-    os.chdir(path)
+    os.chdir(data_path)
 
     # Empty db with set schema (expected to be within the same folder)
 

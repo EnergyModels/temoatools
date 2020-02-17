@@ -1,3 +1,4 @@
+# TODO add documentation
 import os
 from joblib import Parallel, delayed, parallel_backend
 import pandas as pd
@@ -8,7 +9,7 @@ from pathlib import Path
 # =======================================================
 # Function to evaluate a single model
 # =======================================================
-def evaluateModelSensitivity(modelInputs, scenarioXLSX, scenarioName, temoa_path, cases, caseNum):
+def evaluateModelSensitivity(modelInputs, scenarioXLSX, scenarioName, temoa_path, project_path, cases, caseNum):
     # Unique filename
     model_filename = scenarioName + '_Sens_' + str(caseNum)
 
@@ -16,7 +17,7 @@ def evaluateModelSensitivity(modelInputs, scenarioXLSX, scenarioName, temoa_path
     sensitivity = cases.loc[caseNum]
 
     # Build Model
-    tt.build(modelInputs, scenarioXLSX, scenarioName, model_filename, sensitivity=sensitivity, path='data')
+    tt.build(modelInputs, scenarioXLSX, scenarioName, model_filename, sensitivity=sensitivity, path=project_path)
 
     # Run Model
     saveEXCEL = False
@@ -58,23 +59,24 @@ if __name__ == '__main__':
     # =======================================================
     # Model Inputs
     # =======================================================
+    temoa_path = Path('C:/temoa/temoa')  # path to temoa directory that contains temoa_model/
+    project_path = Path('C:/Users/benne/PycharmProjects/temoatools/examples/monte_carlo')
     modelInputs_XLSX = 'data.xlsx'
     scenarioInputs = 'scenarios.xlsx'
     scenarioNames = ['A', 'B', 'C', 'D']
-    temoa_path = Path('C:/temoa/temoa')  # path to temoa directory that contains temoa_model/
     sensitivityInputs = 'sensitivityVariables.xlsx'
     sensitivityMultiplier = 10.0  # percent perturbation
 
     # =======================================================
     # Move modelInputs_XLSX to database
     # =======================================================
-    modelInputs = tt.move_data_to_db(modelInputs_XLSX, path='data')
+    modelInputs = tt.move_data_to_db(modelInputs_XLSX, path=project_path)
 
     # =======================================================
     # Create directory to hold sensitivity inputs and outputs
     # =======================================================
     workDir = os.getcwd()
-    sensDir = workDir + "\\sensitivity"
+    sensDir = workDir + "\\sensitivity" # TODO
     try:
         os.stat(sensDir)
     except:
@@ -87,7 +89,7 @@ if __name__ == '__main__':
     for scenarioName in scenarioNames:
         # Create sensitivity cases
         cases = tt.createSensitivityCases(scenarioInputs, scenarioName, sensitivityInputs, sensitivityMultiplier,
-                                          path='data')
+                                          project_path)
 
         # Save sensitivity cases
         os.chdir(sensDir)
@@ -100,7 +102,8 @@ if __name__ == '__main__':
         # Perform simulations in parallel
         with parallel_backend('multiprocessing', n_jobs=num_cores):
             outputs = Parallel(n_jobs=-2, verbose=5)(
-                delayed(evaluateModelSensitivity)(modelInputs, scenarioInputs, scenarioName, temoa_path, cases, caseNum) for
+                delayed(evaluateModelSensitivity)(modelInputs, scenarioInputs, scenarioName, temoa_path, project_path,
+                                                  cases, caseNum) for
                 caseNum in range(n_cases))
 
         # Save results to a csv
