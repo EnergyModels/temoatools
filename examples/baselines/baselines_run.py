@@ -35,7 +35,6 @@ def evaluateModel(modelInputs, scenarioInputs, scenarioName, temoa_path, project
     tt.build(modelInputs, scenarioInputs, scenarioName, model_filename, path=project_path)
 
     # Run Model
-    saveEXCEL = True
     tt.run(model_filename, saveEXCEL=False, temoa_path=temoa_path, debug=True)
 
 
