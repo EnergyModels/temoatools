@@ -6,7 +6,7 @@
 # provides all possible system and technology data (named data.xlsx in the example). The second specifies scenarios
 # that make use of specified combinations of technology data (named Scenarios.xlsx in the example).
 #
-# Required inputs (lines 48-54)
+# Required inputs (lines 49-55)
 #   temoa_path - path to Temoa directory that contains temoa_model/
 #   project_path - path to directory that contains this file (expects a subdirectory within named data)
 #   modelInputs_XLSX_list - list that contains the *.xlsx file with model data (within data subdirectory)
@@ -24,6 +24,7 @@
 import temoatools as tt
 from joblib import Parallel, delayed, parallel_backend
 from pathlib import Path
+import os
 
 
 # =======================================================
