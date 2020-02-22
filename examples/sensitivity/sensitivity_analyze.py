@@ -1,4 +1,22 @@
-# TODO - update
+# ======================================================================================================================
+# sensitivity_analyze.py
+# Jeff Bennett, jab6ft@virginia.edu
+#
+# This script provides an example of using Temoatools to analyze a sensitivity study.
+#
+# Required inputs (lines 30-37)
+#   project_path - path to directory that contains this file (expects a subdirectory within named data)
+#   cases - names of scenarios to analyze
+#   labels - display names for each
+#   variables - variable names to analyze
+#   varLabels - labels for each variable to plot
+#   conversions - list containing conversions to display units, order matches variables
+#   n_display - max number of variables to display
+#   resolution - dots per inch (DPI) for plots
+#
+# Outputs
+#   *.png - plots of output
+# ======================================================================================================================
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -9,10 +27,10 @@ from sensitivity_support import removeCamelHump, formatPlantName, formatFuelName
 # ------------------------
 # Inputs
 # ------------------------
-folder = 'sensitivity'
-cases = ['SensitivityResults_A.csv', 'SensitivityResults_B.csv', 'SensitivityResults_C.csv', 'SensitivityResults_D.csv']
-labels = ["Centralized", "Regionalized", "Small-scale PV + Batt", "Market Driven"]
-
+project_path = Path(
+    'C:/Users/benne/PycharmProjects/temoatools/examples/sensitivity')  # Path('/home/jab6ft/temoa/project/sensitivity')
+cases = ['SensitivityResults_A.csv']
+labels = ["A"]
 variables = ['LCOE', 'avgEmissions']
 varLabels = ['Levelized Cost of Electricity (cents/kWh)', 'Average Emissions (Mton/yr)']
 conversions = [1.0, 1E-3]  # kton/yr to Mton/yr
@@ -22,9 +40,9 @@ resolution = 600
 # ------------------------
 # Begin program
 # ------------------------
-# Move to directory of interest (store current folder to return)
-workDir = os.getcwd()
-os.chdir(os.path.join(workDir, folder))
+workdir = os.getcwd()
+# Move to project_path
+os.chdir(os.path.join(project_path, 'sensitivity'))
 
 # Process each case
 for case, label in zip(cases, labels):
@@ -111,12 +129,6 @@ for case, label in zip(cases, labels):
         results[var] = results[var].reset_index(drop=True)
 
     # --------
-    # Filter null values
-    # --------
-
-    # Do something!
-
-    # --------
     # Create Plots
     # --------
 
@@ -159,4 +171,4 @@ for case, label in zip(cases, labels):
         f.savefig(savename, dpi=resolution, bbox_inches="tight")
 
 # Return to Original Directory
-os.chdir(workDir)
+os.chdir(workdir)

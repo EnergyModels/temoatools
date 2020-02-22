@@ -45,7 +45,7 @@ def getEmissions(folders, dbs, conversion=1E-6, save_data='N', create_plots='N',
 
     # Create a dataframe
     yearlyEmissions = pd.DataFrame()
-    avgEmissions = pd.Series()
+    avgEmissions = pd.DataFrame()
 
     # Iterate through each db
     for folder, db in zip(folders, dbs):
@@ -60,7 +60,7 @@ def getEmissions(folders, dbs, conversion=1E-6, save_data='N', create_plots='N',
         avgEmissions = pd.concat([avgEmissions, avgEmissions_single])
 
     # Sort data
-    yearlyEmissions = yearlyEmissions.sort_index()
+    # yearlyEmissions = yearlyEmissions.sort_index()
 
     # Reset index (remove multi-level indexing, easier to use for processing)
     yearlyEmissions = yearlyEmissions.reset_index()
@@ -169,6 +169,8 @@ def SingleDB(folder, db, conversion=1E-6):
     # yearlyEmissions = pd.DataFrame(index=scenarios,columns=future_t_periods)
     yearlyEmissions = pd.DataFrame(index=index, columns=future_t_periods)
     yearlyEmissions = yearlyEmissions.fillna(0.0)  # Default value to zero
+    avgEmissions = pd.DataFrame(index=index, columns=['avgEmissions'])
+    avgEmissions = avgEmissions.fillna(0.0)  # Default value to zero
 
     # Iterate through scenarios
     for s in scenarios:
@@ -184,7 +186,7 @@ def SingleDB(folder, db, conversion=1E-6):
                     print(yearlyEmissions)
 
         # Sum average emissions
-        avgEmissions = yearlyEmissions.mean(axis=1)
+        avgEmissions.loc[(db, s),] = yearlyEmissions.loc[(db, s),].mean()
 
     # Return to original directory
     os.chdir(origDir)

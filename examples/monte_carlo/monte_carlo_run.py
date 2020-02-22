@@ -3,21 +3,24 @@
 # Jeff Bennett, jab6ft@virginia.edu
 #
 # This script provides an example of using Temoatools to build and run Monte Carlo simluations using Temoa models.
-# The approach remains from the baselins example to build models from two .xlsx files. The first
+# The approach remains from the baselines example to build models from two .xlsx files. The first
 # provides all possible system and technology data (named data.xlsx in the example). The second specifies scenarios
 # that make use of specified combinations of technology data (named Scenarios.xlsx in the example).
 #
-# Required inputs (lines 46-50)
+# Required inputs (lines 109-118)
 #   temoa_path - path to Temoa directory that contains temoa_model/
 #   project_path - path to directory that contains this file (expects a subdirectory within named data)
 #   modelInputs_XLSX_list - list that contains the *.xlsx file with model data (within data subdirectory)
-#   scenarioInputs - TODO
-#   scenarioNames_list - names of each scenario to perform a monte carlo simulation with (named within ScenarioInputs file)
-#   sensitivityInputs  TODO
-#   sensitivityMultiplier - percent perturbation TODO
+#   scenarioInputs - identifies which technologies are used for each scenario (within data subdirectory)
+#   scenarioNames_list - names of each scenario to perform a monte carlo simulation with (named within ScenarioInputs)
+#   sensitivityInputs - identifies which parameters to vary in monte carlo study
+#   sensitivityMultiplier - percent perturbation for each sensitivity variable
+#   ncpus - number of cores to use, -1 for all, -2 for all but one, replace with int(os.getenv('NUM_PROCS')) for cluster
+#   solver - leave as '' to use system default, other options include 'cplex', 'gurobi'
+#   n_cases - number of simulations to run
 #
-# Outputs (paths are all relative to project_path) TODO
-#   data/data.db - universal database that contains input data in a .sqlite database TODO
+# Outputs (paths are all relative to project_path)
+#   data/data.db - universal database that contains input data in a .sqlite database
 #   configs/config_*.txt - a separate configuration file for each Temoa run
 #   databases/*.dat - a separate .sqlite database for each Temoa run
 #   databases/*.sqlite - a separate .sqlite database for each Temoa run
@@ -32,69 +35,60 @@ from pathlib import Path
 # =======================================================
 # Function to evaluate a single model
 # =======================================================
-def evaluateMonteCarlo(modelInputs, scenarioXLSX, scenarioName, temoa_path, project_path, cases, caseNum):
+def evaluateMonteCarlo(modelInputs, scenarioXLSX, scenarioName, temoa_path, project_path, solver, cases, caseNum):
     # Unique filename
     model_filename = scenarioName + '_MC_' + str(caseNum)
 
     # Prepare monte carlo inputs
     cols = ['type', 'variable', 'tech', caseNum]
-    MCinputs = cases.ix[:, cols]
+    MCinputs = cases.loc[:, cols]
     MCinputs = MCinputs.rename(columns={caseNum: 'multiplier'})
 
     # Build Model
     tt.build(modelInputs, scenarioXLSX, scenarioName, model_filename, MCinputs=MCinputs, path=project_path)
 
     # Run Model
-    tt.run(model_filename, temoa_path=temoa_path, saveEXCEL=False)
+    tt.run(model_filename, temoa_path=temoa_path, saveEXCEL=False, solver=solver)
 
     # Analyze Results
-    folder = os.getcwd() + '\\Databases'  # TODO
+    folder = os.path.join(project_path, 'databases')
     db = model_filename + '.sqlite'
     yearlyCosts, LCOE = tt.getCosts(folder, db)
+    yearlyCosts = yearlyCosts.drop(columns=['database', 'scenario'])
     yearlyEmissions, avgEmissions = tt.getEmissions(folder, db)
+    yearlyEmissions = yearlyEmissions.drop(columns=['database', 'scenario'])
 
     # Capacity and Activity by Fuel By Year
-    createPlots = 'N'  # Create default plots
-    saveData = 'N'  # Do not save data as a csv or xls
-    sectorName = 'electric'  # Name of sector to be analyzed
     switch = 'fuel'
     capacityByFuel = tt.getCapacity(folder, db, switch=switch)
-    key = capacityByFuel.keys()[0]
-    cap = capacityByFuel[key]
+    capacityByFuel = capacityByFuel.drop(columns=['database', 'scenario'])
+    capacityByFuel = capacityByFuel.set_index('fuelOrTech')
     ActivityByYearFuel = tt.getActivity(folder, db, switch=switch)
-    key = ActivityByYearFuel.keys()[0]
-    act = ActivityByYearFuel[key]
-
-    # Move results to series
-    col = yearlyCosts.columns[0]
-    yearlyCosts = yearlyCosts[col]
-    LCOE = LCOE[col]
-    col = yearlyEmissions.columns[0]
-    yearlyEmissions = yearlyEmissions[col]
-    avgEmissions = avgEmissions[col]
+    ActivityByYearFuel = ActivityByYearFuel.drop(columns=['database', 'scenario'])
+    ActivityByYearFuel = ActivityByYearFuel.set_index('fuelOrTech')
 
     # Package Outputs
     output = pd.Series()
     output['db'] = db
     output['caseNum'] = caseNum
-    output['LCOE'] = LCOE
-    output['avgEmissions'] = avgEmissions
-    for ind in yearlyCosts.index:
-        label = 'cost-' + str(ind)
-        output[label] = yearlyCosts.loc[ind]
-    for ind in yearlyEmissions.index:
-        label = 'emis-' + str(ind)
-        output[label] = yearlyEmissions.loc[ind]
+    output['LCOE'] = LCOE.loc[0, 'LCOE']
+    output['avgEmissions'] = avgEmissions.loc[0, 'avgEmissions']
+    for col in yearlyCosts.columns:
+        label = 'cost-' + str(col)
+        output[label] = yearlyCosts.loc[0, col]
+    for col in yearlyEmissions.columns:
+        label = 'emis-' + str(col)
+        output[label] = yearlyEmissions.loc[0, col]
     # CapacityByYearFuel
-    for ind in cap.index:
-        for col in cap.columns:
+    for ind in capacityByFuel.index:
+        for col in capacityByFuel.columns:
             label = 'cap_' + str(col) + '-' + str(ind)
-            output[label] = cap.loc[ind, col]
+            output[label] = capacityByFuel.loc[ind, col]
     # ActivityByYearFuel
-    for ind in act.index:
-        for col in act.columns:
+    for ind in ActivityByYearFuel.index:
+        for col in ActivityByYearFuel.columns:
             label = 'act_' + str(col) + '-' + str(ind)
-            output[label] = act.loc[ind, col]
+            output[label] = ActivityByYearFuel.loc[ind, col]
     return output
 
 
@@ -103,13 +97,17 @@ if __name__ == '__main__':
     # =======================================================
     # Model Inputs
     # =======================================================
-    temoa_path = Path('C:/temoa/temoa')
-    project_path = Path('C:/Users/benne/PycharmProjects/temoatools/examples/monte_carlo')
+    temoa_path = Path('C:/temoa/temoa')  # Path('/home/jab6ft/temoa/temoa')
+    project_path = Path(
+        'C:/Users/benne/PycharmProjects/temoatools/examples/monte_carlo')  # Path('/home/jab6ft/temoa/project/monte_carlo')
     modelInputs_XLSX = 'data.xlsx'
     scenarioInputs = 'scenarios.xlsx'
-    scenarioNames = ['A', 'B', 'C', 'D']
+    scenarioNames = ['A']
     sensitivityInputs = 'sensitivityVariables.xlsx'
     sensitivityMultiplier = 10.0  # percent perturbation
+    ncpus = 1  # int(os.getenv('NUM_PROCS'))
+    solver = ''  # 'gurobi'
+    n_cases = 3
 
     # =======================================================
     # Move modelInputs_XLSX to database
@@ -132,19 +130,19 @@ if __name__ == '__main__':
 
     for scenarioName in scenarioNames:
         # Create monte carlo cases
-        n_cases = 10
+
         cases = tt.createMonteCarloCases(scenarioInputs, scenarioName, sensitivityInputs, sensitivityMultiplier,
                                          n_cases=n_cases, path=project_path)
-
         # Save cases
         os.chdir(sensDir)
         cases.to_csv('MonteCarloInputs_' + scenarioName + '.csv')
         os.chdir(workDir)
 
         # Perform simulations in parallel
-        with parallel_backend('multiprocessing', n_jobs=-2):
-            outputs = Parallel(n_jobs=-2, verbose=5)(
-                delayed(evaluateMonteCarlo)(modelInputs, scenarioInputs, scenarioName, temoa_path, project_path, cases,
+        with parallel_backend('multiprocessing', n_jobs=ncpus):
+            outputs = Parallel(n_jobs=ncpus, verbose=5)(
+                delayed(evaluateMonteCarlo)(modelInputs, scenarioInputs, scenarioName, temoa_path, project_path, solver,
+                                            cases,
                                             caseNum) for
                 caseNum in range(n_cases))
 

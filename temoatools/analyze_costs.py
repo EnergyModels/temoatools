@@ -393,7 +393,7 @@ def SingleDB(folder, db, elc_dmd='ELC_DMD', conversion=0.359971):
         # Store yearlyCosts_single and LCOE_single
         for year in df.index:
             yearlyCosts.loc[(db, s), year] = df.loc[year, 'ELC_Cost']
-        LCOE.loc[(db, s), year] = LCOE_single
+        LCOE.loc[(db, s), ] = LCOE_single
 
     # Return to original directory
     os.chdir(origDir)

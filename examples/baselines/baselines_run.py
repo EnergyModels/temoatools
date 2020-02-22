@@ -6,12 +6,14 @@
 # provides all possible system and technology data (named data.xlsx in the example). The second specifies scenarios
 # that make use of specified combinations of technology data (named Scenarios.xlsx in the example).
 #
-# Required inputs (lines 46-50)
+# Required inputs (lines 48-54)
 #   temoa_path - path to Temoa directory that contains temoa_model/
 #   project_path - path to directory that contains this file (expects a subdirectory within named data)
 #   modelInputs_XLSX_list - list that contains the *.xlsx file with model data (within data subdirectory)
-#   scenarioInputs = (within data subdirectory)
-#   scenarioNames_list = names of each scenario to be run from the scenarioInputs file (named within ScenarioInputs file)
+#   scenarioInputs - identifies which technologies are used for each scenario (within data subdirectory)
+#   scenarioNames_list - names of each scenario to be run from the scenarioInputs file (named within ScenarioInputs file)
+#   ncpus - number of cores to use, -1 for all, -2 for all but one, replace with int(os.getenv('NUM_PROCS')) for cluster
+#   solver - leave as '' to use system default, other options include 'cplex', 'gurobi'
 #
 # Outputs (paths are all relative to project_path)
 #   data/data.db - universal database that contains input data in a .sqlite database
@@ -27,7 +29,7 @@ from pathlib import Path
 # =======================================================
 # Function to evaluate a single model
 # =======================================================
-def evaluateModel(modelInputs, scenarioInputs, scenarioName, temoa_path, project_path):
+def evaluateModel(modelInputs, scenarioInputs, scenarioName, temoa_path, project_path, solver):
     # Unique filename
     model_filename = scenarioName
 
@@ -35,19 +37,21 @@ def evaluateModel(modelInputs, scenarioInputs, scenarioName, temoa_path, project
     tt.build(modelInputs, scenarioInputs, scenarioName, model_filename, path=project_path)
 
     # Run Model
-    tt.run(model_filename, saveEXCEL=False, temoa_path=temoa_path, debug=True)
+    tt.run(model_filename, saveEXCEL=False, temoa_path=temoa_path, debug=True, solver=solver)
 
 
 if __name__ == '__main__':
 
     # =======================================================
-    # Model Inputs - without Carbon Pricing
+    # Model Inputs
     # =======================================================
-    temoa_path = Path('C:/temoa/temoa')
-    project_path = Path('C:/Users/benne/PycharmProjects/temoatools/examples/baselines')
+    temoa_path = Path('C:/temoa/temoa')  # Path('/home/jab6ft/temoa/temoa')
+    project_path = Path('C:/Users/benne/PycharmProjects/temoatools/examples/baselines')  # Path('/home/jab6ft/temoa/project/baselines')
     modelInputs_XLSX_list = ['data.xlsx']
     scenarioInputs = 'scenarios.xlsx'
     scenarioNames_list = [['A', 'B', 'C', 'D', 'E', 'F']]
+    ncpus = 6  # int(os.getenv('NUM_PROCS'))
+    solver = ''  # 'gurobi'
 
     for modelInputs_XLSX, scenarioNames in zip(modelInputs_XLSX_list, scenarioNames_list):
 
@@ -67,8 +71,9 @@ if __name__ == '__main__':
 
         elif option == 2:
             # Perform simulations in parallel
-            with parallel_backend('multiprocessing', n_jobs=-2):
-                Parallel(n_jobs=-2, verbose=5)(
-                    delayed(evaluateModel)(modelInputs, scenarioInputs, scenarioName, temoa_path, project_path) for
+            with parallel_backend('multiprocessing', n_jobs=ncpus):
+                Parallel(n_jobs=ncpus, verbose=5)(
+                    delayed(evaluateModel)(modelInputs, scenarioInputs, scenarioName, temoa_path, project_path, solver)
+                    for
                     scenarioName in
                     scenarioNames)

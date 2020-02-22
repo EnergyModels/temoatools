@@ -1,4 +1,28 @@
-# TODO add documentation
+# ======================================================================================================================
+# sensitivity_run.py
+# Jeff Bennett, jab6ft@virginia.edu
+#
+# This script provides an example of using Temoatools to build and run a sensitivity study on Temoa models.
+# The approach is very similar to the monte_carlo example, where a list of variables are perturbed. The key difference
+# from the monte_carlo example is that only one variable is perturbed at a time.
+#
+# Required inputs (lines 86-94)
+#   temoa_path - path to Temoa directory that contains temoa_model/
+#   project_path - path to directory that contains this file (expects a subdirectory within named data)
+#   modelInputs_XLSX_list - list that contains the *.xlsx file with model data (within data subdirectory)
+#   scenarioInputs - identifies which technologies are used for each scenario (within data subdirectory)
+#   scenarioNames_list - names of each scenario to perform a monte carlo simulation with (named within ScenarioInputs)
+#   sensitivityInputs - identifies which parameters to vary in monte carlo study
+#   sensitivityMultiplier - percent perturbation for each sensitivity variable
+#   ncpus - number of cores to use, -1 for all, -2 for all but one, replace with int(os.getenv('NUM_PROCS')) for cluster
+#   solver - leave as '' to use system default, other options include 'cplex', 'gurobi'
+#
+# Outputs (paths are all relative to project_path)
+#   data/data.db - universal database that contains input data in a .sqlite database
+#   configs/config_*.txt - a separate configuration file for each Temoa run
+#   databases/*.dat - a separate .sqlite database for each Temoa run
+#   databases/*.sqlite - a separate .sqlite database for each Temoa run
+# ======================================================================================================================
 import os
 from joblib import Parallel, delayed, parallel_backend
 import pandas as pd
@@ -24,32 +48,21 @@ def evaluateModelSensitivity(modelInputs, scenarioXLSX, scenarioName, temoa_path
     tt.run(model_filename, saveEXCEL=False, temoa_path=temoa_path, debug=True)
 
     # Analyze Results
-    folder = os.path.join(os.getcwd(), 'databases')
+    folder = os.path.join(project_path, 'databases')
     db = model_filename + '.sqlite'
-    print("db: " + db)
     yearlyCosts, LCOE = tt.getCosts(folder, db)
     yearlyEmissions, avgEmissions = tt.getEmissions(folder, db)
 
-    # Move results to series
-    col = yearlyCosts.columns[0]
-    yearlyCosts = yearlyCosts[col]
-    LCOE = LCOE[col]
-    col = yearlyEmissions.columns[0]
-    yearlyEmissions = yearlyEmissions[col]
-    avgEmissions = avgEmissions[col]
-
     # Package Outputs
-    output = sensitivity.copy()  # Inputs
+    output = pd.Series()
+    output['type'] = cases.loc[caseNum, 'type']
+    output['tech'] = cases.loc[caseNum, 'tech']
+    output['variable'] = cases.loc[caseNum, 'variable']
+    output['multiplier'] = cases.loc[caseNum, 'multiplier']
     output['db'] = db
     output['caseNum'] = caseNum
-    output['LCOE'] = LCOE
-    output['avgEmissions'] = avgEmissions
-    for ind in yearlyCosts.index:
-        label = 'cost_' + str(ind)
-        output[label] = yearlyCosts[ind]
-    for ind in yearlyEmissions.index:
-        label = 'emis_' + str(ind)
-        output[label] = yearlyEmissions[ind]
+    output['LCOE'] = LCOE.loc[0, 'LCOE']
+    output['avgEmissions'] = avgEmissions.loc[0, 'avgEmissions']
 
     return output
 
@@ -59,13 +72,16 @@ if __name__ == '__main__':
     # =======================================================
     # Model Inputs
     # =======================================================
-    temoa_path = Path('C:/temoa/temoa')  # path to temoa directory that contains temoa_model/
-    project_path = Path('C:/Users/benne/PycharmProjects/temoatools/examples/monte_carlo')
+    temoa_path = Path('C:/temoa/temoa')  # Path('/home/jab6ft/temoa/temoa')
+    project_path = Path(
+        'C:/Users/benne/PycharmProjects/temoatools/examples/sensitivity')  # Path('/home/jab6ft/temoa/project/sensitivity')
     modelInputs_XLSX = 'data.xlsx'
     scenarioInputs = 'scenarios.xlsx'
-    scenarioNames = ['A', 'B', 'C', 'D']
+    scenarioNames = ['A']
     sensitivityInputs = 'sensitivityVariables.xlsx'
     sensitivityMultiplier = 10.0  # percent perturbation
+    ncpus = 6  # int(os.getenv('NUM_PROCS'))
+    solver = ''  # 'gurobi'
 
     # =======================================================
     # Move modelInputs_XLSX to database
@@ -76,7 +92,7 @@ if __name__ == '__main__':
     # Create directory to hold sensitivity inputs and outputs
     # =======================================================
     workDir = os.getcwd()
-    sensDir = workDir + "\\sensitivity" # TODO
+    sensDir = os.path.join(workDir, "sensitivity")
     try:
         os.stat(sensDir)
     except:
@@ -100,8 +116,8 @@ if __name__ == '__main__':
         n_cases = len(cases)
 
         # Perform simulations in parallel
-        with parallel_backend('multiprocessing', n_jobs=num_cores):
-            outputs = Parallel(n_jobs=-2, verbose=5)(
+        with parallel_backend('multiprocessing', n_jobs=ncpus):
+            outputs = Parallel(n_jobs=ncpus, verbose=5)(
                 delayed(evaluateModelSensitivity)(modelInputs, scenarioInputs, scenarioName, temoa_path, project_path,
                                                   cases, caseNum) for
                 caseNum in range(n_cases))

@@ -26,8 +26,8 @@ from pathlib import Path
 # ===============
 # Inputs
 # ===============
-project_path = Path('C:/Users/benne/PycharmProjects/temoatools/examples/baselines')
-dbs = ["A.sqlite", "B.sqlite", "C.sqlite", "D.sqlite", "E.sqlite", "F.sqlite"]
+project_path = Path('C:/Users/benne/PycharmProjects/temoatools/examples/baselines')  # Path('/home/jab6ft/temoa/project/baselines')
+dbs = ["A.sqlite"]#, "B.sqlite", "C.sqlite", "D.sqlite", "E.sqlite", "F.sqlite"]
 
 # optional inputs
 onlySimple = False
