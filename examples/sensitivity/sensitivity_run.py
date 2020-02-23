@@ -33,7 +33,7 @@ from pathlib import Path
 # =======================================================
 # Function to evaluate a single model
 # =======================================================
-def evaluateModelSensitivity(modelInputs, scenarioXLSX, scenarioName, temoa_path, project_path, cases, caseNum):
+def evaluateModelSensitivity(modelInputs, scenarioXLSX, scenarioName, temoa_path, project_path, solver, cases, caseNum):
     # Unique filename
     model_filename = scenarioName + '_Sens_' + str(caseNum)
 
@@ -44,8 +44,7 @@ def evaluateModelSensitivity(modelInputs, scenarioXLSX, scenarioName, temoa_path
     tt.build(modelInputs, scenarioXLSX, scenarioName, model_filename, sensitivity=sensitivity, path=project_path)
 
     # Run Model
-    saveEXCEL = False
-    tt.run(model_filename, saveEXCEL=False, temoa_path=temoa_path, debug=True)
+    tt.run(model_filename, temoa_path=temoa_path, saveEXCEL=False, solver=solver)
 
     # Analyze Results
     folder = os.path.join(project_path, 'databases')
@@ -114,7 +113,7 @@ if __name__ == '__main__':
         # Perform simulations in parallel
         with parallel_backend('multiprocessing', n_jobs=ncpus):
             outputs = Parallel(n_jobs=ncpus, verbose=5)(
-                delayed(evaluateModelSensitivity)(modelInputs, scenarioInputs, scenarioName, temoa_path, project_path,
+                delayed(evaluateModelSensitivity)(modelInputs, scenarioInputs, scenarioName, temoa_path, project_path, solver,
                                                   cases, caseNum) for
                 caseNum in range(n_cases))
 
