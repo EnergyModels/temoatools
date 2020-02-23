@@ -44,8 +44,8 @@ def getCosts(folders, dbs, elc_dmd='ELC_DMD', conversion=0.359971, save_data='N'
         folders = fldrs
 
     # Create a dataframe
-    yearlyCosts = pd.DataFrame()
-    LCOE = pd.DataFrame()
+    yearlyCosts = pd.DataFrame(dtype='float64')
+    LCOE = pd.DataFrame(dtype='float64')
 
     # Iterate through each db
     for folder, db in zip(folders, dbs):
@@ -108,7 +108,7 @@ def SingleDB(folder, db, elc_dmd='ELC_DMD', conversion=0.359971):
     #    4) conversion      - converts from cost units per activity to cents/kWH
     #
     #    outputs:
-    #    1) yearlyCosts     - pandas Series holding yearly costs
+    #    1) yearlyCosts     - pandas DataFrame holding yearly costs
     #    2) LCOE            - LCOE (float), calculated wrt first model year
     # ==============================================================================
     print("\tAnalyzing db: ", db)
@@ -165,7 +165,7 @@ def SingleDB(folder, db, elc_dmd='ELC_DMD', conversion=0.359971):
     # Create dataframe to hold technology costs (initialized to zero)
     rows = t_periods
     cols = techs
-    df_CostInvest = pd.DataFrame(data=0.0, index=rows, columns=cols)
+    df_CostInvest = pd.DataFrame(data=0.0, index=rows, columns=cols, dtype='float64')
 
     # Store Data
     for tech, vintage, cost_invest, cost_invest_units, cost_invest_notes in db_CostInvest:
@@ -183,7 +183,7 @@ def SingleDB(folder, db, elc_dmd='ELC_DMD', conversion=0.359971):
     # Create dataframe to hold technology costs (initialized to zero)
     rows = t_periods
     cols = techs
-    df_CostFixed = pd.DataFrame(data=0.0, index=rows, columns=cols)
+    df_CostFixed = pd.DataFrame(data=0.0, index=rows, columns=cols, dtype='float64')
 
     # Store Data
     for periods, tech, vintage, cost_fixed, cost_fixed_units, cost_fixed_notes in db_CostFixed:
@@ -201,7 +201,7 @@ def SingleDB(folder, db, elc_dmd='ELC_DMD', conversion=0.359971):
     # Create dataframe to hold technology costs (initialized to zero)
     rows = t_periods
     cols = techs
-    df_CostVariable = pd.DataFrame(data=0.0, index=rows, columns=cols)
+    df_CostVariable = pd.DataFrame(data=0.0, index=rows, columns=cols, dtype='float64')
 
     # Store Data
     for periods, tech, vintage, cost_variable, cost_variable_units, cost_variable_notes in db_CostVariable:
@@ -227,7 +227,7 @@ def SingleDB(folder, db, elc_dmd='ELC_DMD', conversion=0.359971):
     # Create dataframe to hold yearly installs (initialized to zero)
     rows = techs
     cols = ["loan"]
-    df_loanLife = pd.DataFrame(data=0.0, index=rows, columns=cols)
+    df_loanLife = pd.DataFrame(data=0.0, index=rows, columns=cols, dtype='float64')
 
     # Store Data
     for tech, loan, loan_notes, in db_loanLife:
@@ -235,9 +235,9 @@ def SingleDB(folder, db, elc_dmd='ELC_DMD', conversion=0.359971):
 
     # Create pandas DataFrame to hold yearlyEmissions for all scenarios
     index = pd.MultiIndex.from_product([[db], scenarios], names=['database', 'scenario'])
-    yearlyCosts = pd.DataFrame(index=index, columns=t_periods)
+    yearlyCosts = pd.DataFrame(index=index, columns=t_periods, dtype='float64')
     yearlyCosts = yearlyCosts.fillna(0.0)  # Default value to zero
-    LCOE = pd.DataFrame(index=index, columns=['LCOE'])
+    LCOE = pd.DataFrame(index=index, columns=['LCOE'], dtype='float64')
     LCOE = LCOE.fillna(0.0)  # Default value to zero
 
     # ------------
@@ -249,7 +249,7 @@ def SingleDB(folder, db, elc_dmd='ELC_DMD', conversion=0.359971):
         # Create dataframe to hold yearly costs (initialized to zero)
         rows = t_periods
         cols = ['CostInvest', 'CostFixed', 'CostVariable', 'CostTotal', 'ELC_DMD', 'ELC_Cost']
-        df = pd.DataFrame(data=0.0, index=rows, columns=cols)
+        df = pd.DataFrame(data=0.0, index=rows, columns=cols, dtype='float64')
 
         # ------------
         # Activity
@@ -262,7 +262,7 @@ def SingleDB(folder, db, elc_dmd='ELC_DMD', conversion=0.359971):
         # Create dataframe to hold activity (initialized to zero)
         rows = t_periods
         cols = techs
-        df_activity = pd.DataFrame(data=0.0, index=rows, columns=cols)
+        df_activity = pd.DataFrame(data=0.0, index=rows, columns=cols, dtype='float64')
 
         # Store Data
         for scenario, sector, t_period, t_season, t_day, input_comm, tech, vintage, output_comm, vflow_out in db_activity:
@@ -285,7 +285,7 @@ def SingleDB(folder, db, elc_dmd='ELC_DMD', conversion=0.359971):
         # Create dataframe to hold yearly installs (initialized to zero)
         rows = t_periods
         cols = techs
-        df_newCapacity = pd.DataFrame(data=0.0, index=rows, columns=cols)
+        df_newCapacity = pd.DataFrame(data=0.0, index=rows, columns=cols, dtype='float64')
 
         # Store Data
         for scenario, sector, tech, vintage, capacity, in db_newCapacity:
@@ -304,7 +304,7 @@ def SingleDB(folder, db, elc_dmd='ELC_DMD', conversion=0.359971):
         # Create dataframe to hold yearly installs (initialized to zero)
         rows = t_periods
         cols = techs
-        df_activeCapacity = pd.DataFrame(data=0.0, index=rows, columns=cols)
+        df_activeCapacity = pd.DataFrame(data=0.0, index=rows, columns=cols, dtype='float64')
 
         # Store Data
         for scenario, sector, t_period, tech, capacity, in db_activeCapacity:
@@ -318,7 +318,7 @@ def SingleDB(folder, db, elc_dmd='ELC_DMD', conversion=0.359971):
         # Create dataframe (initialized to zero)
         rows = t_periods
         cols = techs
-        df_investments = pd.DataFrame(data=0.0, index=rows, columns=cols)
+        df_investments = pd.DataFrame(data=0.0, index=rows, columns=cols, dtype='float64')
 
         for year in t_periods:
             for tech in techs:
@@ -331,7 +331,7 @@ def SingleDB(folder, db, elc_dmd='ELC_DMD', conversion=0.359971):
         # Create dataframe (initialized to zero)
         rows = t_periods
         cols = techs
-        df_loanPayments = pd.DataFrame(data=0.0, index=rows, columns=cols)
+        df_loanPayments = pd.DataFrame(data=0.0, index=rows, columns=cols, dtype='float64')
 
         for tech in techs:
             for buildYear in t_periods:

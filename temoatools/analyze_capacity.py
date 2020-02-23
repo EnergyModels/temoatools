@@ -49,7 +49,7 @@ def getCapacity(folders, dbs, switch='fuel', sector_name='electric', save_data='
         folders = fldrs
 
     # Create dictionary to hold each capacity_single series
-    capacity = pd.DataFrame()
+    capacity = pd.DataFrame(dtype='float64')
 
     # Iterate through each db
     for folder, db in zip(folders, dbs):
@@ -178,9 +178,6 @@ def SingleDB(folder, db, switch='fuel', sector_name='electric'):
     future_t_periods = sorted(future_t_periods)
     rows = future_t_periods[:-1]
 
-    # Create dataframe initialized to zero
-    # df = pd.DataFrame(data=0.0,index=rows,columns = cols)
-
     #   Identify Unique Scenarios
     qry = "SELECT * FROM Output_Objective"
     cur.execute(qry)
@@ -192,7 +189,7 @@ def SingleDB(folder, db, switch='fuel', sector_name='electric'):
 
     # Create pandas DataFrame to hold yearlyEmissions for all scenarios
     index = pd.MultiIndex.from_product([[db], scenarios, cols], names=['database', 'scenario', 'fuelOrTech'])
-    df = pd.DataFrame(index=index, columns=future_t_periods[:-1])
+    df = pd.DataFrame(index=index, columns=future_t_periods[:-1], dtype='float64')
     df = df.fillna(0.0)  # Default value to zero
 
     # Review db_Output_CapacityByPeriodAndTech to fill data frame

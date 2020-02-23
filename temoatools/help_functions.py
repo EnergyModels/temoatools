@@ -37,3 +37,30 @@ def create_results_dir(wrkdir=Path('.'), run_name=''):
 
     # Move to directory
     os.chdir(resultdir)
+
+
+# -----------------------------------------------------
+# Directory to hold results
+# -----------------------------------------------------
+def create_dir(project_path=Path('.'), optional_dir='results'):
+    # configs - required
+    dir = os.path.join(project_path, "configs")
+    try:
+        os.stat(dir)
+    except:
+        os.mkdir(dir)
+
+    # databases directory - required
+    dir = os.path.join(project_path, "databases")
+    try:
+        os.stat(dir)
+    except:
+        os.mkdir(dir)
+
+    # optional directory
+    if len(optional_dir)>0:
+        dir = os.path.join(project_path, optional_dir)
+        try:
+            os.stat(dir)
+        except:
+            os.mkdir(dir)

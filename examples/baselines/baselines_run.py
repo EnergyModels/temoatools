@@ -61,6 +61,11 @@ if __name__ == '__main__':
         # =======================================================
         modelInputs = tt.move_data_to_db(modelInputs_XLSX, path=project_path)
 
+        # =======================================================
+        # Create directories - best completed before using multiprocessing
+        # =======================================================
+        tt.create_dir(project_path=project_path, optional_dir='results')
+
         # ====================================
         # Perform Simulations
         option = 2  # 1 - Run single, 2 - Run all

@@ -44,8 +44,8 @@ def getEmissions(folders, dbs, conversion=1E-6, save_data='N', create_plots='N',
         folders = fldrs
 
     # Create a dataframe
-    yearlyEmissions = pd.DataFrame()
-    avgEmissions = pd.DataFrame()
+    yearlyEmissions = pd.DataFrame(dtype='float64')
+    avgEmissions = pd.DataFrame(dtype='float64')
 
     # Iterate through each db
     for folder, db in zip(folders, dbs):
@@ -166,10 +166,9 @@ def SingleDB(folder, db, conversion=1E-6):
 
     # Create pandas DataFrame to hold yearlyEmissions
     index = pd.MultiIndex.from_product([[db], scenarios], names=['database', 'scenario'])
-    # yearlyEmissions = pd.DataFrame(index=scenarios,columns=future_t_periods)
-    yearlyEmissions = pd.DataFrame(index=index, columns=future_t_periods)
+    yearlyEmissions = pd.DataFrame(index=index, columns=future_t_periods, dtype='float64')
     yearlyEmissions = yearlyEmissions.fillna(0.0)  # Default value to zero
-    avgEmissions = pd.DataFrame(index=index, columns=['avgEmissions'])
+    avgEmissions = pd.DataFrame(index=index, columns=['avgEmissions'], dtype='float64')
     avgEmissions = avgEmissions.fillna(0.0)  # Default value to zero
 
     # Iterate through scenarios

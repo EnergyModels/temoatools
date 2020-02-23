@@ -3,6 +3,7 @@ import os
 # functions from temoatools
 from .help_functions import remove_ext
 from .help_functions import create_results_dir
+from .help_functions import create_dir
 from .move_data_to_universal_db import move_data_to_db
 from .temoa_model_build import build
 from .temoa_model_build import createSensitivityCases

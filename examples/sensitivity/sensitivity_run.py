@@ -89,14 +89,10 @@ if __name__ == '__main__':
     modelInputs = tt.move_data_to_db(modelInputs_XLSX, path=project_path)
 
     # =======================================================
-    # Create directory to hold sensitivity inputs and outputs
+    # Create directories - best completed before using multiprocessing
     # =======================================================
-    workDir = os.getcwd()
-    sensDir = os.path.join(workDir, "sensitivity")
-    try:
-        os.stat(sensDir)
-    except:
-        os.mkdir(sensDir)
+    sens_dir = 'sensitivity'
+    tt.create_dir(project_path=project_path, optional_dir=sens_dir)
 
     # ====================================
     # Perform Simulations
@@ -108,9 +104,9 @@ if __name__ == '__main__':
                                           project_path)
 
         # Save sensitivity cases
-        os.chdir(sensDir)
+        os.chdir(os.path.join(project_path, sens_dir))
         cases.to_csv('SensitivityInputs_' + scenarioName + '.csv')
-        os.chdir(workDir)
+        os.chdir(project_path)
 
         # Count number of cases
         n_cases = len(cases)
@@ -123,7 +119,7 @@ if __name__ == '__main__':
                 caseNum in range(n_cases))
 
         # Save results to a csv
-        os.chdir(sensDir)
+        os.chdir(os.path.join(project_path, sens_dir))
         df = pd.DataFrame(outputs)
         df.to_csv('SensitivityResults_' + scenarioName + '.csv')
-        os.chdir(workDir)
+        os.chdir(project_path)

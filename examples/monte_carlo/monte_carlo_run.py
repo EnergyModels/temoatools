@@ -105,7 +105,7 @@ if __name__ == '__main__':
     scenarioNames = ['A']
     sensitivityInputs = 'sensitivityVariables.xlsx'
     sensitivityMultiplier = 10.0  # percent perturbation
-    ncpus = 1  # int(os.getenv('NUM_PROCS'))
+    ncpus = 6  # int(os.getenv('NUM_PROCS'))
     solver = ''  # 'gurobi'
     n_cases = 3
 
@@ -115,14 +115,10 @@ if __name__ == '__main__':
     modelInputs = tt.move_data_to_db(modelInputs_XLSX, path=project_path)
 
     # =======================================================
-    # Create directory to hold inputs and outputs
+    # Create directories - best completed before using multiprocessing
     # =======================================================
-    workDir = os.getcwd()
-    sensDir = os.path.join(workDir, "monteCarlo")
-    try:
-        os.stat(sensDir)
-    except:
-        os.mkdir(sensDir)
+    mc_dir = 'monte_carlo'
+    tt.create_dir(project_path=project_path, optional_dir=mc_dir)
 
     # ====================================
     # Perform Simulations
@@ -134,9 +130,9 @@ if __name__ == '__main__':
         cases = tt.createMonteCarloCases(scenarioInputs, scenarioName, sensitivityInputs, sensitivityMultiplier,
                                          n_cases=n_cases, path=project_path)
         # Save cases
-        os.chdir(sensDir)
+        os.chdir(os.path.join(project_path, mc_dir))
         cases.to_csv('MonteCarloInputs_' + scenarioName + '.csv')
-        os.chdir(workDir)
+        os.chdir(project_path)
 
         # Perform simulations in parallel
         with parallel_backend('multiprocessing', n_jobs=ncpus):
@@ -147,7 +143,7 @@ if __name__ == '__main__':
                 caseNum in range(n_cases))
 
         # Save results to a csv
-        os.chdir(sensDir)
-        df = pd.DataFrame(outputs)
+        os.chdir(os.path.join(project_path, mc_dir))
+        df = pd.DataFrame(outputs, dtype='float64')
         df.to_csv('MonteCarloResults_' + scenarioName + '.csv')
-        os.chdir(workDir)
+        os.chdir(project_path)
