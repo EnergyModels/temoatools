@@ -6,7 +6,7 @@
 # The approach is very similar to the monte_carlo example, where a list of variables are perturbed. The key difference
 # from the monte_carlo example is that only one variable is perturbed at a time.
 #
-# Required inputs (lines 86-94)
+# Required inputs (lines 80-89)
 #   temoa_path - path to Temoa directory that contains temoa_model/
 #   project_path - path to directory that contains this file (expects a subdirectory within named data)
 #   modelInputs_XLSX_list - list that contains the *.xlsx file with model data (within data subdirectory)
@@ -28,6 +28,7 @@ from joblib import Parallel, delayed, parallel_backend
 import pandas as pd
 import temoatools as tt
 from pathlib import Path
+import numpy as np
 
 
 # =======================================================
@@ -44,13 +45,14 @@ def evaluateModelSensitivity(modelInputs, scenarioXLSX, scenarioName, temoa_path
     tt.build(modelInputs, scenarioXLSX, scenarioName, model_filename, sensitivity=sensitivity, path=project_path)
 
     # Run Model
-    tt.run(model_filename, temoa_path=temoa_path, saveEXCEL=False, solver=solver)
+    error = tt.run(model_filename, temoa_path=temoa_path, saveEXCEL=False, solver=solver)
 
     # Analyze Results
     folder = os.path.join(project_path, 'databases')
     db = model_filename + '.sqlite'
-    yearlyCosts, LCOE = tt.getCosts(folder, db)
-    yearlyEmissions, avgEmissions = tt.getEmissions(folder, db)
+    if not error:
+        yearlyCosts, LCOE = tt.getCosts(folder, db)
+        yearlyEmissions, avgEmissions = tt.getEmissions(folder, db)
 
     # Package Outputs
     output = pd.Series()
@@ -60,8 +62,12 @@ def evaluateModelSensitivity(modelInputs, scenarioXLSX, scenarioName, temoa_path
     output['multiplier'] = cases.loc[caseNum, 'multiplier']
     output['db'] = db
     output['caseNum'] = caseNum
-    output['LCOE'] = LCOE.loc[0, 'LCOE']
-    output['avgEmissions'] = avgEmissions.loc[0, 'avgEmissions']
+    if not error:
+        output['LCOE'] = LCOE.loc[0, 'LCOE']
+        output['avgEmissions'] = avgEmissions.loc[0, 'avgEmissions']
+    else:
+        output['LCOE'] = np.nan
+        output['avgEmissions'] = np.nan
 
     return output
 
@@ -108,12 +114,13 @@ if __name__ == '__main__':
         os.chdir(project_path)
 
         # Count number of cases
-        n_cases = len(cases)
+        n_cases = 10 # len(cases)
 
         # Perform simulations in parallel
         with parallel_backend('multiprocessing', n_jobs=ncpus):
             outputs = Parallel(n_jobs=ncpus, verbose=5)(
-                delayed(evaluateModelSensitivity)(modelInputs, scenarioInputs, scenarioName, temoa_path, project_path, solver,
+                delayed(evaluateModelSensitivity)(modelInputs, scenarioInputs, scenarioName, temoa_path, project_path,
+                                                  solver,
                                                   cases, caseNum) for
                 caseNum in range(n_cases))
 

@@ -7,7 +7,7 @@
 # provides all possible system and technology data (named data.xlsx in the example). The second specifies scenarios
 # that make use of specified combinations of technology data (named Scenarios.xlsx in the example).
 #
-# Required inputs (lines 109-118)
+# Required inputs (lines 106-116)
 #   temoa_path - path to Temoa directory that contains temoa_model/
 #   project_path - path to directory that contains this file (expects a subdirectory within named data)
 #   modelInputs_XLSX_list - list that contains the *.xlsx file with model data (within data subdirectory)
@@ -30,6 +30,7 @@ from joblib import Parallel, delayed, parallel_backend
 import pandas as pd
 import temoatools as tt
 from pathlib import Path
+import numpy as np
 
 
 # =======================================================
@@ -48,31 +49,36 @@ def evaluateMonteCarlo(modelInputs, scenarioXLSX, scenarioName, temoa_path, proj
     tt.build(modelInputs, scenarioXLSX, scenarioName, model_filename, MCinputs=MCinputs, path=project_path)
 
     # Run Model
-    tt.run(model_filename, temoa_path=temoa_path, saveEXCEL=False, solver=solver)
+    error = tt.run(model_filename, temoa_path=temoa_path, saveEXCEL=False, solver=solver)
 
     # Analyze Results
     folder = os.path.join(project_path, 'databases')
     db = model_filename + '.sqlite'
-    yearlyCosts, LCOE = tt.getCosts(folder, db)
-    yearlyCosts = yearlyCosts.drop(columns=['database', 'scenario'])
-    yearlyEmissions, avgEmissions = tt.getEmissions(folder, db)
-    yearlyEmissions = yearlyEmissions.drop(columns=['database', 'scenario'])
+    if not error:
+        yearlyCosts, LCOE = tt.getCosts(folder, db)
+        yearlyCosts = yearlyCosts.drop(columns=['database', 'scenario'])
+        yearlyEmissions, avgEmissions = tt.getEmissions(folder, db)
+        yearlyEmissions = yearlyEmissions.drop(columns=['database', 'scenario'])
 
-    # Capacity and Activity by Fuel By Year
-    switch = 'fuel'
-    capacityByFuel = tt.getCapacity(folder, db, switch=switch)
-    capacityByFuel = capacityByFuel.drop(columns=['database', 'scenario'])
-    capacityByFuel = capacityByFuel.set_index('fuelOrTech')
-    ActivityByYearFuel = tt.getActivity(folder, db, switch=switch)
-    ActivityByYearFuel = ActivityByYearFuel.drop(columns=['database', 'scenario'])
-    ActivityByYearFuel = ActivityByYearFuel.set_index('fuelOrTech')
+        # Capacity and Activity by Fuel By Year
+        switch = 'fuel'
+        capacityByFuel = tt.getCapacity(folder, db, switch=switch)
+        capacityByFuel = capacityByFuel.drop(columns=['database', 'scenario'])
+        capacityByFuel = capacityByFuel.set_index('fuelOrTech')
+        ActivityByYearFuel = tt.getActivity(folder, db, switch=switch)
+        ActivityByYearFuel = ActivityByYearFuel.drop(columns=['database', 'scenario'])
+        ActivityByYearFuel = ActivityByYearFuel.set_index('fuelOrTech')
 
     # Package Outputs
     output = pd.Series()
     output['db'] = db
     output['caseNum'] = caseNum
-    output['LCOE'] = LCOE.loc[0, 'LCOE']
-    output['avgEmissions'] = avgEmissions.loc[0, 'avgEmissions']
+    if not error:
+        output['LCOE'] = LCOE.loc[0, 'LCOE']
+        output['avgEmissions'] = avgEmissions.loc[0, 'avgEmissions']
+    else:
+        output['LCOE'] = np.nan
+        output['avgEmissions'] = np.nan
     for col in yearlyCosts.columns:
         label = 'cost-' + str(col)
         output[label] = yearlyCosts.loc[0, col]
@@ -107,7 +113,7 @@ if __name__ == '__main__':
     sensitivityMultiplier = 10.0  # percent perturbation
     ncpus = 6  # int(os.getenv('NUM_PROCS'))
     solver = ''  # 'gurobi'
-    n_cases = 3
+    n_cases = 10
 
     # =======================================================
     # Move modelInputs_XLSX to database

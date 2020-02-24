@@ -50,7 +50,6 @@ demand_commodity = 'ELC_DMD'
 # Function to build a temoa model
 # =============================================================================
 def build(modelInputs, scenarioXLSX, scenarioName, outFilename, sensitivity={}, MCinputs={}, path=Path('.')):
-
     data_path = os.path.join(path, 'data')
     # Get empty dictionary of local variables
     local = getEmptyLocalDict()
@@ -61,7 +60,7 @@ def build(modelInputs, scenarioXLSX, scenarioName, outFilename, sensitivity={}, 
     # Read-in inputs as dictionary
     inputs = inputs2Dict(modelInputs, data_path)
 
-    # Apply Sensitvity to inputs
+    # Apply Sensitivity to inputs
     if debug:
         print(sensitivity)
     if not len(
@@ -551,7 +550,7 @@ def processTech(inputs, local, outputs, tech):
     # Find years the technology is active
     # --------
 
-    # No New Builds Alowed
+    # No New Builds Allowed
     if not tech['newBuilds'] == 'Y':
         buildYears = []
         futureBuildYears = []
@@ -566,13 +565,14 @@ def processTech(inputs, local, outputs, tech):
             buildYears = copy.copy(local['active_future_periods'])
             futureBuildYears = copy.copy(local['active_future_periods'])
     for year in tech['existing_capacity_year']:
-        # For this technology only
-        if not year in buildYears:
-            buildYears.append(year)
-        # For entire model
-        if not year in local['allTimePeriods']:
-            local['allTimePeriods'].append(year)
-            outputs['time_periods'].append((str(year), "e"), )
+        if min(local['active_future_periods']) - year < tech['lifetime']:  # Prevent including already retired capacity
+            # For this technology only
+            if not year in buildYears:
+                buildYears.append(year)
+            # For entire model
+            if not year in local['allTimePeriods']:
+                local['allTimePeriods'].append(year)
+                outputs['time_periods'].append((str(year), "e"), )
     # Sort into ascending order
     buildYears.sort()
     futureBuildYears.sort()
@@ -641,8 +641,9 @@ def processTech(inputs, local, outputs, tech):
     # ExistingCapacity
     exist_cap = 0  # Keep track of current capacity, growthrate_seed must be equal to or greater than this
     for vintage, capacity in zip(tech['existing_capacity_year'], tech['existing_capacity_rating']):
-        outputs['ExistingCapacity'].append((tech['name'], vintage, capacity, "GW", " "))
-        exist_cap = exist_cap + capacity
+        if min(local['active_future_periods']) - vintage < tech['lifetime']: # Prevent including if already retired
+            outputs['ExistingCapacity'].append((tech['name'], vintage, capacity, "GW", " "))
+            exist_cap = exist_cap + capacity
 
     # LifetimeTech and LifetimeLoanTech
     if goodValue(tech['lifetime']):
@@ -797,7 +798,7 @@ def createSensitivityCases(scenarioXLSX, scenarioName, sensitivityInputs, multip
         # Negative multiplier
         df.loc[count] = ['Globals', var, 'global', -1.0 * multiplier]
         count = count + 1
-        # Positivie multiplier
+        # Positive multiplier
         df.loc[count] = ['Globals', var, 'global', 1.0 * multiplier]
         count = count + 1
 
@@ -807,7 +808,7 @@ def createSensitivityCases(scenarioXLSX, scenarioName, sensitivityInputs, multip
             # Negative multiplier
             df.loc[count] = ['PowerPlants', var, tech, -1.0 * multiplier]
             count = count + 1
-            # Positivie multiplier
+            # Positive multiplier
             df.loc[count] = ['PowerPlants', var, tech, 1.0 * multiplier]
             count = count + 1
 
@@ -817,7 +818,7 @@ def createSensitivityCases(scenarioXLSX, scenarioName, sensitivityInputs, multip
             # Negative multiplier
             df.loc[count] = ['Fuels', var, tech, -1.0 * multiplier]
             count = count + 1
-            # Positivie multiplier
+            # Positive multiplier
             df.loc[count] = ['Fuels', var, tech, 1.0 * multiplier]
             count = count + 1
 
@@ -827,7 +828,7 @@ def createSensitivityCases(scenarioXLSX, scenarioName, sensitivityInputs, multip
             # Negative multiplier
             df.loc[count] = ['Connections', var, tech, -1.0 * multiplier]
             count = count + 1
-            # Positivie multiplier
+            # Positive multiplier
             df.loc[count] = ['Connections', var, tech, 1.0 * multiplier]
             count = count + 1
 
@@ -838,7 +839,6 @@ def createSensitivityCases(scenarioXLSX, scenarioName, sensitivityInputs, multip
 # Create Sensitivity Inputs
 # =============================================================================
 def createMonteCarloCases(scenarioXLSX, scenarioName, sensitivityInputs, multiplier, n_cases=100, path=Path('.')):
-
     params = {}
     data_path = os.path.join(path, 'data')
 
@@ -1008,6 +1008,9 @@ def applySensitivity(inputs, sensitivity, local):
                 newValue = 100.0
             elif newValue < 0.0 and sensitivity['variable'] == 'Loss':
                 newValue = 0.0
+
+            if sensitivity['variable'] == 'ExpectedLifetime': # Must be an integer
+                newValue = int(newValue)
 
             # Set new value
             entry.at[sensitivity['tech'], sensitivity['variable']] = newValue

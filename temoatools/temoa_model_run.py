@@ -31,16 +31,18 @@ def run(model_filename, temoa_path=Path('C:/temoa/temoa'), saveEXCEL=False, debu
     # Run temoa
     temoa_path_full = os.path.join(temoa_path, 'temoa_model')
     config_path_full = os.path.join(configDir, config_file)
-    command = 'python ' + str(temoa_path_full) + ' --config=' + str(config_path_full) # TODO
+    command = 'python ' + str(temoa_path_full) + ' --config=' + str(config_path_full)
 
 
-    # command = 'python ' + str(temoa_path) + '/temoa_model/ --config=' + configDir + '/' + config_file # TODO
+    # command = 'python ' + str(temoa_path) + '/temoa_model/ --config=' + configDir + '/' + config_file
+    error = False
     if debug:
         print(command)
     try:
         os.system(command)
     except:
         print(command)
+        error = True
 
     # # Move saveEXCEL file
     # if saveEXCEL:
@@ -59,6 +61,8 @@ def run(model_filename, temoa_path=Path('C:/temoa/temoa'), saveEXCEL=False, debu
 
     # Return to working directory
     os.chdir(workDir)
+
+    return error
 
 
 # ============================================================================#
