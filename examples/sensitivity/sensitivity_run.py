@@ -114,7 +114,7 @@ if __name__ == '__main__':
         os.chdir(project_path)
 
         # Count number of cases
-        n_cases = 10 # len(cases)
+        n_cases = len(cases)
 
         # Perform simulations in parallel
         with parallel_backend('multiprocessing', n_jobs=ncpus):
