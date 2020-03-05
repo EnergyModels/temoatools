@@ -1,0 +1,14 @@
+4) Clone and checkout pyomo 4.3.11388
+    > cd temoa_stochastic
+    > git clone https://www.github.com/pyomo/pyomo
+    > git pyomo
+    > git checkout e949e155e96d4063d5965505c921d06d03b876ec
+5) Modify pyomo 4.3.11388 using legacy files
+    1) Go to the temoa_stochastic/tools/legacy_files folder to find ef_writer_script_old.py. 
+    Copy paste this script at: temoa_stochastic/pyomo/pysp
+    2) Go to the temoa_stochastic/tools/legacy_files folder to find scenariomodels.py.
+    Copy paste this script at: temoa_stochastic/pyomo/pysp/util 
+6) Install modified version of pyomo
+    > cd temoa_stochastic/pyomo
+    > source activate temoa-py2
+    > pip install .

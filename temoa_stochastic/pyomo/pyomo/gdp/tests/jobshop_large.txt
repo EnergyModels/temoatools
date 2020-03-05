@@ -1,0 +1,125 @@
+
+# ==========================================================
+# = Solver Results                                         =
+# ==========================================================
+
+# ----------------------------------------------------------
+#   Problem Information
+# ----------------------------------------------------------
+Problem: 
+- Lower bound: 32
+  Upper bound: inf
+  Number of objectives: 1
+  Number of constraints: 113
+  Number of variables: 79
+  Number of nonzeros: 295
+  Sense: minimize
+
+# ----------------------------------------------------------
+#   Solver Information
+# ----------------------------------------------------------
+Solver: 
+- Status: ok
+  Termination condition: unknown
+  Statistics: 
+    Branch and bound: 
+      Number of bounded subproblems: 0
+      Number of created subproblems: 0
+  Error rc: 0
+
+# ----------------------------------------------------------
+#   Solution Information
+# ----------------------------------------------------------
+Solution: 
+- number of solutions: 1
+  number of solutions displayed: 1
+- Gap: 0.0
+  Status: optimal
+  Objective: 
+    makespan: 
+      Value: 32
+  Variable: 
+    ms: 
+      Value: 32
+    t[D]: 
+      Value: 18
+    t[F]: 
+      Value: 16
+    t[A]: 
+      Value: 10
+    t[E]: 
+      Value: 3
+    t[C]: 
+      Value: 1
+    t[G]: 
+      Value: 10
+    NoClash_Q46_[C,_G,_4,_1]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[A,_B,_3,_0]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[A,_B,_5,_0]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[A,_C,_1,_0]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[A,_D,_3,_1]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[A,_E,_3,_0]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[A,_E,_5,_0]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[A,_F,_1,_1]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[A,_F,_3,_1]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[A,_G,_5,_1]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[B,_C,_2,_1]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[B,_D,_2,_1]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[B,_D,_3,_1]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[B,_E,_2,_1]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[B,_E,_3,_1]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[B,_E,_5,_1]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[B,_F,_3,_1]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[B,_G,_2,_1]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[B,_G,_5,_1]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[C,_D,_2,_1]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[C,_D,_4,_1]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[C,_E,_2,_0]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[C,_F,_1,_1]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[C,_F,_4,_1]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[C,_G,_2,_1]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[D,_E,_2,_0]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[D,_E,_3,_0]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[D,_F,_3,_0]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[D,_F,_4,_0]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[D,_G,_2,_0]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[D,_G,_4,_0]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[E,_F,_3,_1]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[E,_G,_2,_1]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[E,_G,_5,_1]_Q46_indicator_var: 
+      Value: 1
+    NoClash_Q46_[F,_G,_4,_0]_Q46_indicator_var: 
+      Value: 1

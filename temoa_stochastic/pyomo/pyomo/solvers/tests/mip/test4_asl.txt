@@ -1,0 +1,71 @@
+{
+    "Problem": [
+        {
+            "Lower bound": -Infinity, 
+            "Number of constraints": 4, 
+            "Number of objectives": 1, 
+            "Number of variables": 8, 
+            "Sense": "unknown", 
+            "Upper bound": Infinity
+        }
+    ], 
+    "Solution": [
+        {
+            "number of solutions": 1, 
+            "number of solutions displayed": 1
+        }, 
+        {
+            "Constraint": {
+                "c0": {
+                    "Sstatus": 1
+                }, 
+                "c1": {
+                    "Sstatus": 1
+                }, 
+                "c2": {
+                    "Dual": 0.126, 
+                    "Sstatus": 3
+                }, 
+                "c3": {
+                    "Sstatus": 1
+                }
+            }, 
+            "Status": "optimal", 
+            "Status description": "OPTIMAL SOLUTION FOUND!", 
+            "Variable": {
+                "v0": {
+                    "sstatus": 3
+                }, 
+                "v1": {
+                    "sstatus": 3
+                }, 
+                "v2": {
+                    "sstatus": 3
+                }, 
+                "v3": {
+                    "sstatus": 3
+                }, 
+                "v4": {
+                    "Value": 46.86666666666667, 
+                    "sstatus": 1
+                }, 
+                "v5": {
+                    "sstatus": 3
+                }, 
+                "v6": {
+                    "sstatus": 3
+                }, 
+                "v7": {
+                    "sstatus": 3
+                }
+            }
+        }
+    ], 
+    "Solver": [
+        {
+            "Error rc": 0, 
+            "Status": "ok", 
+            "Termination condition": "optimal"
+        }
+    ]
+}

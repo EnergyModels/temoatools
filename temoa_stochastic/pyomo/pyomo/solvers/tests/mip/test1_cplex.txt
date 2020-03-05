@@ -1,0 +1,69 @@
+# ==========================================================
+# = Solver Results                                         =
+# ==========================================================
+
+# ----------------------------------------------------------
+#   Problem Information
+# ----------------------------------------------------------
+Problem: 
+- Name: TINYMATCHING
+  Lower bound: 3
+  Upper bound: 3
+  Number of objectives: 1
+  Number of constraints: 3
+  Number of variables: 9
+  Number of nonzeros: 9
+  Sense: minimize
+
+# ----------------------------------------------------------
+#   Solver Information
+# ----------------------------------------------------------
+Solver: 
+- Status: ok
+  Termination condition: optimal
+  Termination message: Dual simplex - Optimal\x3a Objective = 3.0000000000e+00
+  Error rc: 0
+
+# ----------------------------------------------------------
+#   Solution Information
+# ----------------------------------------------------------
+Solution: 
+- number of solutions: 1
+  number of solutions displayed: 1
+- Gap: 0.0
+  Status: optimal
+  Objective: 
+    __default_objective__: 
+      Value: 3
+  Variable: 
+    X11: 
+      Value: 1
+    X12: 
+      Rc: 1
+      Lrc: 1
+    X13: 
+      Rc: 2
+      Lrc: 2
+    X21: 
+      Rc: 1
+      Lrc: 1
+    X22: 
+      Rc: 2
+      Lrc: 2
+    X23: 
+      Value: 1
+    X31: 
+      Rc: 2
+      Lrc: 2
+    X32: 
+      Value: 1
+    X33: 
+      Rc: 1
+      Lrc: 1
+  Constraint: 
+    NODEA1: 
+      Dual: 1
+    NODEA2: 
+      Dual: 1
+    NODEA3: 
+      Dual: 1

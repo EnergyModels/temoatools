@@ -23,9 +23,9 @@ if __name__ == '__main__':
     # =======================================================
     # Model Inputs
     # =======================================================
-    temoa_path = Path('C:/temoa/temoa')  # Path('/home/jab6ft/temoa/temoa')
+    temoa_path = Path('C:/temoa/temoa')  # Path('/home/jab6ft/puerto_rico/temoa_stochastic')
     project_path = Path(
-        'C:/Users/benne/PycharmProjects/temoatools/projects/puerto_rico_stoch')  # Path('/home/jab6ft/temoa/project/puerto_rico_stoch')
+        'C:/Users/benne/PycharmProjects/temoatools/projects/puerto_rico_stoch')  # Path('/home/jab6ft/puerto_rico/puerto_rico_stoch')
     modelInputs_XLSX_list = ['data_T.xlsx', 'data_U.xlsx', 'data_W.xlsx', 'data_X.xlsx', 'data_Y.xlsx', 'data_Z.xlsx']
     scenarioInputs = 'scenarios.xlsx'
     scenarioNames_list = [['T'], ['U'], ['WA', 'WB', 'WC', 'WD', 'WE', 'WF'], ['XA', 'XB', 'XC', 'XD', 'XE', 'XF'],

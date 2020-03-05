@@ -6,7 +6,7 @@ from pathlib import Path
 # ===================================
 # Inputs
 # ===================================
-temoa_path = Path('C:/temoa_stochastic') # Path('/home/jab6ft/puerto_rico/temoa_stochastic')
+temoa_path = Path('C:/temoa_stochastic')  # Path('/home/jab6ft/puerto_rico/temoa_stochastic')
 solver = ''  # 'gurobi'
 
 cutoff = 0.05  # cutoff^n<1e-6, where n is # of model years excluding the first time step
@@ -140,7 +140,7 @@ for case in range(n_cases):
         # Configuration file
         # ====================================
         filename = "config_stoch_" + db_name + "_" + str(case) + ".txt"
-        input_path = os.path.join(temoa_path,"tools", db_name + "_" + str(case), "ScenarioStructure.dat")
+        input_path = os.path.join(temoa_path, "tools", db_name + "_" + str(case), "ScenarioStructure.dat")
         output_path = os.path.join(temoa_path, "data_files", db_name + "_" + str(case) + ".sqlite")
 
         f = open(filename, "w")
@@ -205,8 +205,8 @@ for db in dbs:
     for case in range(n_cases):
         db_name = tt.remove_ext(db)
         # .sqlite
-        src_dir = os.path.join(wrkdir,"databases", db_name + ".sqlite")
-        dst_dir = os.path.join(wrkdir,"stoch_inputs", db_name + "_" + str(case) + ".sqlite")
+        src_dir = os.path.join(wrkdir, "databases", db_name + ".sqlite")
+        dst_dir = os.path.join(wrkdir, "stoch_inputs", db_name + "_" + str(case) + ".sqlite")
         shutil.copy(src_dir, dst_dir)
         # .dat
         src_dir = os.path.join(wrkdir, "databases", db_name + ".dat")

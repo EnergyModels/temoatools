@@ -1,0 +1,72 @@
+py3k:
+    PrintParens:
+        1:
+            problems: 1
+        2:
+            problems: 2
+    XRange:
+        1:
+            problems: 1
+model:
+    Imports:
+        missing:
+            problems: 1
+        wrong:
+            problems: 1
+    ModelName:
+        missing:
+            problems: 1
+    ModelCreate:
+        nocall:
+            problems: 1
+            lines: [12]
+    DeprecatedModel:
+        wrong:
+            problems: 1
+            lines: [10]
+    ModelAccess:
+        global:
+            problems: 1
+            lines: [16]
+        global2:
+            problems: 2
+            lines: [17, 19]
+    ModelArgument:
+        norule:
+            problems: 0
+        firstarg:
+            problems: 0
+        lastarg:
+            problems: 1
+            lines: [16]
+    ModelValue:
+        globalif:
+            problems: 1
+            lines: [15]
+        multiif:
+            problems: 2
+            lines: [15, 21]
+        repeatif:
+            problems: 4
+            lines: [15, 19, 22, 23]
+        ruleif:
+            problems: 1
+            lines: [16]
+        globallistcomp:
+            problems: 1
+            lines: [16]
+        rulelistcomp:
+            problems: 1
+            lines: [17]
+    NoneReturn:
+        wrong:
+            problems: 1
+            lines: [15]
+    ArrayValue:
+        nomodel:
+            problems: 0
+        varonly:
+            problems: 0
+        wrong:
+            problems: 2
+            lines: [17, 18]

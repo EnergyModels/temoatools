@@ -57,53 +57,64 @@ These instructions are for a clean installation of Temoa and temoatools.
 
 > import temoatools as tt
 
-# Usage notes
-As of 2/8/2020, temoa currently does not output results to excel, therefore set saveEXCEL to False in temoatools.run()
+# Stochastic optimization
+Instructions to run projects/puerto_rico_stoch.
 
+While temoatools is now running in python 3, the version of temoa used for puerto_rico_stoch is in python 2.7, using 
+version 4.3 of pyomo. Therefore running puerto_rico_stoch has been split into two parts:
+1) projects/puerto_rico_stoch - creation of temoa files to run in temoa_stochastic and analysis scripts
+2) temoa_stochastic - instance of temoa to use for simulations
+projects/puerto_rico_stoch requires no additional set-up required if you follow the above instructions to run 
+temoatools using the temoa-py3 environment 
 
-# Stochastic optimization (uses temoatools v1.0.0)
-Instructions to run examples/puerto_rico_stoch.
+### Set-up of temoa_stochastic:
+Temoa_stochastic is written in python 2 using a modified version of pyomo 4.3. It is based on Patankar et al. 2019 
+https://zenodo.org/record/2551865#.XmEhyahKhPY
+1) Install python 2.7 (using anaconda2), https://www.anaconda.com/distribution/#download-section
+2) Create temoa-py2 environment within anaconda 2 (note comment out coincbc requirement if running on windows)
+    > cd temoa_stochastic
+    > conda env create
+    > source activate temoa-stoch-py2
+3) Install modified version of pyomo 4.3.11388 (details on how this was created are in temoa_stochastic/pyomo_instructions.txt)
+    > cd temoa_stochastic/pyomo
+    > source activate temoa-stoch-py2
+    > pip install .
+4) Optional: Install a commercial linear solver such as CPLEX or Gurobi, additional information can be found here: https://temoacloud.com/download/
 
-1) Install python and required packages
-    1) Install python 2.7 (using anaconda2), https://www.anaconda.com/distribution/#download-section
-    2) Install pyomo version 4.3 (using anaconda2 prompt)
-        >pip install pyomo==4.3
-    3) Update pyomo using legacy files
-        1) Go to the temoa_stochastic/tools/legacy_files folder to find ef_writer_script_old.py. 
-        Copy paste this script at: ../anaconda/lib/python2.7/site-packages/pyomo/pysp
-        2) Go to the temoa_stochastic/tools/legacy_files folder to find scenariomodels.py.
-        Copy paste this script at: ../anaconda/lib/python2.7/site-packages/pyomo/pysp/util 
-    4) Install temoatools (instructions above). This will include copying a version of temoa (temoa_stochastic) that has been modified for this analysis
-    5) Install a linear solver such as CPLEX, additional information can be found here: https://temoacloud.com/download/
+### Running stochastic optimization
 
-2) Enter/update simulation data in examples/puerto_rico_stoch/data folder. Scenarios_overview.ppt/.pdf provides background on cases simulated
-    1) paths.xls - provides paths to anaconda2 and temoa installation
-    2) data_*.xls - model data
-    2) scenarios.xls - variations detailed for each case/scenarios
-    3) sensitivityVariables.xls - used to indicate which temoa variables are considered in a sensitivity study
+1) Enter/update simulation data in examples/puerto_rico_stoch/data folder. Scenarios_overview.ppt/.pdf provides background on cases simulated
+    1) data_*.xls - model data
+    2) scenarios.xlsx - variations detailed for each case/scenarios
+    3) sensitivityVariables.xlsx - used to indicate which temoa variables are considered in a sensitivity study
 
-3) Create input files for temoa
-    1) Run examples/puerto_rico_stoch/stochastics_write_input_files.py to create files for temoa
-    2) Move input files from examples/puerto_rico_stoch/stoch_inputs/ to temoa installation
+2) Create input files for temoa
+    1) Update paths and run projects/puerto_rico_stoch/run_baselines.py to create baseline simulations
+    2) Update pahts and run examples/puerto_rico_stoch/stochastics_write_input_files.py to create files for temoa
+    3) Move input files from examples/puerto_rico_stoch/stoch_inputs/ to temoa_stochastic installation
         1) config_stoch_*.txt files to temoa_stochastic/temoa_model/
         2) stoch_*.py files to temoa_stochastic/tools/options/
         3) *.dat and *.sqlite files to temoa_stochastic/data_files/
 
-4) To run a single input file (example shown for the case T_0)
+3) To run a single input file (example shown for the case T_0)
     1) Single run
         1) Run the following command to generate the scenario tree - This command will create a directory that includes the information related to the stochastic scenario tree
-            >python generate_scenario_tree_JB.py options/stoch_T_0.py --debug
+            > python generate_scenario_tree_JB.py options/stoch_T_0.py --debug
         2) Update the scenario tree
             > python rewrite_tree_nodes.py options/stoch_T_0.py --debug
         3) Run the model in temoa
             > python temoa_model/temoa_stochastic.py --config=temoa_model/config_stoch_T_0.txt
-    2) Multiple runs - To run multiple scenarios, paramaterize in batch files, examples shown in temoa_stochastic/PR_stochastic_createScenarios_all.bat and temoa_stochastic/PR_stochastic_run_all.bat
+    2) Multiple runs - To run multiple scenarios, paramaterize in batch files (examples in temoa_stochastic)
+        1) examples for windows: PR_stochastic_createScenarios_all.bat and PR_stochastic_run_all.bat
+        2) examples for linux: createScenarios_all.sh, and run_pt1.sh
 
-5) Analyze results (scripts in examples/puerto_rico_stoch/)
+4) Analyze results (scripts in examples/puerto_rico_stoch/)
     1) Analyze optimized results
         > python stochastics_analyze_nocases.py
     2) Analyze case-based results
         > python stochastics_analyze_cases.py
 
-6) Plot results (performed in R, scripts in examples/puerto_rico_stoch/results/)
-                                                                                                                                                                                                                                                                                                                   
+5) Plot results (performed in R, scripts in examples/puerto_rico_stoch/results/)
+                                                 
+# Usage notes
+As of 2/8/2020, temoa currently does not output results to excel, therefore set saveEXCEL to False in temoatools.run()                                                                                                                                                                                                                                                                  

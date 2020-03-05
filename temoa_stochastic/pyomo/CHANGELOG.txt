@@ -1,0 +1,984 @@
+===============
+Pyomo CHANGELOG
+===============
+
+-------------------------------------------------------------------------------
+Pyomo 4.3 (4.3.11388)
+-------------------------------------------------------------------------------
+
+- A re-release to correct a distribution problem.
+
+-------------------------------------------------------------------------------
+Pyomo 4.3 (4.3.11377)
+-------------------------------------------------------------------------------
+
+- Restructured PySP tests to hide expected exception output
+- Updated pyomo_install to support jython (experimental)
+- Fixed a missing reference to 'six'
+- More robust management of file I/O in GLPK interface
+
+-------------------------------------------------------------------------------
+Pyomo 4.3 (4.3.11345)
+-------------------------------------------------------------------------------
+
+- Various fixes to the NEOS solver plugin and to the SOL parser for
+  certain NEOS solvers.
+- Fixed a bug that caused an exception to occur when dynamically adding blocks 
+  to a ConcreteModel.
+- Miscellaneous fixes to PySP scripting examples. 
+
+-------------------------------------------------------------------------------
+Pyomo 4.3 (4.3.11328)
+-------------------------------------------------------------------------------
+
+- Misc bug fix
+
+-------------------------------------------------------------------------------
+Pyomo 4.3 (4.3.11327)
+-------------------------------------------------------------------------------
+
+- Resolved bug in pyomo_install when pyvenv cannot be found.
+- Gracefully trap BARON terminations
+
+-------------------------------------------------------------------------------
+Pyomo 4.3 (4.3.11323)
+-------------------------------------------------------------------------------
+
+- Scripts
+  - pyomo_install
+    - Added --pip-options to specify options for PIP option
+    - Added --index-url to specify the PyPI mirror
+    - Restructured this script to make it more modular
+    - Deprecated the --with-extras option
+    - Added "--venv-only" option for setting up a local python virtual
+      environment with no additional packages (apart from pip, setuptools, and
+      potentially wheel). 
+    - Fixes when installing from zip files offline.
+  - get-pyomo-extras.py
+    - Misc fixes and updates
+  - pyomo
+    - Consolidated help information within the 'pyomo help' subcommand
+    - Added 'pyomo install-extras' to install third-party dependencies
+- pyomo.bilevel
+  - Major changes to get the bilevel_ld solver working
+  - Extended the logic in SubModel to allow for implicit declarations of
+    upper-level variables.
+- pyomo.check
+  - More complete scoping checks
+- pyomo.core
+  - Changes to allow sorted output using DataPortal objects
+  - Bug fix in linear dualization transformation
+  - Adding a mechanism to load default configuration information from a
+    standard location.
+  - Changes to allow objectives to be used inside expressions, and to
+    allow objectives to be sent through the solver plugins
+  - Updating blocks so that models can be created and populated using rule options
+  - Added a domain property method to IndexedVar so it cannot be treated as having 
+    a single domain
+  - Added the Var() 'dense' option.  This defaults to True, which defines variables
+    densely.  But sparse variables are defined when dense==False.
+  - Change to define a SOS constraint over the declared index set for a variable 
+    unless an explicit index set is provided.
+  - Changes to ensure that most components do not define their data densely.
+- pyomo.dae
+  - Updates to support Python3 and current Pyomo Transformation API
+  - Fixed the collocation extension to reduce the degrees of freedom for certain variables
+- pyomo.gdp
+  - Many fixes to bilinear transformation
+  - Fixed the Big-M estimation routine to work with constant expressions
+- pyomo.neos
+  - Added support for ephemeral solver options, which over-ride the
+    options dictionary
+  - Fixes to enable loading of solutions from NEOS solvers
+- pyomo.opt
+  - Sort variable names when printing results
+  - Many fixes to sol reader.
+- pyomo.pysp
+  - Updates to ScenarioStructure.dat to handle a larger
+    class of models that can have non-uniform variable sets
+    in later time stages. Also updating parsing rules to
+    allow for more convenient variable declarations
+      - NodeVariables / NodeDerivedVariables can be used in
+        place of StageVariables / StageDerivedVariables to
+        declare variables on a per-node basis
+      - Indexed variables can be declared without bracket
+        notation (e.g., x[*,*] -> x)
+      - Single or indexed block names can be used to
+        conveniently declare all variables found on that
+        block within a node or stage
+  - Re-write of runef and runbenders based off of new PySP
+    scripting tools
+  - Adding option to runbenders for including one or more
+    scenarios in the master benders problem
+  - Fixes to csvsolutionwriter so that it works with
+    distributed PH
+  - Added new script (evaluate_xhat) that allows users to
+    evaluate SP solutions on alternate scenario trees.
+  - Added more extensive checking to PySP->SMPS conversion
+    utility (pysp2smps) to alert users when conversion fails
+    due to non-uniform problem structure or missing
+    stochastic annotations
+  - Added helper routine to convert a networkx directed
+    graph into a PySP scenario tree model
+  - Fixes to PH for better handling of user warmstarts
+- pyomo.repn
+  - Updates to the NL writer to handle new expression types.
+  - Added an MPS writer
+- pyomo.scripting
+  - Updated the Pyro mip server to improve its efficiency
+- pyomo.solvers
+  - Updates to xpress plugin to use the ASL interface to xpress.
+  - Fixed a major issue with the gap computation in the CPLEX direct/persistent 
+    solver plugins
+  - Significant speed-up of the the CPLEX persistent plugin.
+  - Added the 'mps' mode for various solvers.
+  - Changes to the Pyro solver manager to allow out-of-order results collection
+ 
+-------------------------------------------------------------------------------
+Pyomo 4.2 (4.2.10784)
+-------------------------------------------------------------------------------
+
+- Changes to make the --json command-line option backwards compatible.
+
+-------------------------------------------------------------------------------
+Pyomo 4.2 (4.2.10782)
+-------------------------------------------------------------------------------
+
+- pyomo.core
+  - Removed the 'initial' attribute from Var components.
+  - Removed the 'reset()' method from core components.
+  - Objective components now store sense for each objective.
+  - Added support for slicing when indexing a component.
+- pyomo.dae
+  - Added methods to set and test the value of integral expressions
+- pyomo.gdp
+  - Added property methods to access disjunction expressions (e.g. lower, upper)
+- pyomo.opt
+  - Added support for ephemeral solver options that override the default
+    values set in the solver object.
+- pyomo.neos
+  - Bug fixes to get data after calling NEOS
+  - Resolving issues with python 3
+- pyomo.scripting
+  - Added --pyro-host and --pyro-port options
+  - Added shutdown capabilities to pyro solver manager
+  - Collect solve time for pyro solvers
+- pyomo.pysp
+  - Added --pyro-host and --pyro-port options to manage pyro-based execution
+    in a more robust manner.
+  - Adding utility for converting PySP models into SMPS input files (pysp2smps).
+- pyomo.solver
+  - Resolved serious issues with python direct interfaces:
+    - CPLEX: constants in linear range constraints and all quadratic
+      constraints were being excluded from the expression.
+    - CPLEX and GUROBI: actually raise an exception when a nonlinear
+      (non-quadratic) objective or constraint expression is encountered
+      rather than just emitting the linear and quadratic part of the
+      expression to the solver. This could lead to a naive user
+      thinking they have solved a general nonlinear model with these
+      solvers.
+    - CPLEX and GUROBI: do not skip trivial constraints by default.
+      Adding I/O option 'skip_trivial_constraints' to recover this
+      behavior.
+    - CPLEX: Merging as much of CPLEXPersistent with CPLEXDirect
+      as possible to avoid repeating bug fixes. More should be done,
+      but for now CPLEXDirect is a base class for CPLEXPersistent.
+  - Fix to various solver plugins so that variable bounds set to
+    float('inf') and float('-inf') are treated the same as variable
+    bounds set to None.
+  - Updates to Pyro solver managers
+    - Major performance enhancements for Pyro-based solver managers.
+      - Tasks can be uploaded to the dispatcher in bulk.
+      - Workers no longer use a timeout when requesting tasks from the queue, which
+        was wasting CPU cycles.
+    - Compatibility fixes when Pyro4 is used.
+- other
+  - Updated the get-pyomo-extras.py script to install conditional dependencies
+    for Pyomo (e.g. xlrd and ipython)
+  - Adding logic to explicitly identify metasolvers.  This information is 
+    reflected in the 'pyomo help -s' command.
+  - Deprecated 'pyomo.os', which was not being actively supported.
+  - Added the 'pyomo info' subcommand to provide information about the Python
+    installation.
+
+-------------------------------------------------------------------------------
+Pyomo 4.1 (4.1.10519)
+-------------------------------------------------------------------------------
+
+- Resolving bugs in NEOS solver interface due to change in solver options 
+  management.
+
+-------------------------------------------------------------------------------
+Pyomo 4.1 (4.1.10509)
+-------------------------------------------------------------------------------
+
+- Cleanup runbenders script to make it easier to test
+- Cleanup temporary files during testing.
+- Fixing PyUtilib version
+
+-------------------------------------------------------------------------------
+Pyomo 4.1 (4.1.10505)
+-------------------------------------------------------------------------------
+
+- Allow the dim() method to be called without the equality operator, which 
+  enables its use on unconstructed components
+- RangeSet inherits from OrderedSimpleSet
+- Added missing __slots__ declarations in set classes
+
+-------------------------------------------------------------------------------
+Pyomo 4.1 (4.1.10486)
+-------------------------------------------------------------------------------
+
+- API changes for model transformations
+- Revised API for SOSConstraint, Suffix and Block components
+- Optimization results are now loaded into models
+- Removed explicit specification of model preprocessing
+- Resolved many issues with writing and solving MPECs
+- Changes to MPEC meta-solver names
+- The solution output for runph has been changed to 
+- Pyomo subcommands can now use configuration files (e.g. pyomo solve config.json)
+- New JSON/YAML format for parameter data
+- Added a script to install pyomo.extras
+
+-------------------------------------------------------------------------------
+Pyomo 4.0 (4.0.9682)
+-------------------------------------------------------------------------------
+
+- Adding a more useful error message when a named objective is not
+  present when load-solution is invoked on a model.
+- Bug fix for pickling results objects.
+- Performance fix for ordered sets
+- Removed StateVar from DAE examples.
+- Resolving a bug that disabled pyodbc support.
+- Added preliminary support for pypyodbc.
+- Fix to enable sets to be initialized with a tuple
+- PySP test baseline updates
+- Added PySP ddsip extension.
+- Removed the 'pyomo bilevel' and 'pyomo mpec' subcommands
+- Re-enabled the 'import' and 'export' Pyomo data commands, which
+  are still deprecated.
+- Various performance enhancements to avoid iterating over list of
+  dictionary keys.
+- Added a ComplementarityList component.
+
+-------------------------------------------------------------------------------
+Pyomo 4.0 (4.0.9629)
+-------------------------------------------------------------------------------
+
+This release rebrands Coopr as Pyomo, which reflects the fact that
+users have consistently confused the Coopr software and the Pyomo
+modeling language.  Pyomo 4.0 includes the following significant
+changes:
+
+- Pyomo provides a single source tree replacing all Coopr packages
+- The 'pyomo' command replaces the 'coopr' command
+- The 'pyomo solve' subcommand replaces the former 'pyomo' command
+- The 'pyomo.environ' package is now used to import core Pyomo capabilities
+- Robust support for Python 3.x
+
+The following are highlights of this release:
+
+- Modeling
+   * Added a RealInterval domain
+   * Major rework of coopr.dae. Can now represent higher order and partial 
+     differential equations. Also added more discretization schemes.
+
+- Solvers
+   * Added preliminary support for a Benders solver
+   * Added support for the BARON solver
+   * Preliminary support for MPEC solvers, including the PATH solver
+
+- Transformations
+   * Added explicit support for model transformations
+   * The 'pyomo solve --transform' option specified model transformations
+   * Created a streamline linear dual transformation
+
+- Other
+   * The 'pyomo help' command documents installed capabilities
+   * Major rework and simplification of the 'pyomo_install' script
+   * Added support for parallelism using Pyro4
+
+-------------------------------------------------------------------------------
+Pyomo 3.5.8787
+-------------------------------------------------------------------------------
+
+- pyomo.opt 2.12.2
+  pyomo.core 3.6.4
+  pyomo.pysp 3.5.5
+  pyomo.solvers 3.2.1
+
+-------------------------------------------------------------------------------
+Pyomo 3.5.8748
+-------------------------------------------------------------------------------
+
+- pyomo.pysp 3.5.4
+
+-------------------------------------------------------------------------------
+Pyomo 3.5.8734
+-------------------------------------------------------------------------------
+
+- PyUtilib 4.7.3336
+
+-------------------------------------------------------------------------------
+Pyomo 3.5.8716
+-------------------------------------------------------------------------------
+
+- pyomo.core 3.6.3
+  pyomo.pysp 3.5.3
+
+-------------------------------------------------------------------------------
+Pyomo 3.5.8706
+-------------------------------------------------------------------------------
+
+- pyomo.util 2.0.4
+  pyomo.core 3.6.2
+
+-------------------------------------------------------------------------------
+Pyomo 3.5.8690
+-------------------------------------------------------------------------------
+
+- pyomo.neos 1.1.2
+  pyomo.opt 2.12.1
+  pyomo.core 3.6.1
+  pyomo.pysp 3.5.2
+
+- Added the pyomo_install script
+
+-------------------------------------------------------------------------------
+Pyomo 3.5.8669
+-------------------------------------------------------------------------------
+
+- PyUtilib 4.7.3311
+  pyomo.util 2.0.3
+
+-------------------------------------------------------------------------------
+Pyomo 3.5.8663
+-------------------------------------------------------------------------------
+
+- PyUtilib 4.7.3305
+  pyomo.util 2.0.2
+  pyomo.environ 1.0.1
+
+-------------------------------------------------------------------------------
+Pyomo 3.5.8648
+-------------------------------------------------------------------------------
+
+- PyUtilib 4.7.3301
+  pyomo.age 1.1.4
+  pyomo.bilevel 1.0
+  pyomo.util 2.0.1
+  pyomo.dae 1.2
+  pyomo.environ 1.0
+  pyomo.gdp 1.2
+  pyomo.util 2.8.2
+  pyomo.mpec 1.0
+  pyomo.neos 1.1.1
+  pyomo.openopt 1.1.3
+  pyomo.opt 2.12
+  pyomo.os 1.0.4
+  pyomo.core 3.6
+  pyomo.pysos 2.0.9
+  pyomo.pysp 3.5.1
+  pyomo.solvers 3.2
+  pyomo.sucasa 3.0
+
+-------------------------------------------------------------------------------
+Pyomo 3.4.7842
+-------------------------------------------------------------------------------
+
+- pyomo.dae 1.1
+  pyomo.gdp 1.1.1
+  pyomo.util 2.8.1
+  pyomo.openopt 1.1.2
+  pyomo.opt 2.11
+  pyomo.os 1.0.3
+  pyomo.plugins 3.1
+  pyomo.core 3.5
+  pyomo.pysp 3.4
+
+-------------------------------------------------------------------------------
+Pyomo 3.3.7114
+-------------------------------------------------------------------------------
+
+- pyomo.age 1.1.3
+  pyomo.util 1.0.1
+  pyomo.dae 1.0
+  pyomo.gdp 1.1
+  pyomo.util 2.7.2
+  pyomo.openopt 1.1
+  pyomo.opt 2.10
+  pyomo.os 1.0.2
+  pyomo.plugins 3.0
+  pyomo.core 3.4
+  pyomo.pysos 2.0.8
+  pyomo.pysp 3.3
+  pyomo.sucasa 2.1
+
+-------------------------------------------------------------------------------
+Pyomo 3.2.6148
+-------------------------------------------------------------------------------
+
+- pyomo.opt 2.9.1
+  pyomo.core 3.3.2
+
+-------------------------------------------------------------------------------
+Pyomo 3.2.6124
+-------------------------------------------------------------------------------
+
+- pyomo.core 3.3.1
+
+-------------------------------------------------------------------------------
+Pyomo 3.2.6091
+-------------------------------------------------------------------------------
+
+- pyomo.gdp 1.0.4
+  pyomo.openopt 1.0.3
+  pyomo.opt 2.9
+  pyomo.plugins 2.11
+  pyomo.core 3.3
+  pyomo.pysos 2.0.7
+  pyomo.pysp 3.2
+  pyomo.sucasa 2.0.6
+
+-------------------------------------------------------------------------------
+Pyomo 3.1.5746
+-------------------------------------------------------------------------------
+
+- pyomo.age 1.1.2
+  pyomo.gdp 1.0.3
+  pyomo.util 2.7
+  pyomo.openopt 1.0.2
+  pyomo.opt 2.8
+  pyomo.os 1.0.1
+  pyomo.plugins 2.9
+  pyomo.core 3.1
+  pyomo.pysp 3.1
+
+-------------------------------------------------------------------------------
+Pyomo 3.1.5409
+-------------------------------------------------------------------------------
+
+- Made the imports of pyomo.opt services more robust to the failure of
+  individual services.
+
+- Minor performance improvement
+
+- Fixing import error when ordereddict is not available.
+
+-------------------------------------------------------------------------------
+Pyomo 3.1.5362
+-------------------------------------------------------------------------------
+
+- Bug fix for Python 2.7 installation.
+
+-------------------------------------------------------------------------------
+Pyomo 3.1.5325
+-------------------------------------------------------------------------------
+
+The following are highlights of this release:
+
+- Solvers
+   * Interfaces for OpenOpt solvers
+   * Many solver interface improvements
+   * A solver checker to validate solver interfaces
+   * Improved support for SOS constraints (cplex, gurobi)
+   * PH supports nonlinear models
+   * PH-specific solver servers
+
+- Modeling
+   * Changes in rule semantics to limit rule return values
+   * Changes in the expected order of rule arguments
+   * Constant sums or products can now be used as constraint bounds
+   * Added full support for the !ConstraintList modeling component.
+
+- Usability enhancements
+   * New 'pyomo' command has subcommands that consolidate Pyomo scripting
+   * Added support to connect to databases with ODBC
+   * Added comprehensive support for set expressions
+   * Comprehensive rework of blocks and connectors for modular modeling
+   * Made JSON the default results format
+
+- Other
+   * Efficiency improvements in model generation, memory, runtime, etc.
+   * Preliminary support for black-box applications
+   * Deprecated modeling syntax in Pyomo 3.0 is no longer legal
+
+
+-------------------------------------------------------------------------------
+Pyomo 3.0.4362
+-------------------------------------------------------------------------------
+
+- Solvers
+   * More sophisticated logic for solver factory to find ASL and OS solvers
+   * Various solver interface improvements
+   * New Solver results object for efficient representation of variable values
+   * New support for asynchronous progressive hedging
+
+- Modeling
+   * Changes in rule semantics to limit rule return values
+   * Changes in the expected order of rule arguments
+   * Constant sums or products can now be used as constraint bounds
+   * Added full support for the ConstraintList modeling component.
+
+- Usability enhancements
+   * More explicit output from runph and runef commands
+   * Added support in runef to write the extensive form in NL format
+   * Add controls for garbage collection in PH
+
+- Other
+   * Efficiency improvements in generation of NL and LP files.
+   * Significant efficiency improvements in parsing of Pyomo Data Files.
+   * More robust MS Windows installer (does not use virtual python environment)
+
+-------------------------------------------------------------------------------
+Pyomo 2.5.3978
+-------------------------------------------------------------------------------
+
+- Performance improvements in Pyomo
+
+- Bug fix when updating a results object that contains suffix data.
+
+-------------------------------------------------------------------------------
+Pyomo 2.5.3890
+-------------------------------------------------------------------------------
+
+- Solvers
+    * MIP solver interface updates to use appropriate objective names
+    * Added support for suffixes in GUROBI solver interface
+    * Improved diagnostic analysis of PH solver for the extensive form
+
+- Usability enhancements
+    * Improved robustness of pyomo_install
+    * Fixed Pyomo installation problem when using easy_install
+    * Added a script to launch the PyomoAge GUI.
+    * LP files now are written with the true objective name
+    * Rework of pyomo command line to create a concise output
+    * Many efficiency improvements during model generation!
+    * Many improvements to diagnostic output and error handling
+    * Expressions like "model.p > 1" can now be used within generation rules
+
+- Modeling
+    * Added support for generalized disjunctive programs (in pyomo.gdp)
+    * Constraints can now be specified in "compound" form:  lb <= expr <= ub
+    * Significant robustness enhancements for model expressions
+    * Improved error handling for constraint generation 
+
+- Other
+    * Python 2.5 is deprecated due to performance issues
+    * Python versions 2.6 and 2.7 are supported
+    * New MS Windows installer is now available
+
+-------------------------------------------------------------------------------
+Pyomo 2.4.3307
+-------------------------------------------------------------------------------
+
+- Solvers
+  - Various fixes for Gurobi and CPLEX
+  - Reorganized OS services in pyomo.os
+
+- Usability enhancements
+  - Improved robustness of pyomo_install
+  - Default install of pyomo_install from PyPI
+
+-------------------------------------------------------------------------------
+Pyomo 2.4.3261
+-------------------------------------------------------------------------------
+
+- Updating dependencies for Pyomo.
+
+-------------------------------------------------------------------------------
+Pyomo 2.4.3209
+-------------------------------------------------------------------------------
+
+- Patch fix for pyomo.colin
+
+-------------------------------------------------------------------------------
+Pyomo 2.4.3199
+-------------------------------------------------------------------------------
+
+- Modeling
+  - Concrete models are now supported
+  - Nonlinear modeling extensions using the AMPL NL problem format
+  - Add support for immutable versus mutable parameters.
+  - Support for SOS1 and SOS2 constraints
+
+- Data Integration
+  - Can now import data from relational databases
+
+- Solvers
+  - Better support for Gurobi solver
+  - Direct CPLEX solver interface
+  - Interface to ipopt and nonlinear solvers via asl (just to be clear)
+  - ASL solver interface can now be specified with the form 
+        --solver=asl:PICO 
+
+- Usability enchancements
+  - Numerous bug fixes. 
+  - Updated messages to provide clearer indication of modeling errors
+
+-------------------------------------------------------------------------------
+Pyomo 2.3.2581
+-------------------------------------------------------------------------------
+
+- A preliminary Gurobi solver interface
+
+- Extended syntax for data command files:
+  'include' command to load other data command files
+  'import' command to load data from other sources
+  namespaces to next data declarations
+
+- The pyomo_install script can install packages from Coin Bazaar
+
+- New conversion scripts to generate LP or NL files from Pyomo models
+
+- Solvers now extract standard suffix information 
+
+- Various fixes to PySP solvers
+
+-------------------------------------------------------------------------------
+Pyomo 2.0
+-------------------------------------------------------------------------------
+
+- Reorganization of Pyomo into separate packages:
+
+  - pyomo.opt 2.0
+  - pyomo.util 2.0
+  - pyomo.plugins 2.0
+  - pyomo.core 2.0
+  - pyomo.pysos 2.0
+  - pyomo.sucasa 2.0
+
+-------------------------------------------------------------------------------
+Pyomo 1.2
+-------------------------------------------------------------------------------
+
+- OPT
+
+  - Added explicit support for a symbol_map, which is used to coordinate
+    the symbols used in a converted problem with the symbols used in the
+    original problem.
+
+- PYOMO
+
+  - Fixed bug in logic associated with index validation in ProductSets.
+
+  - Changed the set ord() method to be 1-based
+
+  - Added presolve diagnostics.
+
+- SUCASA
+
+  - Added draft SUCASA user manual.
+
+- PYSP
+
+  - Modified PH to support parallelism with Pyro.
+
+  - Introduced the PH scripts, with many options that an end-user
+    might want to try out.
+
+  - Added a convergence criterion to PH based on the # of free
+    discrete variables.
+
+  - Flushed out PYSP 1.1 documentation.
+
+  - Updated/improved timing reports and output in PH.
+
+  - Setup binary quadratic term linearization.
+
+  - Setup PH checkpointing using pickle.
+
+  - Added 48-scenario test case for forestry problem.
+
+  - Added PH option to specify a user-defined PH extension.
+
+  - Fixes to PH proximal term linearization.
+
+  - Created windows-friendly versions of core PYSP scripts.
+
+- Plugins
+
+  - Switched default CBC input file format to CPLEXLP
+
+- General
+
+  - Added a Pyomo 'getting started' manual.
+
+  - Reorganized Pyomo package to use the 'pyomo' namespace.  The pyomo.util
+    package was renamed pyomo.opt.
+
+  - Added documentation on how to create/install plugins in Pyomo.
+
+  - Added documentation for using pyomo_install.
+
+  - Reworked pyomo_install to be created with the pyutilib.virtualenv script
+    vpy_create.
+
+  - Misc edits due to the PyUtilib reorg.
+
+-------------------------------------------------------------------------------
+Pyomo 1.1
+-------------------------------------------------------------------------------
+
+- OPT
+
+  - Reorganized pyomo.opt to rely on plugins for most of its core
+    functionality.
+
+  - Changed the default output for PICO to be LP format, rather than
+    .NL. This avoids issues with name-mapping that we haven't resolved yet.
+
+  - Updated LP writer to not output integer/binary status for variables
+    that aren't referenced in the model.
+
+  - In LP output format, modified constraint names to be "suffixed"
+    with the index in the same fashion as variables. The suffix is "None"
+    if the constraint is a singleton. Will help debug models during
+    development/prototyping.
+
+  - For MIPs, added "slack" suffix to solutions and modified CPLEX solver
+    interface to populate the suffix accordingly.
+
+  - Improvement of the factory mechanism used to launch optimizers;
+    solvers can be passed options during construction.
+
+  - The CPLEX LP format assumes default variable bounds equal to 0 and
+    +inf. These conflict with the more sane defaults in Pyomo, which are
+    -inf and +inf. This leads to all kinds of silent, incorrect behavior
+    in terms of getting very strange solutions where you are expecting a
+    straightforward solve. The cpxlp writer was changed to always output
+    bounds for variables, which is the safest route in any case.
+
+  - Added a facility for managing asynchronous events. In particular,
+    this facility has been setup to support the application of Pyomo
+    solvers with subclasses of the AsynchronousSolverManager.
+
+  - Created a distributed solver manager that uses the Pyro 
+    RPC package.
+
+  - Rework of MIP solver interfaces for CPLEX, GLPK, PICO and CBC.
+
+  - Using an explicit temporary file when launching the shell command
+    subprocess, to avoid a buffer overflow.
+
+  - A rework of the logic in shellcmd.py to segregate the solution
+    into preprocess/solve/postprocess. This facilitates a fine-grain
+    parallelization of just the IP solve, using Pyro.
+
+  - If a variable name has the format x(1,a) or x[3,4,5] then create a
+    dictionary attribute 'x' in the SolverResults object, which maps the
+    tuple values to the corresponding value.
+
+    For example:
+
+      results.solution().variable.add('x(1,a)')
+      print results.solution().variable.x[1,'a']
+
+  - A change in the converter semantics. Now, the convert returns a
+    tuple of filenames. In most cases, this is a singleton tuple. But
+    in some important cases this is a non-singleton tuple (e.g. AMPL
+    *.mod/*.dat files).
+
+
+- PYOMO
+
+  - Reworked Pyomo's management of components to use plugins.
+
+  - Adding two new components BuildCheck and BuildAction. Their
+    usage is similar, but their expected use is a it
+    different. BuildAction  allows for the injection of arbitrary build
+    actions during construction of the model, while BuildCheck is used
+    to test conditions and generate exceptions when the build process
+    goes awry.
+
+  - There is also a subtle change to the Param component. The following
+    is now legal:
+
+        def f(model):
+            return 1.3
+        model.x = Param(initialize=f)
+
+    That is, when the Param object does not have an explicit index,
+    then no index is passed to an initializer function (as is expected).
+
+  - Adding 'summation', a function that computes multi-vector
+    product sums:
+
+       sum_i x[i]*y[i]*z[i]
+
+  - Adding automatic computation of variable bounds based on the domain.
+    If the domain set supports simple bounds, then they will be used to
+    initialize the bounds of a variable.
+
+  - Adding logic to ignore the generation of constraints if the
+    constructor rule returns either 'None' or '0'.
+
+  - Changed default domain of a Param to be Any, to be consistent with Set.
+
+  - Rework of Pyomo to enable preprocessor actions to manage all
+    post-instance-generation activities. This includes a simple preprocessor
+    plugin, which simply applies preprocessor actions in an order specified
+    by the action-specific ranks.  The problem writers are no longer
+    responsible for how preprocessor actions take place.
+
+    NOTE: These preprocessors are very much tailored to the needs of the
+    NL and LP writers. We need to figure out a mechanism to tailoring
+    preprocessors to specific target solvers (e.g. tailoring preprocessing
+    for the NL writer, or tailoring preprocessing for MILP models).
+
+  _ The Constraint and Objective classes were reworked to integrate 
+    their data into a single _data dictionary. This simplified
+    the management of id and label information.
+
+  - Extending the Constraint(model.A, rule=f) constructor semantics. This
+    change allows the rule to return a dictionary when the constraint is
+    indexed by one or more sets.
+
+  - A revision to Pyomo semantics. Now, expressions are not evaluated
+    when performing arithemetic operations (plus, times, etc).
+
+  - A major rework of how component attributes are managed for
+    NumericValue  objects and subclasses of this class. This was driven
+    by the desire to add the Var.declare_attribute() method, which declares
+    attributes for variables (which are akin to ampl suffix's).
+
+    Most of these changes were motivated by inconsistencies that were
+    observed within Pyomo, and the desire to better protect declared
+    attributes. Now, attributes are stored with names that are unlikely
+    to be used by end-users or other Pyomo developers. Also, declared
+    attributes can now only be referenced directly. Thus, you cannot
+    refer to x._value, but instead you must use x.value.
+
+  - Reworked the way that 'empty' objectives and constraints are dealt
+    with. By default, objectives and constraints with expr/body
+    values of None are provided, which facilitates some aspects of
+    preprocessing. But this triggered exceptions, which are now disabled.
+
+  - Reworked how the '_equality' constraint attribute is managed.  This is
+    now in the ConstraintData class, which required various changes.
+
+  - Changed the pprint output for equality constraints to make it clear
+    that both the upper and lower bounds are equal for these constraints.
+
+  - Fixed bug in the definition of parameter names. When using a rule
+    to define parameter values, the parameter name now reflex the index
+    values for the parameter.
+
+  - Major change of NumericalValue subclass semantics. The 'value' data
+    member is not supported for expressions, constraints and objectives.
+    These classes need to use the call method.  This simplifies the
+    logic in their getattr/setattr methods.
+
+  - Various code optimizations to improve the runtime performance of Pyomo.
+
+  - A major rework of the Pyomo core to eliminates the use
+    of getattr and setattr methods. Removing these led to a 1/3 reduction
+    in runtime for some largish p-median test problems.  This change
+    has had the following impact on Pyomo functionality:
+
+    . No validation that values assigned to parameters or variables are valid
+
+    . Cannot set all suffixes simultaneously
+
+    . Cannot set lower/upper bounds simultaneously
+
+    . No validation that suffixes are valid when their value is set
+
+    Also, this effort led to a rework of the Param and Var classes. These
+    are now segregated between Element and Array classes (similar to the
+    Set class). This led to further optimizations of the logic in these
+    classes. Unfortunately, it also led to the use of the _VarBase and
+    _ParamBase in the PyomoModel to index components.
+
+  - Changed order in which parameters are validated. Validation needs
+    to occur after parameters are set. This is due to the semantics of
+    the validation function: we want to allow the validation function to
+    refer to the value as if it were set.
+
+  - Depricating the use of the expression factory for algebraic expression
+    types. These are now launched directly from the generate_expression()
+    function.
+
+  - Adding support for specifing options when launching solvers. For example:
+
+    results = self.pico.solve(currdir+"bell3a.mps", options="maxCPUMinutes=0.1")
+
+  - The value 'None' is accepted by all NumValue objects, and this
+    indicates that the object has not been initialized.
+
+  - ParamValue objects print their name, rather than their value.
+
+  - Resolving an issue loading boolean data from a *.dat file.  Now,
+    all true/false strings are changed to True/False values.
+
+  - Rework of Pyomo to use the SolverManagerFactory. The default
+    behavior is to use the 'serial' manager, which does local solves,
+    but this supports extensibility for other solvers.
+
+
+- SUCASA
+
+  - Added an option to terminate SUCASA after the AMPL script is
+    generated, but before PICO is called. This allows the AMPL script
+    to be applied separately.
+
+  - Rework of the files generated by SUCASA. Before, SUCASA generated
+    three files:
+
+    . app_milp.h/app_milp.cpp Define the derived MILP classes
+    . app_extras.cpp Used to define the methods specialized by the user
+
+    Now, SUCASA generates five files:
+
+    . app_sucasa.h/app_sucasa.cpp Define the derived MILP classes
+    . app_milp.h/app_milp.cpp Define a MILP from the code in *_sucasa.* files.
+    . app_extras.cpp Used to define the methods specialized by the user
+
+    The result, is that SUCASA now generates two derived solvers. BUT, the
+    one that is exposed to the user can be customized without impacting
+    the integration of the Info classes. Further, this segregation
+    simplifies the class definitions that a user looks at; for example,
+    there are no ugly ifdefs, and no references to the Info data.
+
+  - A rework of the SUCASA API that is exported to the user. This new
+    API allows users to register the vector of primal/dual values,
+    which are access implicitly through the methods
+
+      <name>_value()
+
+  - Rework of the SUCASA Info API to ensure a consistent interface
+    for sets, parameters, vars, etc.
+
+  - Rework of the AMPL parser to guess the superset types for sets and
+    parameters. This works on most common cases, but it's far from perfect.
+
+  - Extended code generation to include parameter data.
+
+  - Update of examples.
+
+
+- PYSP
+
+  - Initial integration of the Python Stochastic Programming (PySP) package.
+
+  - Developed a variety of stochastic programming examples to illustrate
+    the use of PYSP
+
+  - Developed a PYSP user guide.
+
+
+- General
+
+  - Resolved Python 3.0 portability issues
+
+  - Created a script create_pyomo_install, which uses virtualenv to
+    automatically create the pyomo_install script, which automates the
+    installation of pyomo.
+
+
+-------------------------------------------------------------------------------
+Pyomo 1.0
+-------------------------------------------------------------------------------
+
+- Initial release.
+

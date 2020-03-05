@@ -1,0 +1,18 @@
+J:
+    - [A1 , B1]
+    - [A2 , B2]
+    - [A3 , B3]
+P:
+    - index: [A1, B1]
+      value: 4.3
+    - index: [A2, B2]
+      value: 4.4
+    - index: [A3, B3]
+      value: 4.5
+O:
+    - index: [A1, B1]
+      value: 5.3
+    - index: [A2, B2]
+      value: 5.4
+    - index: [A3, B3]
+      value: 5.5

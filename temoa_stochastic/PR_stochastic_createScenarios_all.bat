@@ -1,5 +1,5 @@
 call C:\Users\jab6ft\AppData\Local\Continuum\anaconda2\Scripts\activate.bat 
-cd C:\temoa_stochastic\tools
+cd tools
 
 python generate_scenario_tree_JB.py options/stoch_T_0.py --debug
 python rewrite_tree_nodes.py options/stoch_T_0.py --debug

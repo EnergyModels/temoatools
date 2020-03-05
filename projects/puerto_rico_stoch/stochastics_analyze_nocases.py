@@ -211,9 +211,10 @@ def analyze_results(metric, folder_db, folder_results, run_name, dbs, all_dbs, d
 # Main body of script
 # ================================
 if __name__ == '__main__':
+    ncpus = 6  # int(os.getenv('NUM_PROCS'))
 
-    db_folder = os.getcwd() + '\\stochastic_databases'
-    result_folder = os.getcwd() + '\\results'
+    db_folder = os.path.join(os.getcwd(), 'stochastic_databases')
+    result_folder = os.path.join( os.getcwd(), 'results')
 
     print("running")
 
@@ -253,8 +254,8 @@ if __name__ == '__main__':
     # Iterate through each run
     for run_name in run_names:
         print(run_name)
-        folder_db = db_folder + "\\" + run_name
-        folder_results = result_folder + "\\" + run_name
+        folder_db = os.path.join(db_folder, run_name)
+        folder_results = os.path.join(result_folder, run_name)
 
         # metrics = ['costs_yearly', 'emissions_yearly', 'activity_by_fuel', 'activity_by_tech', 'capacity_by_fuel',
         #            'capacity_by_tech']
@@ -263,8 +264,8 @@ if __name__ == '__main__':
 
 
         # Perform simulations in parallel
-        with parallel_backend('multiprocessing', n_jobs=-2):
-            Parallel(n_jobs=-2, verbose=5)(
+        with parallel_backend('multiprocessing', n_jobs=ncpus):
+            Parallel(n_jobs=ncpus, verbose=5)(
                 delayed(analyze_results)(metric, folder_db, folder_results, run_name, dbs, all_dbs, db_shift, node_prob,
                                          tech_group_dict, prob_type_dict, infra_dict, carbon_tax_dict) for metric in
                 metrics)

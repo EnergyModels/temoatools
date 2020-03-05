@@ -1,0 +1,18 @@
+name: temoa-stoch-py2
+channels:
+    - defaults
+    - conda-forge
+dependencies:
+    - python=2.7
+    - xlwt
+    - ipython
+    - matplotlib
+    - pandas
+    - numpy
+    - scipy
+    - joblib
+    - salib
+    - pydoe
+    - pyutilib
+    - glpk
+    - coincbc

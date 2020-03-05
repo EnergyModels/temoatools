@@ -1,0 +1,21 @@
+Importing module=/home/hudson/slave/workspace/Pyomo_trunk_python2.7_snotra_expensive/src/pyomo/examples/pysp/networkflow/models-cc/ReferenceModel.py
+Module successfully loaded
+lagrangeParam begins 
+Importing module=/home/hudson/slave/workspace/Pyomo_trunk_python2.7_snotra_expensive/src/pyomo/examples/pysp/networkflow/models-cc/ReferenceModel.py
+Module successfully loaded
+Initializing PH
+
+We are solving a MINIMIZATION problem.
+
+lambda= 0.0 ...run begins 3 scenarios
+SolStatus=ok
+	...ends
+Initial cost = 108879.328  for bL = 0.0
+lambda= 0.0 ...run begins
+SolStatus=ok
+	...ends
+initial gap = 0.1602326682 
+
+End of test; this is only a test.
+
+returned from partialLagrangeParametric
