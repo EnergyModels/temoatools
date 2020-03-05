@@ -1,19 +1,22 @@
 import os
 import shutil
 import temoatools as tt
+from pathlib import Path
 
-#===================================
+# ===================================
 # Inputs
-#===================================
+# ===================================
+temoa_path = Path('C:/temoa_stochastic') # Path('/home/jab6ft/puerto_rico/temoa_stochastic')
+solver = ''  # 'gurobi'
 
-cutoff = 0.05 # cutoff^n<1e-6, where n is # of model years excluding the first time step
+cutoff = 0.05  # cutoff^n<1e-6, where n is # of model years excluding the first time step
 
 # Baseline databases to use
 dbs = ["T.sqlite", "U.sqlite",
-    "WA.sqlite", "WB.sqlite", "WC.sqlite", "WD.sqlite", "WE.sqlite","WF.sqlite",
-       "XA.sqlite", "XB.sqlite", "XC.sqlite", "XD.sqlite", "XE.sqlite","XF.sqlite",
-       "YA.sqlite", "YB.sqlite", "YC.sqlite", "YD.sqlite", "YE.sqlite","YF.sqlite",
-       "ZA.sqlite", "ZB.sqlite", "ZC.sqlite", "ZD.sqlite", "ZE.sqlite","ZF.sqlite"]
+       "WA.sqlite", "WB.sqlite", "WC.sqlite", "WD.sqlite", "WE.sqlite", "WF.sqlite",
+       "XA.sqlite", "XB.sqlite", "XC.sqlite", "XD.sqlite", "XE.sqlite", "XF.sqlite",
+       "YA.sqlite", "YB.sqlite", "YC.sqlite", "YD.sqlite", "YE.sqlite", "YF.sqlite",
+       "ZA.sqlite", "ZB.sqlite", "ZC.sqlite", "ZD.sqlite", "ZE.sqlite", "ZF.sqlite"]
 
 # model years
 years = [2016, 2021, 2026, 2031, 2036]
@@ -35,25 +38,25 @@ techs = {'LOCAL': "inf_stiff", 'UGND_TRANS': "UGND", 'UGND_DIST': "UGND", 'TRANS
          'EX_HYDRO': "hydro", 'EC_BATT': "battery", 'ED_BATT': "battery"}
 
 curves = {"inf_stiff": "inf_stiff",
-                "trans": "trans_UK_base",
-                "sub": "sub_HAZUS_severe_k3",
-                "dist_cond": "dist_cond_TX",
-                "dist_twr": "dist_60yr",
-                "wind": "wind_nonyaw",
-                "solar": "solar_utility",
-                "coal_biomass": "secbh_severe",
-                "natgas_petrol": "secbm_severe",
-                "battery": "secbl_severe",
-                "hydro": "cecbl_severe",
-                "UGND":"secbm_severe"}
+          "trans": "trans_UK_base",
+          "sub": "sub_HAZUS_severe_k3",
+          "dist_cond": "dist_cond_TX",
+          "dist_twr": "dist_60yr",
+          "wind": "wind_nonyaw",
+          "solar": "solar_utility",
+          "coal_biomass": "secbh_severe",
+          "natgas_petrol": "secbm_severe",
+          "battery": "secbl_severe",
+          "hydro": "cecbl_severe",
+          "UGND": "secbm_severe"}
 
-#===================================
+# ===================================
 # Begin input file preparation
-#===================================
+# ===================================
 
 # Check for appropriate cutoff number
-n_years = len(years)-1
-if cutoff**n_years < 1e-6:
+n_years = len(years) - 1
+if cutoff ** n_years < 1e-6:
     print("Warning: cutoff^n<1e-6, where n is # of model years excluding the first time step")
 else:
     print("Verified: Appropriate value for cutoff")
@@ -74,7 +77,7 @@ for case in range(n_cases):
         probabilities = probabilities_hist
 
     # climate change probabilities
-    elif case == 1:
+    else:  # case == 1:
         probabilities = probabilities_climate_change
 
     # Iterate through each database for each case
@@ -121,9 +124,9 @@ for case in range(n_cases):
                 fragility = tt.fragility(windspeed, curve=curve)
                 capReduction = round(1.0 - fragility, 3)
                 # Check for unallowed values of capReduction
-                if capReduction >1.0:
+                if capReduction > 1.0:
                     capReduction = 1.0
-                elif capReduction<cutoff: # Zero values will crash
+                elif capReduction < cutoff:  # Zero values will crash
                     capReduction = cutoff
                 f.write("\t\t\t('" + tech + "', " + str(capReduction) + "),\n")
             f.write("\t\t),\n\n")
@@ -137,7 +140,9 @@ for case in range(n_cases):
         # Configuration file
         # ====================================
         filename = "config_stoch_" + db_name + "_" + str(case) + ".txt"
-        temoa_path = "C:\\temoa_stochastic" # TODO
+        input_path = os.path.join(temoa_path,"tools", db_name + "_" + str(case), "ScenarioStructure.dat")
+        output_path = os.path.join(temoa_path, "data_files", db_name + "_" + str(case) + ".sqlite")
+
         f = open(filename, "w")
         # ---
         f.write(
@@ -152,11 +157,11 @@ for case in range(n_cases):
         f.write("# Input File (Mandatory)\n")
         f.write("# Input can be a .sqlite or .dat file\n")
         f.write("# Both relative path and absolute path are accepted\n")
-        f.write("--input=" + temoa_path + "\\tools\\" + db_name + "_" + str(case) + "\\ScenarioStructure.dat\n") # TODO
+        f.write("--input=" + input_path + "\n")
         f.write("\n")
         f.write("# Output File (Mandatory)\n")
         f.write("# The output file must be a existing .sqlite file\n")
-        f.write("--output=" + temoa_path + "\\data_files\\" + db_name + "_" + str(case) + ".sqlite\n") #TODO
+        f.write("--output=" + output_path + "\n")
         f.write("\n")
         f.write("# Scenario Name (Mandatory)\n")
         f.write("# This scenario name is used to store results within the output .sqlite file\n")
@@ -176,7 +181,10 @@ for case in range(n_cases):
         f.write("#--saveTEXTFILE\n")
         f.write("\n")
         f.write("# Solver-related arguments (Optional)\n")
-        f.write("--solver=cplex                    # Optional, indicate the solver\n")
+        if len(solver) > 0:
+            f.write("--solver=" + solver + "                    # Optional, indicate the solver\n")
+        else:
+            f.write("#--solver=cplex                    # Optional, indicate the solver\n")
 
         f.write("#--keep_pyomo_lp_file             # Optional, generate Pyomo-compatible LP file\n")
         f.write("\n")
@@ -197,12 +205,12 @@ for db in dbs:
     for case in range(n_cases):
         db_name = tt.remove_ext(db)
         # .sqlite
-        src_dir = wrkdir + "\\databases\\" + db_name + ".sqlite" # TODO
-        dst_dir = wrkdir + "\\stoch_inputs\\" + db_name + "_" + str(case) + ".sqlite"
+        src_dir = os.path.join(wrkdir,"databases", db_name + ".sqlite")
+        dst_dir = os.path.join(wrkdir,"stoch_inputs", db_name + "_" + str(case) + ".sqlite")
         shutil.copy(src_dir, dst_dir)
         # .dat
-        src_dir = wrkdir + "\\databases\\" + db_name + ".dat"
-        dst_dir = wrkdir + "\\stoch_inputs\\" + db_name + "_" + str(case) + ".dat"
+        src_dir = os.path.join(wrkdir, "databases", db_name + ".dat")
+        dst_dir = os.path.join(wrkdir, "stoch_inputs", db_name + "_" + str(case) + ".dat")
         shutil.copy(src_dir, dst_dir)
 
 # Return to original working directory

@@ -18,3 +18,4 @@ export NUM_PROCS=$SLURM_CPUS_PER_TASK
 
 # run
 python baselines_run.py
+python stochastics_write_input_files.py
