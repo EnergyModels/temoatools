@@ -107,7 +107,7 @@ https://zenodo.org/record/2551865#.XmEhyahKhPY
             > python temoa_model/temoa_stochastic.py --config=temoa_model/config_stoch_T_0.txt
     2) Multiple runs - To run multiple scenarios, paramaterize in batch files (examples in temoa_stochastic)
         1) examples for windows: PR_stochastic_createScenarios_all.bat and PR_stochastic_run_all.bat
-        2) examples for linux: createScenarios_all.sh, and run_pt1.sh
+        2) examples for linux: createScenarios_all.sh, run_cases.sh, run_nocases.sh
 
 4) Analyze results (scripts in examples/puerto_rico_stoch/)
     1) Analyze optimized results
