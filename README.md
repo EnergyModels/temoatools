@@ -71,7 +71,7 @@ temoatools using the temoa-py3 environment
 Temoa_stochastic is written in python 2 using a modified version of pyomo 4.3. It is based on Patankar et al. 2019 
 https://zenodo.org/record/2551865#.XmEhyahKhPY
 1) Install python 2.7 (using anaconda2), https://www.anaconda.com/distribution/#download-section
-2) Create temoa-py2 environment within anaconda 2 (note comment out coincbc requirement if running on windows)
+2) Create temoa-stoch-py2 environment within anaconda 2 (note comment out coincbc requirement if running on windows)
     > module load anaconda/5.2.0-py2.7
     cd temoa_stochastic\
     conda env create\
@@ -91,7 +91,7 @@ https://zenodo.org/record/2551865#.XmEhyahKhPY
 
 2) Create input files for temoa
     1) Update paths and run projects/puerto_rico_stoch/run_baselines.py to create baseline simulations
-    2) Update pahts and run examples/puerto_rico_stoch/stochastics_write_input_files.py to create files for temoa
+    2) Update paths and run examples/puerto_rico_stoch/stochastics_write_input_files.py to create files for temoa
     3) Move input files from examples/puerto_rico_stoch/stoch_inputs/ to temoa_stochastic installation
         1) config_stoch_*.txt files to temoa_stochastic/temoa_model/
         2) stoch_*.py files to temoa_stochastic/tools/options/
