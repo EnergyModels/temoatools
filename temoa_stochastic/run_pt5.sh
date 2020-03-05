@@ -5,13 +5,13 @@
 #SBATCH -p standard
 
 module purge
-module load anaconda
+module load anaconda/5.2.0-py2.7
 
 # if gurobi is available
 module load gurobi
 
 # activate temoa environment
-source activate temoa-py3
+source activate temoa-stoch-py2
 
 # set the NUM_PROCS env variable for the Python script
 export NUM_PROCS=$SLURM_CPUS_PER_TASK
