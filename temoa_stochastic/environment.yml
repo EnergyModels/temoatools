@@ -1,9 +1,9 @@
-name: temoa-stoch-py2
+name: temoa-stoch-py3
 channels:
     - defaults
     - conda-forge
 dependencies:
-    - python=2.7
+    - python>=2.7.0
     - xlwt
     - ipython
     - matplotlib

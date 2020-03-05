@@ -72,13 +72,14 @@ Temoa_stochastic is written in python 2 using a modified version of pyomo 4.3. I
 https://zenodo.org/record/2551865#.XmEhyahKhPY
 1) Install python 2.7 (using anaconda2), https://www.anaconda.com/distribution/#download-section
 2) Create temoa-py2 environment within anaconda 2 (note comment out coincbc requirement if running on windows)
-    > cd temoa_stochastic
-    > conda env create
-    > source activate temoa-stoch-py2
+    > module load anaconda/5.2.0-py2.7
+    cd temoa_stochastic\
+    conda env create\
+    source activate temoa-stoch-py2
 3) Install modified version of pyomo 4.3.11388 (details on how this was created are in temoa_stochastic/pyomo_instructions.txt)
-    > cd temoa_stochastic/pyomo
-    > source activate temoa-stoch-py2
-    > pip install .
+    > cd temoa_stochastic/pyomo\
+    source activate temoa-stoch-py2\
+    pip install .
 4) Optional: Install a commercial linear solver such as CPLEX or Gurobi, additional information can be found here: https://temoacloud.com/download/
 
 ### Running stochastic optimization
