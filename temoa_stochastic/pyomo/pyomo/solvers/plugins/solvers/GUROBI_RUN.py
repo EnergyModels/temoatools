@@ -69,8 +69,23 @@ def gurobi_run(model_file, warmstart_file, soln_file, mipgap, options, suffixes)
     # GUROBI doesn't throw an exception if an unknown
     # key is specified, so you have to stare at the
     # output to see if it was accepted.
-    for key, value in options.iteritems():
-        model.setParam(key, value)
+    for key, value in options.items():
+        # When options come from the pyomo command, all
+        # values are string types, so we try to cast
+        # them to a numeric value in the event that
+        # setting the parameter fails.
+        try:
+            model.setParam(key, value)
+        except TypeError:
+            # we place the exception handling for checking
+            # the cast of value to a float in another
+            # function so that we can simply call raise here
+            # instead of except TypeError as e / raise e,
+            # because the latter does not preserve the
+            # Gurobi stack trace
+            if not _is_numeric(value):
+                raise
+            model.setParam(key, float(value))
         
     if 'relax_integrality' in options:
         for v in model.getVars():

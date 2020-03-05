@@ -7,11 +7,12 @@
 module purge
 module load anaconda
 
-# if gurobi is available
-module load gurobi
-
 # activate temoa environment
 source activate temoa-py3
+
+# if gurobi is available
+export PYTHONUTF8=1
+module load gurobi
 
 # set the NUM_PROCS env variable for the Python script
 export NUM_PROCS=$SLURM_CPUS_PER_TASK

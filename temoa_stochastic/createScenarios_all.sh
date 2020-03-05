@@ -32,6 +32,8 @@ python generate_scenario_tree_JB.py options/stoch_WD_0.py --debug
 python rewrite_tree_nodes.py options/stoch_WD_0.py --debug
 python generate_scenario_tree_JB.py options/stoch_WE_0.py --debug
 python rewrite_tree_nodes.py options/stoch_WE_0.py --debug
+python generate_scenario_tree_JB.py options/stoch_WF_0.py --debug
+python rewrite_tree_nodes.py options/stoch_WF_0.py --debug
 
 python generate_scenario_tree_JB.py options/stoch_XA_0.py --debug
 python rewrite_tree_nodes.py options/stoch_XA_0.py --debug
@@ -43,6 +45,9 @@ python generate_scenario_tree_JB.py options/stoch_XD_0.py --debug
 python rewrite_tree_nodes.py options/stoch_XD_0.py --debug
 python generate_scenario_tree_JB.py options/stoch_XE_0.py --debug
 python rewrite_tree_nodes.py options/stoch_XE_0.py --debug
+python generate_scenario_tree_JB.py options/stoch_XF_0.py --debug
+python rewrite_tree_nodes.py options/stoch_XF_0.py --debug
+
 
 python generate_scenario_tree_JB.py options/stoch_YA_0.py --debug
 python rewrite_tree_nodes.py options/stoch_YA_0.py --debug
@@ -54,6 +59,8 @@ python generate_scenario_tree_JB.py options/stoch_YD_0.py --debug
 python rewrite_tree_nodes.py options/stoch_YD_0.py --debug
 python generate_scenario_tree_JB.py options/stoch_YE_0.py --debug
 python rewrite_tree_nodes.py options/stoch_YE_0.py --debug
+python generate_scenario_tree_JB.py options/stoch_YF_0.py --debug
+python rewrite_tree_nodes.py options/stoch_YF_0.py --debug
 
 python generate_scenario_tree_JB.py options/stoch_ZA_0.py --debug
 python rewrite_tree_nodes.py options/stoch_ZA_0.py --debug
@@ -65,3 +72,5 @@ python generate_scenario_tree_JB.py options/stoch_ZD_0.py --debug
 python rewrite_tree_nodes.py options/stoch_ZD_0.py --debug
 python generate_scenario_tree_JB.py options/stoch_ZE_0.py --debug
 python rewrite_tree_nodes.py options/stoch_ZE_0.py --debug
+python generate_scenario_tree_JB.py options/stoch_ZF_0.py --debug
+python rewrite_tree_nodes.py options/stoch_ZF_0.py --debug
