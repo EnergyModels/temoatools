@@ -26,9 +26,9 @@ if __name__ == '__main__':
     project_path = os.path.normcase('/home/jab6ft/puerto_rico/puerto_rico_stoch/') # os.path.normcase('C:/Users/benne/PycharmProjects/temoatools/projects/puerto_rico_stoch')
     modelInputs_XLSX_list = ['data_T.xlsx', 'data_U.xlsx', 'data_W.xlsx', 'data_X.xlsx', 'data_Y.xlsx', 'data_Z.xlsx']
     scenarioInputs = 'scenarios.xlsx'
-    scenarioNames_list = [['T'], ['U'], ['WA', 'WB', 'WC', 'WD', 'WE', 'WF'], ['XA', 'XB', 'XC', 'XD', 'XE', 'XF'],
-                          ['YA', 'YB', 'YC', 'YD', 'YE', 'YF'],
-                          ['ZA', 'ZB', 'ZC', 'ZD', 'ZE', 'ZF']]
+    scenarioNames_list = [['T'], ['U'], ['WA', 'WB', 'WC'], ['XA', 'XB', 'XC'],
+                          ['YA', 'YB'],
+                          ['ZA', 'ZB']]
     ncpus = int(os.getenv('NUM_PROCS'))
     solver = 'gurobi'
 
