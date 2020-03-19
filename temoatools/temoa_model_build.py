@@ -33,7 +33,8 @@ temoaTables = [('commodities', 3), ('technologies', 5), ('tech_baseload', 1),
                ('ExistingCapacity', 5), ('LifetimeLoanTech', 3), ('LifetimeTech', 3),
                ('MaxCapacity', 5), ('MaxActivity', 5),
                ('GlobalDiscountRate', 1), ('GrowthRateMax', 3), ('GrowthRateSeed', 4),
-               ('RampUp', 2), ('RampDown', 2), ('ReserveMargin', 2), ('SegFrac', 4)]
+               ('RampUp', 2), ('RampDown', 2), ('ReserveMargin', 2), ('SegFrac', 4),
+               ('MinGenGroupOfTechnologies_Data', 3), ('MinGenGroupOfTechnologies', 4)]
 
 # =============================================================================
 # Hard coded inputs
@@ -49,7 +50,7 @@ demand_commodity = 'ELC_DMD'
 # =============================================================================
 # Function to build a temoa model
 # =============================================================================
-def build(modelInputs, scenarioXLSX, scenarioName, outFilename, sensitivity={}, MCinputs={}, path=Path('.')):
+def build(modelInputs, scenarioXLSX, scenarioName, outFilename, sensitivity={}, MCinputs={}, path=os.path.normcase('.')):
     data_path = os.path.join(path, 'data')
     # Get empty dictionary of local variables
     local = getEmptyLocalDict()
@@ -264,6 +265,9 @@ def processScenarios(scenarioXLSX, scenarioName, local, path):
     # Minimum initial growth
     local['MaxLoan_yrs'] = df.loc['MaxLoan_yrs', scenarioName]
 
+    # Minimum initial growth
+    local['include_RPS'] = df.loc['include_RPS', scenarioName]
+
     # Return to working directory
     os.chdir(workDir)
 
@@ -329,6 +333,11 @@ def processSystem(inputs, local, outputs):
     # ReserveMargin
     if local['include_reserve_margin'] == 'Y':
         outputs['ReserveMargin'].append((demand_commodity, str(inputs['ReserveMargin'].ReserveMargin[0])))
+
+    # Renewable Portfolio Standard
+    if local['include_RPS'] == 'Y':
+      for period, RPS in zip(local['active_future_periods'], inputs['Demand'].RPS):
+        outputs['MinGenGroupOfTechnologies_Data'].append((str(period), "RPS", RPS))
 
     return local, outputs
 
@@ -677,6 +686,10 @@ def processTech(inputs, local, outputs, tech):
     if local['include_reserve_margin'] == "Y" and tech['reserve'] == "Y":
         outputs['tech_reserve'].append((tech['name'],))
 
+    # renewable
+    if local['include_RPS'] == 'Y' and tech['renewable'] == "Y":
+       outputs['MinGenGroupOfTechnologies'].append((tech['name'], 'RPS', 1.0, ''))
+
     # -----
     # Constraints
     # -----
@@ -736,7 +749,7 @@ def processTech(inputs, local, outputs, tech):
 # =============================================================================
 # Create Sensitivity Inputs
 # =============================================================================
-def createSensitivityCases(scenarioXLSX, scenarioName, sensitivityInputs, multiplier, path=Path('.')):
+def createSensitivityCases(scenarioXLSX, scenarioName, sensitivityInputs, multiplier, path=os.path.normcase('.')):
     data_path = os.path.join(path, 'data')
     params = {}
 
@@ -838,7 +851,7 @@ def createSensitivityCases(scenarioXLSX, scenarioName, sensitivityInputs, multip
 # =============================================================================
 # Create Sensitivity Inputs
 # =============================================================================
-def createMonteCarloCases(scenarioXLSX, scenarioName, sensitivityInputs, multiplier, n_cases=100, path=Path('.')):
+def createMonteCarloCases(scenarioXLSX, scenarioName, sensitivityInputs, multiplier, n_cases=100, path=os.path.normcase('.')):
     params = {}
     data_path = os.path.join(path, 'data')
 

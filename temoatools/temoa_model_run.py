@@ -7,7 +7,7 @@ from pathlib import Path
 # ============================================================================#
 # Run Temoa Model using a config File
 # ============================================================================#
-def run(model_filename, temoa_path=Path('C:/temoa/temoa'), saveEXCEL=False, debug=False, solver=''):
+def run(model_filename, temoa_path=os.path.normcase('C:/temoa/temoa'), saveEXCEL=False, debug=False, solver=''):
     # Keep track of main(working) directory
     workDir = os.getcwd()
 
@@ -101,7 +101,7 @@ def CreateConfigFile(model_directory, model_filename, saveEXCEL=False, saveTEXTF
     f.write("# This scenario name is used to store results within the output .sqlite file\n")
     f.write("--scenario=" + "solve" + "\n")
     f.write("\n")
-    f.write("# Path to the “db_io” folder (Mandatory)\n")
+    f.write("# Path to the \"db_io\" folder (Mandatory)\n")
     f.write("# This is the location where database files reside\n")
     f.write("--path_to_db_io=" + model_directory + "\n")
     f.write("\n")

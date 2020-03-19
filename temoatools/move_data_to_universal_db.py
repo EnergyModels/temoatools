@@ -14,7 +14,7 @@ import temoatools as tt
 from pathlib import Path
 
 
-def move_data_to_db(XLSX,path=Path('.')):
+def move_data_to_db(XLSX,path=os.path.normcase('.')):
     
     #=============================================================================
     # Begin Function

@@ -6,8 +6,8 @@ from pathlib import Path
 # ===================================
 # Inputs
 # ===================================
-temoa_path = Path('C:/temoa_stochastic')  # Path('/home/jab6ft/puerto_rico/temoa_stochastic')
-solver = ''  # 'gurobi'
+temoa_path = os.path.normcase('/home/jab6ft/puerto_rico/temoa_stochastic')  # os.path.normcase('C:/Users/benne/PycharmProjects/temoatools/temoa_stochastic')
+solver = 'gurobi'
 
 cutoff = 0.05  # cutoff^n<1e-6, where n is # of model years excluding the first time step
 
@@ -140,7 +140,8 @@ for case in range(n_cases):
         # Configuration file
         # ====================================
         filename = "config_stoch_" + db_name + "_" + str(case) + ".txt"
-        input_path = os.path.join(temoa_path, "tools", db_name + "_" + str(case), "ScenarioStructure.dat")
+        input_path = os.path.join(temoa_path, "tools", "stochastics", db_name + "_" + str(case),
+                                  "ScenarioStructure.dat")
         output_path = os.path.join(temoa_path, "data_files", db_name + "_" + str(case) + ".sqlite")
 
         f = open(filename, "w")
@@ -198,6 +199,37 @@ for case in range(n_cases):
             "#	weight=integer                # MGA objective function weighting method, currently 'integer' or 'normalized'\n")
         f.write("#}\n")
         f.write("\n")
+        f.close()
+
+        # ====================================
+        # Script file
+        # ====================================
+
+        config_filename = "config_stoch_" + db_name + "_" + str(case) + ".txt"
+        tree_filename = "stoch_" + db_name + "_" + str(case) + ".py"
+        script_filename = "stoch_" + db_name + "_" + str(case) + ".sh" \
+                                                                 ""
+        f = open(script_filename, "w")
+        f.write("# !/bin/bash\n")
+        f.write("# SBATCH -N 1\n")
+        f.write("# SBATCH --cpus-per-task=6\n")
+        f.write("# SBATCH -t 12:00:00\n")
+        f.write("# SBATCH -p standard\n\n")
+        f.write("cd..\n\n")
+        f.write("module purge\n")
+        f.write("module load anaconda/2019.10-py2.7\n\n")
+        f.write("# activate temoa environment\n")
+        f.write("source activate temoa-stoch-py2\n\n")
+        f.write("# if gurobi is available\n")
+        f.write("module load gurobi/9.0.1\n\n")
+        f.write("# set the NUM_PROCS env variable for the Python script\n")
+        f.write("export NUM_PROCS =$SLURM_CPUS_PER_TASK\n\n")
+        f.write("# run\n")
+        f.write("cd tools\n")
+        f.write("python generate_scenario_tree_JB.py options/" + tree_filename + " --debug\n")
+        f.write("python rewrite_tree_nodes.py options/" + tree_filename + " --debug\n")
+        f.write("cd..\n")
+        f.write("python temoa_model/temoa_stochastic.py --config=temoa_model/" + config_filename + "\n")
         f.close()
 
 # Copy baseline databases

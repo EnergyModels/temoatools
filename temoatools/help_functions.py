@@ -19,7 +19,7 @@ def remove_ext(filename):
 # -----------------------------------------------------
 # Directory to hold results
 # -----------------------------------------------------
-def create_results_dir(wrkdir=Path('.'), run_name=''):
+def create_results_dir(wrkdir=os.path.normcase('.'), run_name=''):
     # General results directory
     resultdir = os.path.join(wrkdir, "results")
     try:
@@ -42,7 +42,7 @@ def create_results_dir(wrkdir=Path('.'), run_name=''):
 # -----------------------------------------------------
 # Directory to hold results
 # -----------------------------------------------------
-def create_dir(project_path=Path('.'), optional_dir='results'):
+def create_dir(project_path=os.path.normcase('.'), optional_dir='results'):
     # configs - required
     dir = os.path.join(project_path, "configs")
     try:
