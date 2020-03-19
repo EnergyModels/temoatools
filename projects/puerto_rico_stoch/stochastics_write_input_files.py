@@ -139,7 +139,7 @@ for case in range(n_cases):
         # Configuration file
         # ====================================
         filename = "config_stoch_" + db_name + "_" + str(case) + ".txt"
-        input_path = os.path.join(temoa_path, "tools", "stochastics", db_name + "_" + str(case),
+        input_path = os.path.join(temoa_path, "tools",  db_name + "_" + str(case),
                                   "ScenarioStructure.dat")
         output_path = os.path.join(temoa_path, "data_files", db_name + "_" + str(case) + ".sqlite")
 
@@ -201,7 +201,7 @@ for case in range(n_cases):
         f.close()
 
         # ====================================
-        # Script file
+        # Script file - Individual
         # ====================================
 
         config_filename = "config_stoch_" + db_name + "_" + str(case) + ".txt"
@@ -209,12 +209,12 @@ for case in range(n_cases):
         script_filename = "stoch_" + db_name + "_" + str(case) + ".sh" \
                                                                  ""
         f = open(script_filename, "w")
-        f.write("# !/bin/bash\n")
-        f.write("# SBATCH -N 1\n")
-        f.write("# SBATCH --cpus-per-task=6\n")
-        f.write("# SBATCH -t 12:00:00\n")
-        f.write("# SBATCH -p standard\n\n")
-        f.write("cd..\n\n")
+        f.write("#!/bin/bash\n")
+        f.write("#SBATCH -N 1\n")
+        f.write("#SBATCH --cpus-per-task=6\n")
+        f.write("#SBATCH -t 12:00:00\n")
+        f.write("#SBATCH -p standard\n\n")
+        f.write("cd ..\n\n")
         f.write("module purge\n")
         f.write("module load anaconda/2019.10-py2.7\n\n")
         f.write("# activate temoa environment\n")
@@ -227,9 +227,21 @@ for case in range(n_cases):
         f.write("cd tools\n")
         f.write("python generate_scenario_tree_JB.py options/" + tree_filename + " --debug\n")
         f.write("python rewrite_tree_nodes.py options/" + tree_filename + " --debug\n")
-        f.write("cd..\n")
+        f.write("cd ..\n")
         f.write("python temoa_model/temoa_stochastic.py --config=temoa_model/" + config_filename + "\n")
         f.close()
+
+# ====================================
+# Script file - batch
+# ====================================
+f = open("run_all.sh", "w")
+f.write("#!/bin/bash\n\n")
+for case in range(n_cases):
+    for db in dbs:
+        db_name = tt.remove_ext(db)
+        script_filename = "stoch_" + db_name + "_" + str(case) + ".sh"
+        f.write("sbatch " + script_filename + " \n")
+f.close()
 
 # Copy baseline databases
 for db in dbs:
