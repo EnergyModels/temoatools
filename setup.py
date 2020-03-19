@@ -9,6 +9,6 @@ setup(name='temoatools',
       packages=['temoatools'],
       zip_safe=False,
       include_package_data=True,
-      install_requires=['pandas', 'numpy', 'matplotlib', 'seaborn', 'joblib', 'scipy', 'pathlib', 'xlrd'])
+      install_requires=['pandas', 'numpy', 'matplotlib', 'seaborn', 'joblib', 'scipy', 'xlrd'])
 
 # python_requires='>=3.7.3,

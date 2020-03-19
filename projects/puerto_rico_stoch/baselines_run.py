@@ -1,6 +1,5 @@
 import temoatools as tt
 from joblib import Parallel, delayed, parallel_backend
-from pathlib import Path
 import os
 
 
@@ -23,16 +22,15 @@ if __name__ == '__main__':
     # =======================================================
     # Model Inputs
     # =======================================================
-    temoa_path = os.path.normcase('C:/Users/benne/PycharmProjects/temoatools/temoa_stochastic')  # Path('/home/jab6ft/puerto_rico/temoa_stochastic')
-    project_path = os.path.normcase(
-        'C:/Users/benne/PycharmProjects/temoatools/projects/puerto_rico_stoch')  # Path('/home/jab6ft/puerto_rico/project/')
+    temoa_path =  os.path.normcase('/home/jab6ft/puerto_rico/temoa_stochastic') # os.path.normcase('C:/Users/benne/PycharmProjects/temoatools/temoa_stochastic')
+    project_path = os.path.normcase('/home/jab6ft/puerto_rico/project/') # os.path.normcase('C:/Users/benne/PycharmProjects/temoatools/projects/puerto_rico_stoch')
     modelInputs_XLSX_list = ['data_T.xlsx', 'data_U.xlsx', 'data_W.xlsx', 'data_X.xlsx', 'data_Y.xlsx', 'data_Z.xlsx']
     scenarioInputs = 'scenarios.xlsx'
     scenarioNames_list = [['T'], ['U'], ['WA', 'WB', 'WC', 'WD', 'WE', 'WF'], ['XA', 'XB', 'XC', 'XD', 'XE', 'XF'],
                           ['YA', 'YB', 'YC', 'YD', 'YE', 'YF'],
                           ['ZA', 'ZB', 'ZC', 'ZD', 'ZE', 'ZF']]
-    ncpus = 1  # int(os.getenv('NUM_PROCS'))
-    solver = ''  # 'gurobi'
+    ncpus = int(os.getenv('NUM_PROCS'))
+    solver = 'gurobi'
 
     for modelInputs_XLSX, scenarioNames in zip(modelInputs_XLSX_list, scenarioNames_list):
 
@@ -43,7 +41,7 @@ if __name__ == '__main__':
 
         # ====================================
         # Perform Simulations
-        option = 1  # 1 - Run single, 2 - Run all
+        option = 2  # 1 - Run single, 2 - Run all
         # ====================================
 
         if option == 1:

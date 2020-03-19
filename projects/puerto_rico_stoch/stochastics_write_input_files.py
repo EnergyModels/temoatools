@@ -1,7 +1,6 @@
 import os
 import shutil
 import temoatools as tt
-from pathlib import Path
 
 # ===================================
 # Inputs
