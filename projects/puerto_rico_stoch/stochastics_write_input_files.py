@@ -12,10 +12,10 @@ cutoff = 0.05  # cutoff^n<1e-6, where n is # of model years excluding the first 
 
 # Baseline databases to use
 dbs = ["T.sqlite", "U.sqlite",
-       "WA.sqlite", "WB.sqlite", "WC.sqlite", "WD.sqlite", "WE.sqlite", "WF.sqlite",
-       "XA.sqlite", "XB.sqlite", "XC.sqlite", "XD.sqlite", "XE.sqlite", "XF.sqlite",
-       "YA.sqlite", "YB.sqlite", "YC.sqlite", "YD.sqlite", "YE.sqlite", "YF.sqlite",
-       "ZA.sqlite", "ZB.sqlite", "ZC.sqlite", "ZD.sqlite", "ZE.sqlite", "ZF.sqlite"]
+       "WA.sqlite", "WB.sqlite", "WC.sqlite",
+       "XA.sqlite", "XB.sqlite", "XC.sqlite",
+       "YA.sqlite", "YB.sqlite",
+       "ZA.sqlite", "ZB.sqlite"]
 
 # model years
 years = [2016, 2021, 2026, 2031, 2036]
