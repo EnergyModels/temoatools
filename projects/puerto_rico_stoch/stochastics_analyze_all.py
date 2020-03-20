@@ -8,9 +8,22 @@ from joblib import Parallel, delayed, parallel_backend
 # Function to evaluate simulations by a single metric
 # =======================================================
 
-def analyze_results(metric, folder_db, folder_results, run_name, dbs, all_dbs, db_shift, node_prob, tech_group_dict,
-                    prob_type_dict, infra_dict, carbon_tax_dict):
+def analyze_results(task, folder_db, all_dbs_dict, db_shift, node_prob,
+                    tech_group_dict, prob_type_dict, infra_dict, carbon_tax_dict):
+    # Read-in task inputs
+    db = task['db']
+    metric = task['metric']
+    run_name = task['run_name']
+    folder_results = task['folder_results']
+
+    # display task inputs
+    print(db)
     print(metric)
+
+    # re-arrange for functions
+    dbs = [db]
+    all_dbs = [db, all_dbs_dict[db]]
+
     # --------------------------------
     # Analyze with temoatools
     # --------------------------------
@@ -159,43 +172,6 @@ def analyze_results(metric, folder_db, folder_results, run_name, dbs, all_dbs, d
         df2.loc[ind, "infra_and_carbon_tax"] = infra_dict[db] + "-" + carbon_tax_dict[db]
     df2 = df2.rename(columns=col_renames)
 
-    # For activity results, change from temoa names to a more standard naming convention
-    if metric == 'activity_by_fuel' or metric == 'activity_by_tech' or metric == 'capacity_by_fuel' or metric == 'capacity_by_tech':
-        if metric == 'activity_by_fuel' or metric == 'capacity_by_fuel':
-            # other_renew = "Other renew"
-            # petrol = "Petroleum"
-            # type_shift = {"BIO": other_renew, "COAL_TAXED": "Coal", "DSL_TAXED": petrol, "ELC_CENTRAL": "Battery",
-            #               "ELC_DIST": "Battery", "HYDRO": other_renew, "MSW_LF_TAXED": other_renew,
-            #               "NATGAS_TAXED": "Natural gas", "OIL_TAXED": petrol, "SOLAR": "Solar", "WIND": "Wind"}
-
-            type_shift = {"BIO": "Biomass", "COAL_TAXED": "Coal", "DSL_TAXED": "Diesel", "ELC_CENTRAL": "Battery",
-                          "ELC_DIST": "Battery", "HYDRO": "Hydro", "MSW_LF_TAXED": "Landfill Gas",
-                          "NATGAS_TAXED": "Natural Gas", "OIL_TAXED": "Oil", "SOLAR": "Solar", "WIND": "Wind"}
-
-        elif metric == 'activity_by_tech' or metric == 'capacity_by_tech':
-            ex_fsl = "Exist. Fossil"
-            ex_renew = "Exist. Renewable"
-            cent_fsl = "Cent. Fossil"
-            cent_renew = "Cent. Renewable"
-            dist_fsl = "Dist. Fossil"
-            dist_renew = "Dist. Renewable"
-            stor = 'Storage'
-
-            type_shift = {'EX_DSL_CC': ex_fsl, 'DIST_COND': 'DIST_COND', 'DIST_TWR': 'DIST_TWR', 'SUB': 'SUB',
-                          'EC_BATT': stor, 'EX_SOLPV': ex_renew, 'ED_BATT': stor, 'EX_COAL': ex_fsl,
-                          'EX_HYDRO': ex_renew, 'EX_MSW_LF': ex_renew, 'TRANS': 'TRANS', 'ED_NG_OC': dist_fsl,
-                          'LOCAL': 'LOCAL', 'EX_DSL_SIMP': ex_fsl, 'ED_NG_CC': dist_fsl, 'EC_NG_CC': cent_fsl,
-                          'EX_OIL_TYPE3': ex_fsl, 'EX_OIL_TYPE2': ex_fsl, 'EC_WIND': cent_renew, 'EC_SOLPV': cent_renew,
-                          'UGND_TRANS': 'UGND_TRANS', 'EX_WIND': ex_renew, 'EX_NG_CC': ex_fsl, 'EC_NG_OC': cent_fsl,
-                          'ED_WIND': dist_renew, 'UGND_DIST': 'UGND_DIST', 'EX_OIL_TYPE1': ex_fsl, 'EC_BIO': cent_renew,
-                          'ED_BIO': dist_renew, 'ED_SOLPV': dist_renew, 'EC_COAL': cent_fsl, 'EC_DSL_CC': cent_fsl,
-                          'EC_OIL_CC': cent_fsl, 'COAL_TAX': 'COAL_TAX', 'DSL_TAX': 'DSL_TAX',
-                          'NATGAS_TAX': 'NATGAS_TAX', 'OIL_TAX': 'OIL_TAX'}
-
-        for key in type_shift.keys():
-            ind = df2.loc[:, "Type"] == key
-            df2.loc[ind, "Type2"] = type_shift[key]
-
     # Save file
     df2.to_csv(csv_file)
 
@@ -216,14 +192,12 @@ if __name__ == '__main__':
 
     print("running")
 
-    run_names = ["2020_03_20_cases", ]
-
     # Names of databases simulated
-    dbs = ["WA_0.sqlite", "WB_0.sqlite", "WC_0.sqlite", "WD_0.sqlite",
+    dbs = ["T_0.sqlite", "U_0.sqlite",
+           "WA_0.sqlite", "WB_0.sqlite", "WC_0.sqlite", "WD_0.sqlite",
            "XA_0.sqlite", "XB_0.sqlite", "XC_0.sqlite", "XD_0.sqlite",
            "YA_0.sqlite", "YB_0.sqlite", "YC_0.sqlite",
-           "ZA_0.sqlite", "ZB_0.sqlite", "ZC_0.sqlite",
-           "T_0.sqlite", "U_0.sqlite"]
+           "ZA_0.sqlite", "ZB_0.sqlite", "ZC_0.sqlite"]
 
     # Node probabilities by case (0 is simulated, 1 is calculated)
     node_prob = {"0": [0.52, 0.32, 0.16],  # Historical (sum must equal 1)
@@ -234,16 +208,16 @@ if __name__ == '__main__':
                 "XA_0": "XA_1", "XB_0": "XB_1", "XC_0": "XC_1", "XD_0": "XD_1",
                 "YA_0": "YA_1", "YB_0": "YB_1", "YC_0": "YC_1",
                 "ZA_0": "ZA_1", "ZB_0": "ZB_1", "ZC_0": "ZC_1",
-                "T_0": "T_1", "U_0": "U_1", }
+                "T_0": "T_1", "U_0": "U_1", "V_0": "V_1", }
 
-    # List of all databases after applying different distributions
-    all_dbs = ["WA_0.sqlite", "WA_1.sqlite", "WB_0.sqlite", "WB_1.sqlite", "WC_0.sqlite", "WC_1.sqlite",
-               "WD_0.sqlite", "WD_1.sqlite",
-               "XA_0.sqlite", "XA_1.sqlite", "XB_0.sqlite", "XB_1.sqlite", "XC_0.sqlite", "XC_1.sqlite",
-               "XD_0.sqlite", "XD_1.sqlite",
-               "YA_0.sqlite", "YA_1.sqlite", "YB_0.sqlite", "YB_1.sqlite", "YC_0.sqlite", "YC_1.sqlite",
-               "ZA_0.sqlite", "ZA_1.sqlite", "ZB_0.sqlite", "ZB_1.sqlite", "ZC_0.sqlite", "ZC_1.sqlite",
-               "T_0.sqlite", "T_1.sqlite", "U_0.sqlite", "U_1.sqlite"]
+    # Dictionary relating databases after applying different distributions
+    all_dbs_dict = {"WA_0.sqlite": "WA_1.sqlite", "WB_0.sqlite": "WB_1.sqlite", "WC_0.sqlite": "WC_1.sqlite",
+                    "WD_0.sqlite": "WD_1.sqlite",
+                    "XA_0.sqlite": "XA_1.sqlite", "XB_0.sqlite": "XB_1.sqlite", "XC_0.sqlite": "XC_1.sqlite",
+                    "XD_0.sqlite": "XD_1.sqlite",
+                    "YA_0.sqlite": "YA_1.sqlite", "YB_0.sqlite": "YB_1.sqlite", "YC_0.sqlite": "YC_1.sqlite",
+                    "ZA_0.sqlite": "ZA_1.sqlite", "ZB_0.sqlite": "ZB_1.sqlite", "ZC_0.sqlite": "ZC_1.sqlite",
+                    "T_0.sqlite": "T_1.sqlite", "U_0.sqlite": "U_1.sqlite", "V_0.sqlite": "V_1.sqlite"}
 
     # Technology Groups
     tech_group = ['Centralized', 'Distributed',
@@ -259,7 +233,8 @@ if __name__ == '__main__':
                        "ZA_0.sqlite": tech_group[0], "ZA_1.sqlite": tech_group[0], "ZB_0.sqlite": tech_group[1],
                        "ZB_1.sqlite": tech_group[1], "ZC_0.sqlite": tech_group[2], "ZC_1.sqlite": tech_group[2],
                        "T_0.sqlite": tech_group[4], "T_1.sqlite": tech_group[4], "U_0.sqlite": tech_group[4],
-                       "U_1.sqlite": tech_group[4], }
+                       "U_1.sqlite": tech_group[4], "V_0.sqlite": tech_group[4],
+                       "V_1.sqlite": tech_group[4], }
 
     # Historical or Climate Change Probabilities
     prob = ["Historical", "Climate Change"]
@@ -271,7 +246,8 @@ if __name__ == '__main__':
                       "YC_0.sqlite": prob[0], "YC_1.sqlite": prob[1],
                       "ZA_0.sqlite": prob[0], "ZA_1.sqlite": prob[1], "ZB_0.sqlite": prob[0], "ZB_1.sqlite": prob[1],
                       "ZC_0.sqlite": prob[0], "ZC_1.sqlite": prob[1],
-                      "T_0.sqlite": prob[0], "T_1.sqlite": prob[1], "U_0.sqlite": prob[0], "U_1.sqlite": prob[1]}
+                      "T_0.sqlite": prob[0], "T_1.sqlite": prob[1], "U_0.sqlite": prob[0], "U_1.sqlite": prob[1],
+                      "V_0.sqlite": prob[0], "V_1.sqlite": prob[1]}
 
     # Infrastructure Type
     infra = ["Current", "Hardened", "All"]
@@ -283,10 +259,11 @@ if __name__ == '__main__':
                   "YC_0.sqlite": infra[0], "YC_1.sqlite": infra[0],
                   "ZA_0.sqlite": infra[1], "ZA_1.sqlite": infra[1], "ZB_0.sqlite": infra[1], "ZB_1.sqlite": infra[1],
                   "ZC_0.sqlite": infra[1], "ZC_1.sqlite": infra[1],
-                  "T_0.sqlite": infra[2], "T_1.sqlite": infra[2], "U_0.sqlite": infra[2], "U_1.sqlite": infra[2]}
+                  "T_0.sqlite": infra[2], "T_1.sqlite": infra[2], "U_0.sqlite": infra[2], "U_1.sqlite": infra[2],
+                  "V_0.sqlite": infra[2], "V_1.sqlite": infra[2]}
 
     # Carbon Tax
-    carbon_tax = ["No IRP", "IRP"]
+    carbon_tax = ["No IRP", "IRP", "New IRP"]
     carbon_tax_dict = {"WA_0.sqlite": carbon_tax[0], "WA_1.sqlite": carbon_tax[0], "WB_0.sqlite": carbon_tax[0],
                        "WB_1.sqlite": carbon_tax[0], "WC_0.sqlite": carbon_tax[0], "WC_1.sqlite": carbon_tax[0],
                        "WD_0.sqlite": carbon_tax[0], "WD_1.sqlite": carbon_tax[0],
@@ -298,23 +275,86 @@ if __name__ == '__main__':
                        "ZA_0.sqlite": carbon_tax[1], "ZA_1.sqlite": carbon_tax[1], "ZB_0.sqlite": carbon_tax[1],
                        "ZB_1.sqlite": carbon_tax[1], "ZC_0.sqlite": carbon_tax[1], "ZC_1.sqlite": carbon_tax[1],
                        "T_0.sqlite": carbon_tax[0], "T_1.sqlite": carbon_tax[0], "U_0.sqlite": carbon_tax[1],
-                       "U_1.sqlite": carbon_tax[1]}
+                       "U_1.sqlite": carbon_tax[1], "V_0.sqlite": carbon_tax[2],
+                       "V_1.sqlite": carbon_tax[2]}
 
-    # Iterate through each run
-    for run_name in run_names:
-        print(run_name)
-        folder_db = os.path.join(db_folder, run_name)
-        folder_results = os.path.join(result_folder, run_name)
+    # create tasks
+    entries = ['db', 'metric', 'run_name', 'folder_results']
+    tasks = pd.DataFrame(columns=entries)
+    for db in dbs:
 
+        # metrics available
         # metrics = ['costs_yearly', 'emissions_yearly', 'activity_by_fuel', 'activity_by_tech', 'capacity_by_fuel',
         #            'capacity_by_tech']
 
-        # For our analysis we only use the following results
-        metrics = ['costs_yearly', 'emissions_yearly']
+        # For our analysis we only use the following metrics
+        if db == "T_0.sqlite" or db == "U_0.sqlite" or db == "V_0.sqlite":
+            metrics = ['costs_yearly', 'emissions_yearly', 'activity_by_fuel', 'activity_by_tech', ]
+        else:
+            metrics = ['costs_yearly', 'emissions_yearly']
 
-        # Perform simulations in parallel
-        with parallel_backend('multiprocessing', n_jobs=ncpus):
-            Parallel(n_jobs=ncpus, verbose=5)(
-                delayed(analyze_results)(metric, folder_db, folder_results, run_name, dbs, all_dbs, db_shift, node_prob,
-                                         tech_group_dict, prob_type_dict, infra_dict, carbon_tax_dict) for metric in
-                metrics)
+        for metric in metrics:
+            t = pd.Series(index=entries)
+            t['db'] = db
+            t['metric'] = metric
+            t['run_name'] = tt.remove_ext(db)
+            t['folder_results'] = os.path.join(result_folder, t['run_name'])
+            tasks = tasks.append(t, ignore_index=True)
+
+    # Perform simulations in parallel
+    with parallel_backend('multiprocessing', n_jobs=ncpus):
+        Parallel(n_jobs=ncpus, verbose=5)(
+            delayed(analyze_results)(task, db_folder, all_dbs_dict, db_shift, node_prob,
+                                     tech_group_dict, prob_type_dict, infra_dict, carbon_tax_dict) for index, task in
+            tasks.iterrows())
+
+    # -------------------
+    # combine the results
+    # -------------------
+    costs_yearly = []
+    emissions_yearly = []
+    activity_by_fuel = []
+    activity_by_tech = []
+
+    for index, task in tasks.iterrows():
+        db = task['db']
+        metric = task['metric']
+        run_name = task['run_name']
+        folder_results = task['folder_results']
+
+        os.chdir(folder_results)
+
+        if metric == 'costs_yearly':
+            temp = pd.read_csv('costs_yearly_toPlot.csv')
+            if len(costs_yearly) == 0:
+                costs_yearly = temp
+            else:
+                costs_yearly = pd.concat([costs_yearly, temp])
+
+        elif metric == 'emissions_yearly':
+            temp = pd.read_csv('emissions_yearly_toPlot.csv')
+            if len(emissions_yearly) == 0:
+                emissions_yearly = temp
+            else:
+                emissions_yearly = pd.concat([emissions_yearly, temp])
+
+        elif metric == 'activity_by_fuel':
+            temp = pd.read_csv('activity_by_fuel_toPlot.csv')
+            if len(activity_by_fuel) == 0:
+                activity_by_fuel = temp
+            else:
+                activity_by_fuel = pd.concat([activity_by_fuel, temp])
+
+        elif metric == 'activity_by_tech':
+            temp = pd.read_csv('activity_by_tech_toPlot.csv')
+            if len(activity_by_tech) == 0:
+                activity_by_tech = temp
+            else:
+                activity_by_tech = pd.concat([activity_by_tech, temp])
+
+    # save
+    os.chdir(result_folder)
+    costs_yearly.to_csv('costs_yearly_toPlot.csv')
+    emissions_yearly.to_csv('emissions_yearly_toPlot.csv')
+    activity_by_fuel.to_csv('activity_by_fuel_toPlot.csv')
+    activity_by_tech.to_csv('activity_by_tech_toPlot.csv')

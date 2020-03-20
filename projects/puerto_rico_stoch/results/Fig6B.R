@@ -1,9 +1,9 @@
 library("ggplot2")
 library(dplyr)
 
-dir_plots = "C:\\Users\\jab6ft\\PycharmProjects\\temoatools\\examples\\puerto_rico_stoch3\\results"
-dir_nocases = "C:\\Users\\jab6ft\\PycharmProjects\\temoatools\\examples\\puerto_rico_stoch3\\results\\2019_12_18_nocases"
-dir_cases = "C:\\Users\\jab6ft\\PycharmProjects\\temoatools\\examples\\puerto_rico_stoch3\\results\\2019_12_18_cases"
+dir_plots = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results"
+dir_nocases = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results\\2020_03_20_nocases"
+dir_cases = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results\\2020_03_20_cases"
 
 #===================================================================
 # All technologies (no cases)
@@ -19,7 +19,7 @@ df1 <- read.csv("emissions_yearly_toPlot.csv")
 setwd(dir_plots)
 
 # Remove "solve" scenario (scenario run without stochastics)
-df1<-df1[!(dfc$s=="solve"),]
+df1<-df1[!(df1$s=="solve"),]
 
 # Rename years
 rename <- c("2016"="2016-20",
@@ -35,23 +35,23 @@ rename <- c("Historical"="'Historical storm frequency'",
 df1 <- transform(df1, prob_type = rename[as.character(prob_type)])
 
 # Rename carbon_tax
-rename <- c("No Tax"="'No tax'",
-            "Tax"="'US$'~100~t^-1~CO[2]")
+rename <- c("No IRP"="'No IRP'",
+            "IRP"="'IRP'")
 df1 <- transform(df1, carbon_tax = rename[as.character(carbon_tax)])
 
 # Create new case labels (and rename column)
 names(df1)[names(df1) == 'case'] <- 'Case'
-rename <- c("Historical-all-No Tax"="Historical frequency + no tax",
-            "Climate Change-all-No Tax"="Increased frequency + no tax",
-            'Historical-all-Tax'="Historical frequency + tax",
-            'Climate Change-all-Tax'="Increased frequency + tax")
+rename <- c("Historical-all-No IRP"="Historical frequency + no IRP",
+            "Climate Change-all-No IRP"="Increased frequency + no IRP",
+            'Historical-all-IRP'="Historical frequency + IRP",
+            'Climate Change-all-IRP'="Increased frequency + IRP")
 df1 <- transform(df1, Case = rename[as.character(Case)])
 
 # Change subplot order
 df1$prob_type <- factor(df1$prob_type,
                         levels = c("'Historical storm frequency'","'Increased storm frequency'"))
 df1$carbon_tax <- factor(df1$carbon_tax,
-                         levels = c("'No tax'","'US$'~100~t^-1~CO[2]"))
+                         levels = c("'No IRP'","'IRP'"))
 
 # The palette with black: http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/
 cbPalette <- c( "#E69F00", "#56B4E9", "#009E73", "#D55E00", "#CC79A7")

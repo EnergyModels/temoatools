@@ -4,9 +4,9 @@ library(gridExtra)
 library(grid)
 library(lubridate)
 
-dir_plots = "C:\\Users\\jab6ft\\PycharmProjects\\temoatools\\examples\\puerto_rico_stoch3\\results"
-dir_nocases = "C:\\Users\\jab6ft\\PycharmProjects\\temoatools\\examples\\puerto_rico_stoch3\\results\\2019_12_18_nocases"
-dir_cases = "C:\\Users\\jab6ft\\PycharmProjects\\temoatools\\examples\\puerto_rico_stoch3\\results\\2019_12_18_cases"
+dir_plots = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results"
+dir_nocases = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results\\2020_03_20_nocases"
+dir_cases = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results\\2020_03_20_cases"
 
 #===================================================================
 # Case-based results
@@ -24,18 +24,16 @@ setwd(dir_plots)
 
 # Rename scenarios
 rename <- c("Business-as-usual"="Business-as-usual",
-            "Centralized - Hybrid"="Centralised - hybrid",
-            'Centralized - Natural Gas'="Centralised - natural gas",
-            'Distributed - Hybrid'="Distributed - hybrid",
-            'Distributed - Natural Gas'="Distributed - natural gas",
-            'Mixed - Hybrid'='Mixed - hybrid', 
+            "Centralized"="Centralised",
+            'Distributed'="Distributed",
+            'Distributed w/o Wind'="Distributed w/o Wind",
             'All'='All technologies')
 df1 <- transform(df1, Scenario = rename[as.character(Scenario)])
 df2 <- transform(df2, Scenario = rename[as.character(Scenario)])
 
 # Remove Mixed - hybrid case
-df1 <- df1[ which(df1$Scenario!='Mixed - hybrid'),]
-df2 <- df2[ which(df2$Scenario!='Mixed - hybrid'),]
+# df1 <- df1[ which(df1$Scenario!='Mixed - hybrid'),]
+# df2 <- df2[ which(df2$Scenario!='Mixed - hybrid'),]
 
 # Rename years
 rename <- c("2016"="2016-20",
@@ -53,8 +51,8 @@ df1 <- transform(df1, prob_type = rename[as.character(prob_type)])
 df2 <- transform(df2, prob_type = rename[as.character(prob_type)])
 
 # Create new subplot labels - carbon_tax
-rename <- c("No Tax"="'No tax'",
-            "Tax"="'US$'~100~t^-1~CO[2]")
+rename <- c("No IRP"="'No IRP'",
+            "IRP"="'IRP'")
 df1 <- transform(df1, carbon_tax = rename[as.character(carbon_tax)])
 df2 <- transform(df2, carbon_tax = rename[as.character(carbon_tax)])
 
@@ -64,6 +62,12 @@ rename <- c("Current"="Overhead power lines",
             'All'="Overhead power lines")
 df1 <- transform(df1, infra = rename[as.character(infra)])
 df2 <- transform(df2, infra = rename[as.character(infra)])
+
+# Reorder carbon tax
+levels <-  c("No IRP"="'No IRP'",
+             "IRP"="'IRP'")
+df1$carbon_tax <- factor(df1$carbon_tax, levels = levels)
+df2$carbon_tax <- factor(df2$carbon_tax, levels = levels)
 
 # Reorder infra
 levels <- c("Overhead power lines", 

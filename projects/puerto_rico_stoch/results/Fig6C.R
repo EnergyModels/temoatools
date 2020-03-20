@@ -2,9 +2,9 @@ library("ggplot2")
 library(dplyr)
 library(gridExtra)
 
-dir_plots = "C:\\Users\\jab6ft\\PycharmProjects\\temoatools\\examples\\puerto_rico_stoch3\\results"
-dir_nocases = "C:\\Users\\jab6ft\\PycharmProjects\\temoatools\\examples\\puerto_rico_stoch3\\results\\2019_12_18_nocases"
-dir_cases = "C:\\Users\\jab6ft\\PycharmProjects\\temoatools\\examples\\puerto_rico_stoch3\\results\\2019_12_18_cases"
+dir_plots = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results"
+dir_nocases = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results\\2020_03_20_nocases"
+dir_cases = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results\\2020_03_20_cases"
 
 setwd(dir_nocases)
 
@@ -40,8 +40,8 @@ rename <- c("Historical"="'Historical storm frequency'",
 df1 <- transform(df1, prob_type = rename[as.character(prob_type)])
 
 # Rename carbon_tax
-rename <- c("No Tax"="'No tax'",
-            "Tax"="'US$'~100~t^-1~CO[2]")
+rename <- c("No IRP"="'No IRP'",
+            "IRP"="'IRP'")
 df1 <- transform(df1, carbon_tax = rename[as.character(carbon_tax)])
 df2 <- transform(df2, carbon_tax = rename[as.character(carbon_tax)])
 df3 <- transform(df3, carbon_tax = rename[as.character(carbon_tax)])
@@ -52,8 +52,8 @@ names(df2)[names(df2) == 'Type'] <- 'Technology'
 names(df3)[names(df3) == 'Type'] <- 'Technology'
 
 # Rename Technology - df1
-rename <- c("ELC_CENTRAL"="exclude",
-            "ELC_DIST"="exclude",
+rename <- c("ELC_CENTRAL"="'Battery storage'",
+            "ELC_DIST"="'Battery storage'",
             "BIO"="exclude",
             "COAL_TAXED"="'Coal + petroleum'",
             "DSL_TAXED"="'Coal + petroleum'",
@@ -61,8 +61,8 @@ rename <- c("ELC_CENTRAL"="exclude",
             "MSW_LF_TAXED"="exclude",
             'NATGAS_TAXED'="'Natural gas'",
             'OIL_TAXED'="'Coal + petroleum'",
-            "SOLAR"="'Solar'",
-            "WIND"="'Wind'")
+            "SOLAR"="'Solar + wind'",
+            "WIND"="'Solar + wind'")
 df1 <- transform(df1, Technology = rename[as.character(Technology)])
 
 # Rename Technology - df2
@@ -192,17 +192,17 @@ df <- rbind(df1_smry, df2_smry, df3_smry)
 
 # Rename case
 names(df)[names(df) == 'case'] <- 'Case'
-rename <- c("Historical-all-No Tax"="'Historical storm frequency - No Tax'",
-            "Historical-all-Tax"="'Historical storm frequency - US$'~100~t^-1~CO[2]",
-            "Climate Change-all-No Tax"="'Increased storm frequency - No Tax'",
-            "Climate Change-all-Tax"="'Increased storm frequency - US$'~100~t^-1~CO[2]")
+rename <- c("Historical-all-No IRP"="'Historical storm frequency - No IRP'",
+            "Historical-all-IRP"="'Historical storm frequency - IRP'",
+            "Climate Change-all-No IRP"="'Increased storm frequency - No IRP'",
+            "Climate Change-all-IRP"="'Increased storm frequency - IRP'")
 df <- transform(df, Case = rename[as.character(Case)])
 
 # Change subplot order - Case
-levels <- c("'Historical storm frequency - No Tax'",
-  "'Historical storm frequency - US$'~100~t^-1~CO[2]",
-  "'Increased storm frequency - No Tax'",
-  "'Increased storm frequency - US$'~100~t^-1~CO[2]")
+levels <- c("'Historical storm frequency - No IRP'",
+  "'Historical storm frequency - IRP'",
+  "'Increased storm frequency - No IRP'",
+  "'Increased storm frequency - IRP'")
 df$Case <- factor(df$Case, levels = levels)
 
 # Change subplot order - prob_type
@@ -210,11 +210,11 @@ levels <- c("'Historical storm frequency'","'Increased storm frequency'")
 df$prob_type <- factor(df$prob_type, levels = levels)
 
 # Change subplot order - carbon_tax
-levels <- c("'No tax'","'US$'~100~t^-1~CO[2]")
+levels <- c("'No IRP'","'IRP'")
 df$carbon_tax <- factor(df$carbon_tax, levels = levels)
 
 # Change subplot order - Technology
-levels <- c("'Coal + petroleum'","'Natural gas'","'Solar'","'Wind'",
+levels <- c("'Coal + petroleum'","'Natural gas'","'Solar + wind'","'Battery storage'",
             "'Transmission - overhead'","'Transmission - buried'",
             "'Distribution - overhead'","'Distribution - buried'",
             "'Centralised - fossil'","'Centralised - renewable'",
@@ -246,14 +246,14 @@ ggplot(df_smry,aes(x=Year, y=mean, ymin=min, ymax=max, fill=Case, group=Case, co
   geom_line(size=1,position=position_dodge(width=dodge))+
   geom_ribbon(alpha=0.2, colour = NA,position=position_dodge(width=dodge))+
   geom_point(position=position_dodge(width=dodge))+
-  scale_color_manual(values=cbPalette, labels=expression('Historical storm frequency - No Tax',
-                                                         'Historical storm frequency - US$'~100~t^-1~CO[2],
-                                                         'Increased storm frequency - No Tax',
-                                                         'Increased storm frequency - US$'~100~t^-1~CO[2]),guide = guide_legend(nrow = 2, label.hjust = 0))+
-  scale_fill_manual(values=cbPalette, labels=expression('Historical storm frequency - No Tax',
-                                                        'Historical storm frequency - US$'~100~t^-1~CO[2],
-                                                        'Increased storm frequency - No Tax',
-                                                        'Increased storm frequency - US$'~100~t^-1~CO[2]),guide = guide_legend(nrow = 2, label.hjust = 0))+
+  scale_color_manual(values=cbPalette, labels=expression('Historical storm frequency - No IRP',
+                                                         'Historical storm frequency - IRP',
+                                                         'Increased storm frequency - No IRP',
+                                                         'Increased storm frequency - IRP'),guide = guide_legend(nrow = 2, label.hjust = 0))+
+  scale_fill_manual(values=cbPalette, labels=expression('Historical storm frequency - No IRP',
+                                                        'Historical storm frequency - IRP',
+                                                        'Increased storm frequency - No IRP',
+                                                        'Increased storm frequency - IRP'),guide = guide_legend(nrow = 2, label.hjust = 0))+
   labs(x='Year', y=expression(paste("Activity (TWh y"^-1,")")))+
   theme(legend.position="bottom", legend.title = element_blank(),axis.text.x = element_text(angle = 90,vjust=0.5))
   

@@ -255,10 +255,11 @@ if __name__ == '__main__':
         folder_db = os.path.join(db_folder, run_name)
         folder_results = os.path.join(result_folder, run_name)
 
-        metrics = ['costs_yearly', 'emissions_yearly', 'activity_by_fuel', 'activity_by_tech', 'capacity_by_fuel',
-                    'capacity_by_tech']
+        # metrics = ['costs_yearly', 'emissions_yearly', 'activity_by_fuel', 'activity_by_tech', 'capacity_by_fuel',
+        #             'capacity_by_tech']
 
-        # metrics = ['costs_yearly', 'emissions_yearly', 'activity_by_fuel', 'activity_by_tech']
+        # For our analysis we only use the following results
+        metrics = ['costs_yearly', 'emissions_yearly', 'activity_by_fuel', 'activity_by_tech']
 
         # Perform simulations in parallel
         with parallel_backend('multiprocessing', n_jobs=ncpus):

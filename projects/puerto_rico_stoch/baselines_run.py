@@ -24,9 +24,9 @@ if __name__ == '__main__':
     # =======================================================
     temoa_path =  os.path.normcase('/home/jab6ft/puerto_rico/temoa_stochastic') # os.path.normcase('C:/Users/benne/PycharmProjects/temoatools/temoa_stochastic')
     project_path = os.path.normcase('/home/jab6ft/puerto_rico/puerto_rico_stoch/') # os.path.normcase('C:/Users/benne/PycharmProjects/temoatools/projects/puerto_rico_stoch')
-    modelInputs_XLSX_list = ['data_T.xlsx', 'data_U.xlsx', 'data_W.xlsx', 'data_X.xlsx', 'data_Y.xlsx', 'data_Z.xlsx']
+    modelInputs_XLSX_list = ['data_T.xlsx', 'data_U.xlsx', 'data_V.xlsx', 'data_W.xlsx', 'data_X.xlsx', 'data_Y.xlsx', 'data_Z.xlsx']
     scenarioInputs = 'scenarios.xlsx'
-    scenarioNames_list = [['T'], ['U'], ['WA', 'WB', 'WC', 'WD'], ['XA', 'XB', 'XC','XD'],
+    scenarioNames_list = [['T'], ['U'], ['V'], ['WA', 'WB', 'WC', 'WD'], ['XA', 'XB', 'XC','XD'],
                           ['YA', 'YB', 'YC'],
                           ['ZA', 'ZB', 'ZC']]
     ncpus = int(os.getenv('NUM_PROCS'))
