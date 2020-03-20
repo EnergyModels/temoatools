@@ -11,8 +11,8 @@ solver = 'gurobi'
 cutoff = 0.05  # cutoff^n<1e-6, where n is # of model years excluding the first time step
 
 # Baseline databases to use
-dbs = ["T.sqlite", "U.sqlite",  "V.sqlite",
-       "WA.sqlite", "WB.sqlite", "WC.sqlite", "WD.sqlite",
+dbs = ["T.sqlite", "T2.sqlite",  "U.sqlite", "U2.sqlite", "V.sqlite",  "V2.sqlite",
+       "WA.sqlite", "WB.sqlite", "WC.sqlite", "WD.sqlite", "WE.sqlite", "WF.sqlite",
        "XA.sqlite", "XB.sqlite", "XC.sqlite", "XD.sqlite",
        "YA.sqlite", "YB.sqlite", "YC.sqlite",
        "ZA.sqlite", "ZB.sqlite", "ZC.sqlite"]

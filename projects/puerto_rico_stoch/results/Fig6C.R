@@ -2,27 +2,33 @@ library("ggplot2")
 library(dplyr)
 library(gridExtra)
 
-dir_plots = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results"
-dir_nocases = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results\\2020_03_20_nocases"
-dir_cases = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results\\2020_03_20_cases"
+#dir_plots = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results"
 
-setwd(dir_nocases)
+#===================================================================
+# All technologies (no cases)
+#===================================================================
+
+# Set directory
+#setwd(dir_plots)
 
 # Load data:
 df1 <- read.csv("activity_by_fuel_toPlot.csv")
 df2 <- read.csv("activity_by_tech_toPlot.csv")
 df3 <- read.csv("activity_by_tech_toPlot.csv")
 
-setwd(dir_plots)
-
 #----------------
 # Process data
 #----------------
 
+# Remove scenarios that do not use all technologies
+df1<-df1[!(df1$Case=="All"),]
+df2<-df2[!(df2$Case=="All"),]
+df3<-df3[!(df3$Case=="All"),]
+
 # Remove "solve" scenario (scenario run without stochastics)
 df1<-df1[!(df1$s=="solve"),]
 df2<-df2[!(df2$s=="solve"),]
-df3<-df3[!(df2$s=="solve"),]
+df3<-df3[!(df3$s=="solve"),]
 
 # Rename years
 rename <- c("2016"="2016-20",

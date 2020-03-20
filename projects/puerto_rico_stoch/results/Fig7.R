@@ -4,23 +4,18 @@ library(gridExtra)
 library(grid)
 library(lubridate)
 
-dir_plots = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results"
-dir_nocases = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results\\2020_03_20_nocases"
-dir_cases = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results\\2020_03_20_cases"
+#dir_plots = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results"
 
 #===================================================================
 # Case-based results
 #===================================================================
 
-# Set directory to load data
-setwd(dir_cases)
+# Set directory
+#setwd(dir_plots)
 
 # Load data
 df1 <- read.csv("costs_yearly_toPlot.csv")
 df2 <- read.csv("emissions_yearly_toPlot.csv")
-
-# Set directory for plotting
-setwd(dir_plots)
 
 # Rename scenarios
 rename <- c("Business-as-usual"="Business-as-usual",

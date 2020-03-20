@@ -1,22 +1,20 @@
 library("ggplot2")
 library(dplyr)
 
-dir_plots = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results"
-dir_nocases = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results\\2020_03_20_nocases"
-dir_cases = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results\\2020_03_20_cases"
+#dir_plots = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results"
 
 #===================================================================
 # All technologies (no cases)
 #===================================================================
 
-# Set directory to load data
-setwd(dir_nocases)
+# Set directory
+#setwd(dir_plots)
 
 # Load data
 df1 <- read.csv("emissions_yearly_toPlot.csv")
 
-# Set directory for plotting
-setwd(dir_plots)
+# Remove scenarios that do not use all technologies
+df1<-df1[!(df1$Case=="All"),]
 
 # Remove "solve" scenario (scenario run without stochastics)
 df1<-df1[!(df1$s=="solve"),]
