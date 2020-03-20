@@ -55,7 +55,7 @@ def analyze_results(metric, folder_db, folder_results, run_name, dbs, all_dbs, d
     # Expand Results (only costs and emissions)
     # --------------------------------
 
-    if metric == 'costs_yearly' or metric == 'emissions_yearly'\
+    if metric == 'costs_yearly' or metric == 'emissions_yearly' \
             or metric == 'activity_by_fuel' or metric == 'activity_by_tech':
 
         if metric == 'costs_yearly':
@@ -72,7 +72,7 @@ def analyze_results(metric, folder_db, folder_results, run_name, dbs, all_dbs, d
     # --------------------------------
     # Resample Results (only costs and emissions)
     # --------------------------------
-    if metric == 'costs_yearly' or metric == 'emissions_yearly'\
+    if metric == 'costs_yearly' or metric == 'emissions_yearly' \
             or metric == 'activity_by_fuel' or metric == 'activity_by_tech':
 
         if metric == 'costs_yearly':
@@ -141,9 +141,7 @@ def analyze_results(metric, folder_db, folder_results, run_name, dbs, all_dbs, d
 
     # Load and Process data
     df = pd.read_csv(filename, index_col=0)
-    if metric == 'costs_yearly' or metric == 'emissions_yearly':
-        df = df.drop(["prob","entry"], axis=1)
-    if metric == 'activity_by_fuel' or metric == 'activity_by_tech':
+    if metric == 'costs_yearly' or metric == 'emissions_yearly' or metric == 'activity_by_fuel' or metric == 'activity_by_tech':
         df = df.drop("prob", axis=1)
     for col in df.columns:
         if 'Unnamed' in col:
@@ -211,24 +209,24 @@ def analyze_results(metric, folder_db, folder_results, run_name, dbs, all_dbs, d
 # Main body of script
 # ================================
 if __name__ == '__main__':
-    ncpus = 6  # int(os.getenv('NUM_PROCS'))
+    ncpus = int(os.getenv('NUM_PROCS'))
 
     db_folder = os.path.join(os.getcwd(), 'stochastic_databases')
-    result_folder = os.path.join( os.getcwd(), 'results')
+    result_folder = os.path.join(os.getcwd(), 'results')
 
     print("running")
 
-    run_names = ["2019_12_18_nocases", ]
+    run_names = ["2020_03_20_nocases", ]
 
     # Names of databases simulated
-    dbs = ["T_0.sqlite","U_0.sqlite"]
+    dbs = ["T_0.sqlite", "U_0.sqlite"]
 
     # Node probabilities by case (0 is simulated, 1 is calculated)
     node_prob = {"0": [0.52, 0.32, 0.16],  # Historical (sum must equal 1)
                  "1": [0.2, 0.32, 0.48]}  # Climate Change
 
     # Dictionary relating simulated databases to calculated results using different distributions
-    db_shift = {"T_0": "T_1", "U_0": "U_1",}
+    db_shift = {"T_0": "T_1", "U_0": "U_1", }
 
     # List of all databases after applying different distributions
     all_dbs = ["T_0.sqlite", "T_1.sqlite", "U_0.sqlite", "U_1.sqlite"]
@@ -244,10 +242,10 @@ if __name__ == '__main__':
 
     # Infrastructure Type
     infra = ["all", ]
-    infra_dict = {"T_0.sqlite": infra[0], "T_1.sqlite": infra[0],"U_0.sqlite": infra[0], "U_1.sqlite": infra[0]}
+    infra_dict = {"T_0.sqlite": infra[0], "T_1.sqlite": infra[0], "U_0.sqlite": infra[0], "U_1.sqlite": infra[0]}
 
     # Carbon Tax
-    carbon_tax = ["No Tax", "Tax"]
+    carbon_tax = ["No IRP", "IRP"]
     carbon_tax_dict = {"T_0.sqlite": carbon_tax[0], "T_1.sqlite": carbon_tax[0],
                        "U_0.sqlite": carbon_tax[1], "U_1.sqlite": carbon_tax[1]}
 
@@ -257,11 +255,10 @@ if __name__ == '__main__':
         folder_db = os.path.join(db_folder, run_name)
         folder_results = os.path.join(result_folder, run_name)
 
-        # metrics = ['costs_yearly', 'emissions_yearly', 'activity_by_fuel', 'activity_by_tech', 'capacity_by_fuel',
-        #            'capacity_by_tech']
+        metrics = ['costs_yearly', 'emissions_yearly', 'activity_by_fuel', 'activity_by_tech', 'capacity_by_fuel',
+                    'capacity_by_tech']
 
-        metrics = ['costs_yearly', 'emissions_yearly', 'activity_by_fuel', 'activity_by_tech']
-
+        # metrics = ['costs_yearly', 'emissions_yearly', 'activity_by_fuel', 'activity_by_tech']
 
         # Perform simulations in parallel
         with parallel_backend('multiprocessing', n_jobs=ncpus):
