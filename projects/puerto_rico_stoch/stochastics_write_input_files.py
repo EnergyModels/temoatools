@@ -5,7 +5,7 @@ import temoatools as tt
 # ===================================
 # Inputs
 # ===================================
-temoa_path = os.path.normcase('/home/jab6ft/puerto_rico/temoa_stochastic')  # os.path.normcase('C:/Users/benne/PycharmProjects/temoatools/temoa_stochastic')
+temoa_path = os.path.normcase('/home/jab6ft/puerto_rico/temoa_stochastic') # os.path.normcase('C:/Users/benne/PycharmProjects/temoatools/temoa_stochastic')
 solver = 'gurobi'
 
 cutoff = 0.05  # cutoff^n<1e-6, where n is # of model years excluding the first time step
