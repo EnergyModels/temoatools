@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -N 1
-#SBATCH --cpus-per-task=4
-#SBATCH -t 8:00:00
+#SBATCH --cpus-per-task=20
+#SBATCH -t 2:00:00
 #SBATCH -p standard
 
 module purge
@@ -14,4 +14,4 @@ source activate temoa-stoch-py2
 export NUM_PROCS=$SLURM_CPUS_PER_TASK
 
 # run
-python stochastics_analyze_nocases.py
+python stochastics_analyze_all.py
