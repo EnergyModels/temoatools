@@ -2,14 +2,14 @@ library("ggplot2")
 library(dplyr)
 library(gridExtra)
 
-#dir_plots = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results"
+dir_plots = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results"
 
 #===================================================================
 # All technologies (no cases)
 #===================================================================
 
 # Set directory
-#setwd(dir_plots)
+setwd(dir_plots)
 
 # Load data:
 df1 <- read.csv("activity_by_fuel_toPlot.csv")
@@ -21,9 +21,14 @@ df3 <- read.csv("activity_by_tech_toPlot.csv")
 #----------------
 
 # Remove scenarios that do not use all technologies
-df1<-df1[!(df1$Case=="All"),]
-df2<-df2[!(df2$Case=="All"),]
-df3<-df3[!(df3$Case=="All"),]
+df1<-df1[!(df1$Scenario=="All"),]
+df2<-df2[!(df2$Scenario=="All"),]
+df3<-df3[!(df3$Scenario=="All"),]
+
+# Remove 'No IRP' and 'New IRP'
+df1<-df1[!(df1$carbon_tax=='No IRP') & !(df1$carbon_tax=='New IRP'),]
+df2<-df2[!(df2$carbon_tax=='No IRP') & !(df2$carbon_tax=='New IRP'),]
+df3<-df3[!(df3$carbon_tax=='No IRP') & !(df3$carbon_tax=='New IRP'),]
 
 # Remove "solve" scenario (scenario run without stochastics)
 df1<-df1[!(df1$s=="solve"),]
@@ -46,8 +51,9 @@ rename <- c("Historical"="'Historical storm frequency'",
 df1 <- transform(df1, prob_type = rename[as.character(prob_type)])
 
 # Rename carbon_tax
-rename <- c("No IRP"="'No IRP'",
-            "IRP"="'IRP'")
+rename <- c("No IRP"="'No RPS'",
+            "IRP"="'RPS'",
+            "New IRP"="'New RPS'")
 df1 <- transform(df1, carbon_tax = rename[as.character(carbon_tax)])
 df2 <- transform(df2, carbon_tax = rename[as.character(carbon_tax)])
 df3 <- transform(df3, carbon_tax = rename[as.character(carbon_tax)])
@@ -198,17 +204,21 @@ df <- rbind(df1_smry, df2_smry, df3_smry)
 
 # Rename case
 names(df)[names(df) == 'case'] <- 'Case'
-rename <- c("Historical-all-No IRP"="'Historical storm frequency - No IRP'",
-            "Historical-all-IRP"="'Historical storm frequency - IRP'",
-            "Climate Change-all-No IRP"="'Increased storm frequency - No IRP'",
-            "Climate Change-all-IRP"="'Increased storm frequency - IRP'")
+rename <- c("Historical-All-No IRP"="'Historical storm frequency - No RPS'",
+           "Historical-All-IRP"="'Historical storm frequency - RPS'",
+           "Historical-All-New IRP"="'Historical storm frequency - New RPS'",
+           "Climate Change-All-No IRP"="'Increased storm frequency - No RPS'",
+           "Climate Change-All-IRP"="'Increased storm frequency - RPS'",
+           "Climate Change-All-New IRP"="'Increased storm frequency - New RPS'")
 df <- transform(df, Case = rename[as.character(Case)])
 
 # Change subplot order - Case
-levels <- c("'Historical storm frequency - No IRP'",
-  "'Historical storm frequency - IRP'",
-  "'Increased storm frequency - No IRP'",
-  "'Increased storm frequency - IRP'")
+levels <- c("'Historical storm frequency - No RPS'",
+  "'Historical storm frequency - RPS'",
+  "'Historical storm frequency - New RPS'",
+  "'Increased storm frequency - No RPS'",
+  "'Increased storm frequency - RPS'",
+  "'Increased storm frequency - New RPS'")
 df$Case <- factor(df$Case, levels = levels)
 
 # Change subplot order - prob_type
@@ -216,7 +226,7 @@ levels <- c("'Historical storm frequency'","'Increased storm frequency'")
 df$prob_type <- factor(df$prob_type, levels = levels)
 
 # Change subplot order - carbon_tax
-levels <- c("'No IRP'","'IRP'")
+levels <- c("'No RPS'","'RPS'","'New RPS'")
 df$carbon_tax <- factor(df$carbon_tax, levels = levels)
 
 # Change subplot order - Technology
@@ -228,7 +238,7 @@ levels <- c("'Coal + petroleum'","'Natural gas'","'Solar + wind'","'Battery stor
 df$Technology <- factor(df$Technology, levels = levels)
 
 # The palette with black: http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/
-cbPalette <- c( "#E69F00", "#56B4E9", "#009E73", "#D55E00", "#CC79A7")
+cbPalette <- c( "#E69F00", "#56B4E9", "#009E73", "#D55E00", "#CC79A7", "#0072B2")
 
 
 # Summarise to create line plots
@@ -252,14 +262,10 @@ ggplot(df_smry,aes(x=Year, y=mean, ymin=min, ymax=max, fill=Case, group=Case, co
   geom_line(size=1,position=position_dodge(width=dodge))+
   geom_ribbon(alpha=0.2, colour = NA,position=position_dodge(width=dodge))+
   geom_point(position=position_dodge(width=dodge))+
-  scale_color_manual(values=cbPalette, labels=expression('Historical storm frequency - No IRP',
-                                                         'Historical storm frequency - IRP',
-                                                         'Increased storm frequency - No IRP',
-                                                         'Increased storm frequency - IRP'),guide = guide_legend(nrow = 2, label.hjust = 0))+
-  scale_fill_manual(values=cbPalette, labels=expression('Historical storm frequency - No IRP',
-                                                        'Historical storm frequency - IRP',
-                                                        'Increased storm frequency - No IRP',
-                                                        'Increased storm frequency - IRP'),guide = guide_legend(nrow = 2, label.hjust = 0))+
+  scale_color_manual(values=cbPalette, labels=expression('Historical storm frequency - RPS',
+                                                        'Increased storm frequency - RPS'),guide = guide_legend(nrow = 1, label.hjust = 0))+
+  scale_fill_manual(values=cbPalette, labels=expression('Historical storm frequency - RPS',
+                                                       'Increased storm frequency - RPS'),guide = guide_legend(nrow = 1, label.hjust = 0))+
   labs(x='Year', y=expression(paste("Activity (TWh y"^-1,")")))+
   theme(legend.position="bottom", legend.title = element_blank(),axis.text.x = element_text(angle = 90,vjust=0.5))
   

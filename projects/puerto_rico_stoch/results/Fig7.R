@@ -4,31 +4,46 @@ library(gridExtra)
 library(grid)
 library(lubridate)
 
-#dir_plots = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results"
+dir_plots = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results"
 
 #===================================================================
 # Case-based results
 #===================================================================
 
 # Set directory
-#setwd(dir_plots)
+setwd(dir_plots)
 
 # Load data
 df1 <- read.csv("costs_yearly_toPlot.csv")
 df2 <- read.csv("emissions_yearly_toPlot.csv")
 
+# Remove cases
+df1 <- df1[ !(df1$carbon_tax=='New IRP') & !(df1$Scenario=='All w/o Distributed Wind') & !(df1$Scenario=='Distributed w/o Wind'), ]
+df2 <- df2[ !(df2$carbon_tax=='New IRP') & !(df2$Scenario=='All w/o Distributed Wind') & !(df2$Scenario=='Distributed w/o Wind'), ]
+
 # Rename scenarios
 rename <- c("Business-as-usual"="Business-as-usual",
-            "Centralized"="Centralised",
-            'Distributed'="Distributed",
-            'Distributed w/o Wind'="Distributed w/o Wind",
-            'All'='All technologies')
+            "Centralized"="Centralised - hybrid",
+            "Centralized - Natural Gas"="Centralised - natural gas",
+           'Distributed'="Distributed - hybrid",
+           'Distributed - Natural Gas'="Distributed - natural gas",
+           'All'='All technologies')
 df1 <- transform(df1, Scenario = rename[as.character(Scenario)])
 df2 <- transform(df2, Scenario = rename[as.character(Scenario)])
 
-# Remove Mixed - hybrid case
-# df1 <- df1[ which(df1$Scenario!='Mixed - hybrid'),]
-# df2 <- df2[ which(df2$Scenario!='Mixed - hybrid'),]
+# # Remove cases
+# df1 <- df1[ !(df1$carbon_tax=='New IRP') & !(df1$Scenario=='All') & !(df1$Scenario=='Distributed'), ]
+# df2 <- df2[ !(df2$carbon_tax=='New IRP') & !(df2$Scenario=='All') & !(df2$Scenario=='Distributed'), ]
+# 
+# # Rename scenarios
+# rename <- c("Business-as-usual"="Business-as-usual",
+#             "Centralized"="Centralised",
+#             "Centralized - Natural Gas"="Centralised - natural gas",
+#             'Distributed w/o Wind'="Distributed",
+#             'Distributed - Natural Gas'="Distributed - natural gas",
+#             'All w/o Distributed Wind'='All technologies')
+# df1 <- transform(df1, Scenario = rename[as.character(Scenario)])
+# df2 <- transform(df2, Scenario = rename[as.character(Scenario)])
 
 # Rename years
 rename <- c("2016"="2016-20",
@@ -46,8 +61,8 @@ df1 <- transform(df1, prob_type = rename[as.character(prob_type)])
 df2 <- transform(df2, prob_type = rename[as.character(prob_type)])
 
 # Create new subplot labels - carbon_tax
-rename <- c("No IRP"="'No IRP'",
-            "IRP"="'IRP'")
+rename <- c("No IRP"="'No RPS'",
+            "IRP"="'RPS'")
 df1 <- transform(df1, carbon_tax = rename[as.character(carbon_tax)])
 df2 <- transform(df2, carbon_tax = rename[as.character(carbon_tax)])
 
@@ -59,8 +74,8 @@ df1 <- transform(df1, infra = rename[as.character(infra)])
 df2 <- transform(df2, infra = rename[as.character(infra)])
 
 # Reorder carbon tax
-levels <-  c("No IRP"="'No IRP'",
-             "IRP"="'IRP'")
+levels <-  c("No IRP"="'No RPS'",
+             "IRP"="'RPS'")
 df1$carbon_tax <- factor(df1$carbon_tax, levels = levels)
 df2$carbon_tax <- factor(df2$carbon_tax, levels = levels)
 
@@ -89,7 +104,7 @@ df2b <- df2[ which(df2$infra=='Buried power lines'),]
 
 # The palette with black: http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/
 # cbPalette <- c("#E69F00", "#000000", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7") # Full palette
-cbPalette <- c("#E69F00", "#000000",  "#009E73", "#0072B2", "#D55E00", "#CC79A7") # Selected colors
+cbPalette <- c("#E69F00", "#000000",  "#009E73", "#0072B2", "#D55E00", "#CC79A7", "#56B4E9", "#F0E442") # Selected colors
 
 # Summarise to create line plots
 df_smry1 <- df1a %>% # the names of the new data frame and the data frame to be summarised
