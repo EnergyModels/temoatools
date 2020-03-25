@@ -405,12 +405,18 @@ if __name__ == '__main__':
     # combine with baseline results
     # ------------------------
 
-    costs_yearly = pd.read_csv('costs_yearly_toPlot_baselines.csv')
-    emissions_yearly = pd.read_csv('emissions_yearly_toPlot_baselines.csv')
-    activity_by_fuel = pd.read_csv('activity_by_fuel_toPlot_baselines.csv')
-    activity_by_tech = pd.read_csv('activity_by_tech_toPlot_baselines.csv')
+    # load baselines results and concat
+    temp = pd.read_csv('costs_yearly_toPlot_baselines.csv')
+    costs_yearly = pd.concat([costs_yearly, temp])
 
+    temp = pd.read_csv('emissions_yearly_toPlot_baselines.csv')
+    emissions_yearly = pd.concat([emissions_yearly, temp])
 
+    temp = pd.read_csv('activity_by_fuel_toPlot_baselines.csv')
+    activity_by_fuel = pd.concat([activity_by_fuel, temp])
+
+    temp = pd.read_csv('activity_by_tech_toPlot_baselines.csv')
+    activity_by_tech = pd.concat([activity_by_tech, temp])
 
     # save
     costs_yearly.to_csv('costs_yearly_toPlot.csv')

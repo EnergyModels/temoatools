@@ -14,4 +14,5 @@ source activate temoa-stoch-py2
 export NUM_PROCS=$SLURM_CPUS_PER_TASK
 
 # run
+python stochastics_analyze_baseline.py
 python stochastics_analyze_all.py

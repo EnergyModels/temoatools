@@ -1425,7 +1425,7 @@ expressed in the form of percentage. In Equation :eq:`reserve_margin`, we use
 	                        for  t  in PowerTechs
 	                        for S_v in M.ProcessVintages( p, t ))
 
-	expr_right = total_generation*(1 +  M.ReserveMargin[PowerCommodities.pop(),g] ) 
+	expr_right = total_generation*(1 +  M.ReserveMargin[PowerCommodities.pop()] )
 
 
 	return (expr_left >= expr_right)

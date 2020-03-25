@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -N 1
-#SBATCH --cpus-per-task=7
+#SBATCH --cpus-per-task=6
 #SBATCH -t 1:00:00
 #SBATCH -p standard
 
@@ -19,4 +19,3 @@ export NUM_PROCS=$SLURM_CPUS_PER_TASK
 # run
 python baselines_run.py
 python stochastics_write_input_files.py
-python stochastics_write_input_files_noStorms.py
