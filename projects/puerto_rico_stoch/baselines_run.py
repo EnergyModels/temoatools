@@ -26,7 +26,8 @@ if __name__ == '__main__':
     project_path = os.path.normcase('/home/jab6ft/puerto_rico/puerto_rico_stoch/') # os.path.normcase('C:/Users/benne/PycharmProjects/temoatools/projects/puerto_rico_stoch')
     modelInputs_XLSX_list = ['data_T.xlsx', 'data_U.xlsx', 'data_V.xlsx', 'data_W.xlsx', 'data_X.xlsx', 'data_Y.xlsx', 'data_Z.xlsx']
     scenarioInputs = 'scenarios.xlsx'
-    scenarioNames_list = [['T','T2'], ['U','U2'], ['V','V2'], ['WA', 'WB', 'WC', 'WD','WE','WF'], ['XA', 'XB', 'XC','XD'],
+    scenarioNames_list = [['T','T2','T3','T4'], ['U','U2','U3','U4'], ['V','V2','V3','V4'],
+                          ['WA', 'WB', 'WC', 'WD','WE','WF'], ['XA', 'XB', 'XC','XD'],
                           ['YA', 'YB', 'YC'],
                           ['ZA', 'ZB', 'ZC']]
     ncpus = int(os.getenv('NUM_PROCS'))

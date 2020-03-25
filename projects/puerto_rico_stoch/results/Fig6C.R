@@ -3,6 +3,7 @@ library(dplyr)
 library(gridExtra)
 
 dir_plots = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results"
+dir_baseline = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results\\U_0"
 
 #===================================================================
 # All technologies (no cases)
