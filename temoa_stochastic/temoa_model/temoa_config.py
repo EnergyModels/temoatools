@@ -117,7 +117,6 @@ def db_2_dat(ifile, ofile, options):
 		['set',  'technologies',              'tech_production',    ['p','pb','ps','ph'], 0],
 		['set',  'technologies',              'tech_baseload',       'pb',           0],
 		['set',  'technologies',              'tech_storage',        'ps',           0],
-		['set',  'technologies',			  'tech_hourlystorage',	 'ph',			 0],  #set of technologies within hourly storage		
 		['set',  'tech_reserve',              '',                    '',             0],
 		['set',  'tech_ramping',              '',                    '',             0],
 		['set',  'commodities',               'commodity_physical',  'p',            0],
@@ -157,8 +156,9 @@ def db_2_dat(ifile, ofile, options):
 		['param','ReserveMargin',             '',                    '',             2],
 		['param','CapacityCredit',            '',                    '',             1],
 		['param','RampUp',                    '',                    '',             1],
-		['param','RampDown',                  '',                    '',             1]
-	]
+		['param','RampDown',                  '',                    '',             1],
+		['param', 'StorageInit', '', '', 1],
+		['param', 'StorageDuration', '', '', 1]	]
 
 	with open(ofile, 'w') as f:
 		f.write('data ;\n\n')

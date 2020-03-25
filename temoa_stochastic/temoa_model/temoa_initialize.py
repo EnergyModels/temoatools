@@ -56,6 +56,8 @@ class TemoaModel( AbstractModel ):
 		self.helper_ProcessInputsByOutput = dict()
 		self.helper_ProcessOutputsByInput = dict()
 
+		self.helper_storageVintages = dict()
+
 	##########################################################################
 	# Helper functions
 
@@ -649,6 +651,9 @@ def InitializeProcessParameters ( M ):
 			if (p, t, v, o) not in M.helper_ProcessInputsByOutput:
 				M.helper_ProcessInputsByOutput[p, t, v, o] = set()
 
+			if t in M.tech_storage and (p, t) not in M.helper_storageVintages:
+				M.helper_storageVintages[p, t] = set()
+
 			M.helper_processVintages[p, t].add( v )
 			M.helper_processInputs[ pindex ].add( i )
 			M.helper_processOutputs[pindex ].add( o )
@@ -656,6 +661,10 @@ def InitializeProcessParameters ( M ):
 			M.helper_commodityUStreamProcess[p, o].add( (t, v) )
 			M.helper_ProcessOutputsByInput[p, t, v, i].add( o )
 			M.helper_ProcessInputsByOutput[p, t, v, o].add( i )
+
+			if t in M.tech_storage:
+				M.helper_storageVintages[p, t].add( v )
+
 	l_unused_techs = M.tech_all - l_used_techs
 	if l_unused_techs:
 		msg = ("Notice: '{}' specified as technology, but it is not utilized in "
@@ -965,7 +974,7 @@ def CommodityBalanceConstraintIndices ( M ):
 
 	  for p, o in period_commodity
 	  for t, v in M.helper_commodityUStreamProcess[ p, o ]
-	  if t not in M.tech_hourlystorage
+	  if t not in M.tech_storage
 	  for s in M.time_season
 	  for d in M.time_of_day
 	)
@@ -980,7 +989,6 @@ def ProcessBalanceConstraintIndices ( M ):
 	  for p in M.time_optimize
 	  for t in M.tech_all
 	  if t not in M.tech_storage
-	  if t not in M.tech_hourlystorage #added to remove hourly storage from the process balance constraint	  	  
 	  for v in M.ProcessVintages( p, t )
 	  for i in M.ProcessInputs( p, t, v )
 	  for o in M.ProcessOutputsByInput( p, t, v, i )
@@ -1001,6 +1009,20 @@ def StorageConstraintIndices ( M ):
 	  for i in M.ProcessInputs( p, t, v )
 	  for o in M.ProcessOutputsByInput( p, t, v, i )
 	  for s in M.time_season
+	)
+
+	return indices
+
+
+def StorageVariableIndices(M):
+	indices = set(
+		(p, s, d, t, v)
+
+		for p, t in M.helper_storageVintages.keys()
+		for s in M.time_season
+		for d in M.time_of_day
+		for v in M.helper_storageVintages[p, t]
+
 	)
 
 	return indices
