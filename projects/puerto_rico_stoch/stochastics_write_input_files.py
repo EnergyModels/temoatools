@@ -212,7 +212,7 @@ for case in range(n_cases):
         f.write("#!/bin/bash\n")
         f.write("#SBATCH -N 1\n")
         f.write("#SBATCH --cpus-per-task=8\n")
-        f.write("#SBATCH -t 14:00:00\n")
+        f.write("#SBATCH -t 16:00:00\n")
         f.write("#SBATCH -p standard\n\n")
         f.write("cd ..\n\n")
         f.write("module purge\n")
