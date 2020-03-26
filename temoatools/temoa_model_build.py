@@ -34,7 +34,7 @@ temoaTables = [('commodities', 3), ('technologies', 5), ('tech_baseload', 1),
                ('MaxCapacity', 5), ('MaxActivity', 5),
                ('GlobalDiscountRate', 1), ('GrowthRateMax', 3), ('GrowthRateSeed', 4),
                ('RampUp', 2), ('RampDown', 2), ('ReserveMargin', 2), ('SegFrac', 4),
-               ('MinGenGroupOfTechnologies_Data', 3), ('MinGenGroupOfTechnologies', 4)]
+               ('MinGenGroupOfTechnologies_Data', 3), ('MinGenGroupOfTechnologies', 4), ('CapacityCredit', 2)]
 
 # =============================================================================
 # Hard coded inputs
@@ -370,6 +370,7 @@ def processPowerPlants(inputs, local, outputs):
         tech['renewable'] = inputs['PowerPlants'].loc[techType, 'renewable']
         tech['storage'] = inputs['PowerPlants'].loc[techType, 'storage']
         tech['sector'] = 'electric'
+        tech['CapacityCredit'] = inputs['PowerPlants'].loc[techType, 'CapacityCredit']
 
         tech['c2a'] = 'Y'  # Indicator whether to include a capacity to activity input, only needed for powerplants
 
@@ -436,6 +437,7 @@ def processFuels(inputs, local, outputs):
         tech['renewable'] = 'N'
         tech['storage'] = 'N'
         tech['sector'] = 'supply'
+        tech['CapacityCredit'] = None
 
         tech['c2a'] = 'Y'  # Indicator whether to include a capacity to activity input, only needed for powerplants
 
@@ -497,6 +499,7 @@ def processConnections(inputs, local, outputs):
         tech['renewable'] = 'N'
         tech['storage'] = 'N'
         tech['sector'] = 'transport'
+        tech['CapacityCredit'] = None
 
         tech['c2a'] = 'Y'  # Indicator whether to include a capacity to activity input, only needed for powerplants
 
@@ -589,6 +592,10 @@ def processTech(inputs, local, outputs, tech):
     # --------
     # Record powerplant information
     # --------
+    # CapacityCredit
+    if goodValue(tech['CapacityCredit']):
+        outputs['CapacityCredit'].append((tech['name'], tech['CapacityCredit']))
+
     # CapacityToActivity
     if tech['c2a'] == 'Y':
         outputs['CapacityToActivity'].append((tech['name'], 31.54, "GW to PJ"))

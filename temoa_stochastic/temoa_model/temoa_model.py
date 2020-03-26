@@ -177,7 +177,7 @@ def temoa_create_model ( name='The Temoa Energy System Model' ):
     # Storage duration is expressed as fraction of a year (default = 4hrs).
     M.StorageDuration = Param(M.tech_storage, default=0.00045662100456621) # = 4/8760
     # Initial storage charge level, expressed as fraction of full energy capacity
-    M.StorageInit = Param(M.tech_storage, default=1)
+    M.StorageInit = Param(M.tech_storage, default=0.5)
 
     # Decision Variables--------------------------------------------------------
     #   Base decision variables

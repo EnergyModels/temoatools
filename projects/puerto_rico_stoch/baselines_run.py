@@ -30,7 +30,7 @@ if __name__ == '__main__':
                           ['WA', 'WB', 'WD','WE','WF'], ['XA', 'XB', 'XD'],
                           ['YA', 'YB', ],
                           ['ZA', 'ZB', ]]
-    ncpus = int(os.getenv('NUM_PROCS'))
+    ncpus = 6 # int(os.getenv('NUM_PROCS'))
     solver = 'gurobi'
 
     # temoa_path = os.path.normcase('C:/Users/benne/PycharmProjects/temoatools/temoa_stochastic')
@@ -41,6 +41,15 @@ if __name__ == '__main__':
     #                       ['WA', 'WB', 'WD','WE','WF'], ['XA', 'XB', 'XD'],
     #                       ['YA', 'YB', ],
     #                       ['ZA', 'ZB', ]]
+    # ncpus = 3 # int(os.getenv('NUM_PROCS'))
+    # solver = '' #'gurobi'
+
+
+    # temoa_path = os.path.normcase('C:/Users/benne/PycharmProjects/temoatools/temoa_stochastic')
+    # project_path = os.path.normcase('C:/Users/benne/PycharmProjects/temoatools/projects/puerto_rico_stoch')
+    # modelInputs_XLSX_list = [ 'data_U.xlsx']
+    # scenarioInputs = 'scenarios.xlsx'
+    # scenarioNames_list = [['U'],]
     # ncpus = 3 # int(os.getenv('NUM_PROCS'))
     # solver = '' #'gurobi'
 
