@@ -155,23 +155,23 @@ if __name__ == '__main__':
     print("running")
 
     # Names of databases simulated
-    dbs = ["T.sqlite", "U.sqlite"]
+    dbs = ["T.sqlite", "U.sqlite", "V.sqlite"]
 
     # Technology Groups
     tech_group = ['All', 'All w/o Distributed Wind']
-    tech_group_dict = {"T.sqlite": tech_group[0], "U.sqlite": tech_group[0]}
+    tech_group_dict = {"T.sqlite": tech_group[0], "U.sqlite": tech_group[0], "V.sqlite": tech_group[0]}
 
     # Historical or Climate Change Probabilities
     prob = ["None"]
-    prob_type_dict = {"T.sqlite": prob[0], "U.sqlite": prob[0]}
+    prob_type_dict = {"T.sqlite": prob[0], "U.sqlite": prob[0], "V.sqlite": prob[0]}
 
     # Infrastructure Type
     infra = ["All"]
-    infra_dict = {"T.sqlite": infra[0], "U.sqlite": infra[0]}
+    infra_dict = {"T.sqlite": infra[0], "U.sqlite": infra[0], "V.sqlite": infra[0]}
 
     # Carbon Tax
-    carbon_tax = ["No IRP", "IRP", "New IRP"]
-    carbon_tax_dict = {"T.sqlite": carbon_tax[0], "U.sqlite": carbon_tax[1]}
+    carbon_tax = ["No IRP", "IRP", "Tax"]
+    carbon_tax_dict = {"T.sqlite": carbon_tax[0], "U.sqlite": carbon_tax[1], "V.sqlite": carbon_tax[2]}
 
     # create tasks
     entries = ['db', 'metric', 'run_name', 'folder_results']

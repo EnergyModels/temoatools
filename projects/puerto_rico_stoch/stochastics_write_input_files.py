@@ -11,11 +11,12 @@ solver = 'gurobi'
 cutoff = 0.05  # cutoff^n<1e-6, where n is # of model years excluding the first time step
 
 # Baseline databases to use
-dbs = ["T.sqlite", "U.sqlite",
+dbs = ["T.sqlite", "U.sqlite", "V.sqlite",
        "WA.sqlite", "WB.sqlite",  "WD.sqlite", "WE.sqlite", "WF.sqlite",
        "XA.sqlite", "XB.sqlite",  "XD.sqlite",
        "YA.sqlite", "YB.sqlite",
-       "ZA.sqlite", "ZB.sqlite"]
+       "ZA.sqlite", "ZB.sqlite",
+       "AA.sqlite", "AB.sqlite",  "AD.sqlite", "AE.sqlite", "AF.sqlite",]
 
 # model years
 years = [2016, 2021, 2026, 2031, 2036]

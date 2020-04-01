@@ -22,15 +22,16 @@ if __name__ == '__main__':
     # =======================================================
     # Model Inputs
     # =======================================================
-    temoa_path =  os.path.normcase('/home/jab6ft/puerto_rico/temoa_stochastic')
+    temoa_path = os.path.normcase('/home/jab6ft/puerto_rico/temoa_stochastic')
     project_path = os.path.normcase('/home/jab6ft/puerto_rico/puerto_rico_stoch/')
-    modelInputs_XLSX_list = ['data_T.xlsx', 'data_U.xlsx',  'data_W.xlsx', 'data_X.xlsx', 'data_Y.xlsx', 'data_Z.xlsx']
+    modelInputs_XLSX_list = ['data_T.xlsx', 'data_U.xlsx', 'data_V.xlsx', 'data_W.xlsx', 'data_X.xlsx', 'data_Y.xlsx',
+                             'data_Z.xlsx', 'data_A.xlsx']
     scenarioInputs = 'scenarios.xlsx'
-    scenarioNames_list = [['T'], ['U'],
-                          ['WA', 'WB', 'WD','WE','WF'], ['XA', 'XB', 'XD'],
+    scenarioNames_list = [['T'], ['U'], ['V'],
+                          ['WA', 'WB', 'WD', 'WE', 'WF'], ['XA', 'XB', 'XD'],
                           ['YA', 'YB', ],
-                          ['ZA', 'ZB', ]]
-    ncpus = 6 # int(os.getenv('NUM_PROCS'))
+                          ['ZA', 'ZB', ], ['AA', 'AB', 'AD', 'AE', 'AF'], ]
+    ncpus = 6  # int(os.getenv('NUM_PROCS'))
     solver = 'gurobi'
 
     # temoa_path = os.path.normcase('C:/Users/benne/PycharmProjects/temoatools/temoa_stochastic')
@@ -43,7 +44,6 @@ if __name__ == '__main__':
     #                       ['ZA', 'ZB', ]]
     # ncpus = 3 # int(os.getenv('NUM_PROCS'))
     # solver = '' #'gurobi'
-
 
     # temoa_path = os.path.normcase('C:/Users/benne/PycharmProjects/temoatools/temoa_stochastic')
     # project_path = os.path.normcase('C:/Users/benne/PycharmProjects/temoatools/projects/puerto_rico_stoch')
