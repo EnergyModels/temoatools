@@ -69,7 +69,8 @@ def analyze_results(task, folder_db, all_dbs_dict, db_shift, node_prob,
     # --------------------------------
 
     if metric == 'costs_yearly' or metric == 'emissions_yearly' \
-            or metric == 'activity_by_fuel' or metric == 'activity_by_tech':
+            or metric == 'activity_by_fuel' or metric == 'activity_by_tech' \
+        or metric == 'capacity_by_fuel' or metric == 'capacity_by_tech':
 
         if metric == 'costs_yearly':
             filename = 'costs_yearly'
@@ -79,6 +80,10 @@ def analyze_results(task, folder_db, all_dbs_dict, db_shift, node_prob,
             filename = 'activity_by_fuel'
         elif metric == 'activity_by_tech':
             filename = 'activity_by_tech'
+        elif metric == 'capacity_by_fuel':
+            filename = 'capacity_by_fuel'
+        elif metric == 'capacity_by_tech':
+            filename = 'capacity_by_tech'
 
         tt.stoch_expand(folder_results, filename, db_shift)
 
@@ -86,7 +91,8 @@ def analyze_results(task, folder_db, all_dbs_dict, db_shift, node_prob,
     # Resample Results (only costs and emissions)
     # --------------------------------
     if metric == 'costs_yearly' or metric == 'emissions_yearly' \
-            or metric == 'activity_by_fuel' or metric == 'activity_by_tech':
+            or metric == 'activity_by_fuel' or metric == 'activity_by_tech' \
+        or metric == 'capacity_by_fuel' or metric == 'capacity_by_tech':
 
         if metric == 'costs_yearly':
             filename = 'costs_yearly_exp'
@@ -96,6 +102,10 @@ def analyze_results(task, folder_db, all_dbs_dict, db_shift, node_prob,
             filename = 'activity_by_fuel_exp'
         elif metric == 'activity_by_tech':
             filename = 'activity_by_tech_exp'
+        elif metric == 'capacity_by_fuel':
+            filename = 'capacity_by_fuel_exp'
+        elif metric == 'capacity_by_tech':
+            filename = 'capacity_by_tech_exp'
 
         tt.stoch_resample(folder_results, filename, node_prob)
 
@@ -139,14 +149,14 @@ def analyze_results(task, folder_db, all_dbs_dict, db_shift, node_prob,
         csv_file = "activity_by_tech_toPlot.csv"
 
     elif metric == 'capacity_by_fuel':
-        filename = "capacity_by_fuel.csv"  # Don't expand and resample these results
+        filename = "capacity_by_fuel_exp_resampled.csv"
         conversion = 1.0  # GW
         id_vars = ["database", "scenario", "fuelOrTech"]
         col_renames = {"scenario": "s", "database": "Scenario", "fuelOrTech": "Type"}
         csv_file = "capacity_by_fuel_toPlot.csv"
 
     elif metric == 'capacity_by_tech':
-        filename = "capacity_by_tech.csv"  # Don't expand and resample these results
+        filename = "capacity_by_tech_exp_resampled.csv"
         conversion = 1.0  # GW
         id_vars = ["database", "scenario", "fuelOrTech"]
         col_renames = {"scenario": "s", "database": "Scenario", "fuelOrTech": "Type"}
@@ -154,7 +164,9 @@ def analyze_results(task, folder_db, all_dbs_dict, db_shift, node_prob,
 
     # Load and Process data
     df = pd.read_csv(filename, index_col=0)
-    if metric == 'costs_yearly' or metric == 'emissions_yearly' or metric == 'activity_by_fuel' or metric == 'activity_by_tech':
+    if metric == 'costs_yearly' or metric == 'emissions_yearly' \
+            or metric == 'activity_by_fuel' or metric == 'activity_by_tech'\
+            or metric == 'capacity_by_fuel' or metric == 'capacity_by_tech':
         df = df.drop("prob", axis=1)
     for col in df.columns:
         if 'Unnamed' in col:
@@ -220,7 +232,7 @@ if __name__ == '__main__':
                     "XD_0.sqlite": "XD_1.sqlite",
                     "YA_0.sqlite": "YA_1.sqlite", "YB_0.sqlite": "YB_1.sqlite",
                     "ZA_0.sqlite": "ZA_1.sqlite", "ZB_0.sqlite": "ZB_1.sqlite",
-                    "T_0.sqlite": "T_1.sqlite"
+                    "T_0.sqlite": "T_1.sqlite",
                     "U_0.sqlite": "U_1.sqlite"}
 
     # Technology Groups
@@ -307,7 +319,8 @@ if __name__ == '__main__':
         if db == "T_0.sqlite" or db == "U_0.sqlite" or db == "V_0.sqlite" or \
                 db == "T2_0.sqlite" or db == "U2_0.sqlite" or db == "V2_0.sqlite" or \
                 db == "T3_0.sqlite" or db == "U3_0.sqlite" or db == "V3_0.sqlite":
-            metrics = ['costs_yearly', 'emissions_yearly', 'activity_by_fuel', 'activity_by_tech', ]
+            metrics = ['costs_yearly', 'emissions_yearly', 'activity_by_fuel', 'activity_by_tech', 'capacity_by_fuel',
+                    'capacity_by_tech']
         else:
             metrics = ['costs_yearly', 'emissions_yearly']
 
@@ -333,6 +346,8 @@ if __name__ == '__main__':
     emissions_yearly = []
     activity_by_fuel = []
     activity_by_tech = []
+    capacity_by_fuel = []
+    capacity_by_tech = []
 
     for index, task in tasks.iterrows():
         db = task['db']
@@ -370,22 +385,45 @@ if __name__ == '__main__':
             else:
                 activity_by_tech = pd.concat([activity_by_tech, temp])
 
+        elif metric == 'capacity_by_fuel':
+            temp = pd.read_csv('capacity_by_fuel_toPlot.csv')
+            if len(activity_by_fuel) == 0:
+                capacity_by_fuel = temp
+            else:
+                capacity_by_fuel = pd.concat([capacity_by_fuel, temp])
+
+        elif metric == 'capacity_by_tech':
+            temp = pd.read_csv('capacity_by_tech_toPlot.csv')
+            if len(capacity_by_tech) == 0:
+                capacity_by_tech = temp
+            else:
+                capacity_by_tech = pd.concat([capacity_by_tech, temp])
+
     # save
     os.chdir(result_folder)
     costs_yearly.to_csv('costs_yearly_toPlot_stochastics.csv')
     emissions_yearly.to_csv('emissions_yearly_toPlot_stochastics.csv')
     activity_by_fuel.to_csv('activity_by_fuel_toPlot_stochastics.csv')
     activity_by_tech.to_csv('activity_by_tech_toPlot_stochastics.csv')
+    capacity_by_fuel.to_csv('capacity_by_fuel_toPlot.csv')
+    capacity_by_tech.to_csv('capacity_by_tech_toPlot.csv')
 
     # ------------------------
     # combine with baseline results
     # ------------------------
 
-    costs_yearly = pd.read_csv('costs_yearly_toPlot_baselines.csv')
-    emissions_yearly = pd.read_csv('emissions_yearly_toPlot_baselines.csv')
-    activity_by_fuel = pd.read_csv('activity_by_fuel_toPlot_baselines.csv')
-    activity_by_tech = pd.read_csv('activity_by_tech_toPlot_baselines.csv')
+    # load baselines results and concat
+    temp = pd.read_csv('costs_yearly_toPlot_baselines.csv')
+    costs_yearly = pd.concat([costs_yearly, temp])
 
+    temp = pd.read_csv('emissions_yearly_toPlot_baselines.csv')
+    emissions_yearly = pd.concat([emissions_yearly, temp])
+
+    temp = pd.read_csv('activity_by_fuel_toPlot_baselines.csv')
+    activity_by_fuel = pd.concat([activity_by_fuel, temp])
+
+    temp = pd.read_csv('activity_by_tech_toPlot_baselines.csv')
+    activity_by_tech = pd.concat([activity_by_tech, temp])
 
 
     # save
