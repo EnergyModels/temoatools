@@ -70,7 +70,12 @@ def move_data_to_db(XLSX,path=os.path.normcase('.')):
         command = command + ')'
             
         # Execute SQL command
-        c.executemany(command,np.array(df))
+        try:
+            c.executemany(command,np.array(df))
+        except:
+            print(command)
+            print(np.array(df))
+            c.executemany(command, np.array(df))
     
     #----------
     # Save(commit) the changes and close sqlite file

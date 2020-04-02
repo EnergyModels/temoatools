@@ -107,6 +107,20 @@ def analyze_results(task, folder_db, tech_group_dict, prob_type_dict, infra_dict
         col_renames = {"scenario": "s", "database": "Scenario", "fuelOrTech": "Type"}
         csv_file = "activity_by_tech_toPlot.csv"
 
+    elif metric == 'capacity_by_fuel':
+        filename = "capacity_by_fuel.csv"
+        conversion = 1.0  # GW
+        id_vars = ["database", "scenario", "fuelOrTech"]
+        col_renames = {"scenario": "s", "database": "Scenario", "fuelOrTech": "Type"}
+        csv_file = "capacity_by_fuel_toPlot.csv"
+
+    elif metric == 'capacity_by_tech':
+        filename = "capacity_by_tech.csv"
+        conversion = 1.0  # GW
+        id_vars = ["database", "scenario", "fuelOrTech"]
+        col_renames = {"scenario": "s", "database": "Scenario", "fuelOrTech": "Type"}
+        csv_file = "capacity_by_tech_toPlot.csv"
+
     # Load and Process data
     df = pd.read_csv(filename, index_col=0)
     for col in df.columns:
@@ -183,7 +197,8 @@ if __name__ == '__main__':
         #            'capacity_by_tech']
 
         # For our analysis we only use the following metrics
-        metrics = ['costs_yearly', 'emissions_yearly', 'activity_by_fuel', 'activity_by_tech', ]
+        metrics = ['costs_yearly', 'emissions_yearly', 'activity_by_fuel', 'activity_by_tech', 'capacity_by_fuel',
+                    'capacity_by_tech']
 
         for metric in metrics:
             t = pd.Series(index=entries)
