@@ -12,6 +12,7 @@ from .temoa_model_run import run
 from .analyze_activity_tod import getActivityTOD
 from .analyze_activity_year import getActivity
 from .analyze_capacity import getCapacity
+from .analyze_capacity_new import getCapacityNew
 from .analyze_costs import getCosts
 from .analyze_emissions import getEmissions
 from .fragility_curves import fragility

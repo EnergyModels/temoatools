@@ -54,14 +54,14 @@ def analyze_results(task, folder_db, tech_group_dict, prob_type_dict, infra_dict
     # Analyze capacity by fuel types
     elif metric == 'capacity_by_fuel':
         switch = 'fuel'
-        tt.getCapacity(folder_db, dbs, switch=switch, sector_name=sector_name, save_data=save_data,
+        tt.getCapacityNew(folder_db, dbs, switch=switch, sector_name=sector_name, save_data=save_data,
                        create_plots=create_plots, run_name=run_name)
 
     # Analyze capacity by fuel types
     elif metric == 'capacity_by_tech':
         switch = 'tech'
         sector_name = 'all'
-        tt.getCapacity(folder_db, dbs, switch=switch, sector_name=sector_name, save_data=save_data,
+        tt.getCapacityNew(folder_db, dbs, switch=switch, sector_name=sector_name, save_data=save_data,
                        create_plots=create_plots, run_name=run_name)
 
     # --------------------------------

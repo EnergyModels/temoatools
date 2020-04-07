@@ -151,14 +151,14 @@ def analyze_results(task, folder_db, all_dbs_dict, db_shift, node_prob,
     elif metric == 'capacity_by_fuel':
         filename = "capacity_by_fuel_exp_resampled.csv"
         conversion = 1.0  # GW
-        id_vars = ["database", "scenario", "fuelOrTech"]
+        id_vars = ["database", "scenario", "fuelOrTech", "entry"]
         col_renames = {"scenario": "s", "database": "Scenario", "fuelOrTech": "Type"}
         csv_file = "capacity_by_fuel_toPlot.csv"
 
     elif metric == 'capacity_by_tech':
         filename = "capacity_by_tech_exp_resampled.csv"
         conversion = 1.0  # GW
-        id_vars = ["database", "scenario", "fuelOrTech"]
+        id_vars = ["database", "scenario", "fuelOrTech", "entry"]
         col_renames = {"scenario": "s", "database": "Scenario", "fuelOrTech": "Type"}
         csv_file = "capacity_by_tech_toPlot.csv"
 
