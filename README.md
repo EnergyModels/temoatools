@@ -84,15 +84,15 @@ https://zenodo.org/record/2551865#.XmEhyahKhPY
 
 ### Running stochastic optimization
 
-1) Enter/update simulation data in examples/puerto_rico_stoch/data folder. Scenarios_overview.ppt/.pdf provides background on cases simulated
+1) Enter/update simulation data in projects/puerto_rico_stoch/data folder. Scenarios_overview.ppt/.pdf provides background on cases simulated
     1) data_*.xls - model data
     2) scenarios.xlsx - variations detailed for each case/scenarios
     3) sensitivityVariables.xlsx - used to indicate which temoa variables are considered in a sensitivity study
 
 2) Create input files for temoa
     1) Update paths and run projects/puerto_rico_stoch/run_baselines.py to create baseline simulations
-    2) Update paths and run examples/puerto_rico_stoch/stochastics_write_input_files.py to create files for temoa
-    3) Move input files from examples/puerto_rico_stoch/stoch_inputs/ to temoa_stochastic installation
+    2) Update paths and run projects/puerto_rico_stoch/stochastics_write_input_files.py to create files for temoa
+    3) Move input files from projects/puerto_rico_stoch/stoch_inputs/ to temoa_stochastic installation
         1) config_stoch_*.txt files to temoa_stochastic/temoa_model/
         2) stoch_*.py files to temoa_stochastic/tools/options/
         3) *.dat and *.sqlite files to temoa_stochastic/data_files/
@@ -109,13 +109,13 @@ https://zenodo.org/record/2551865#.XmEhyahKhPY
         1) examples for windows: PR_stochastic_createScenarios_all.bat and PR_stochastic_run_all.bat
         2) examples for linux: createScenarios_all.sh, run_cases.sh, run_nocases.sh
 
-4) Analyze results (scripts in examples/puerto_rico_stoch/)
+4) Analyze results (scripts in projects/puerto_rico_stoch/)
     1) Analyze optimized results
         > python stochastics_analyze_nocases.py
     2) Analyze case-based results
         > python stochastics_analyze_cases.py
 
-5) Plot results (performed in R, scripts in examples/puerto_rico_stoch/results/)
+5) Plot results (performed in R, scripts in projects/puerto_rico_stoch/results/)
                                                  
 # Usage notes
 As of 2/8/2020, temoa currently does not output results to excel, therefore set saveEXCEL to False in temoatools.run()                                                                                                                                                                                                                                                                  
