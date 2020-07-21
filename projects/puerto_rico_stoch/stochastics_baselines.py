@@ -22,8 +22,8 @@ if __name__ == '__main__':
     # =======================================================
     # Model Inputs
     # =======================================================
-    temoa_path = os.path.normcase('/home/jab6ft/puerto_rico/temoa_stochastic')
-    project_path = os.path.normcase('/home/jab6ft/puerto_rico/puerto_rico_stoch/')
+    temoa_path = os.path.abspath('..//..//temoa_stochastic')
+    project_path = os.getcwd()  # .path.normcase('/home/jab6ft/puerto_rico/puerto_rico_stoch/')
     modelInputs_XLSX_list = ['data_T.xlsx', 'data_U.xlsx', 'data_V.xlsx', 'data_W.xlsx', 'data_X.xlsx', 'data_Y.xlsx',
                              'data_Z.xlsx', 'data_A.xlsx']
     scenarioInputs = 'scenarios.xlsx'

@@ -61,15 +61,45 @@ if cutoff ** n_years < 1e-6:
 else:
     print("Verified: Appropriate value for cutoff")
 
-# Create directory to store outputs
+# --------------------
+# directory management
+# --------------------
+
+
+# current working directory (assumed to be temoatools//projects/puerto_rich_stoch)
 wrkdir = os.getcwd()
-stochdir = os.path.join(wrkdir, 'stoch_inputs')
+
+# navigate to temoa_stochastic directory
+temoadir = os.path.abspath('..//..//temoa_stochastic')
+
+# config directory (assumed to already exist, from running baselines
+configdir = os.path.join(wrkdir, 'configs')
+
+# databases directory (assumed to already exist, from running baselines
+datadir = os.path.join(wrkdir, 'databases')
+
+# Create directory to store stochastic shell scripts
+stochdir = os.path.join(wrkdir, 'stoch_scripts')
 try:
     os.stat(stochdir)
 except:
     os.mkdir(stochdir)
-os.chdir(stochdir)
 
+# Create directory to store stochastic .dat and .sqlite files
+stoch_db_dir = os.path.join(wrkdir, 'stoch_databases')
+try:
+    os.stat(stoch_db_dir)
+except:
+    os.mkdir(stoch_db_dir)
+
+# Create directory to store scenario tree scripts for stochastic simulations
+treedir = os.path.join(wrkdir, 'scenario_tree')
+try:
+    os.stat(treedir)
+except:
+    os.mkdir(treedir)
+
+# Create all input files
 n_cases = 1
 for case in range(n_cases):
     # historical probabilities
@@ -87,6 +117,7 @@ for case in range(n_cases):
         # ====================================
         # Stochastic input file
         # ====================================
+        os.chdir(treedir)
         # Write File
         filename = "stoch_" + db_name + "_" + str(case) + ".py"
         # Open File
@@ -96,9 +127,9 @@ for case in range(n_cases):
         f.write("verbose = True\n")
         f.write("force = True\n")
         f.write("\n")
-        f.write("dirname = '" + db_name + "_" + str(case) + "'\n")  # Update
-        f.write("modelpath = '../temoa_model/temoa_model.py'\n")
-        f.write("dotdatpath = '../data_files/" + db_name + "_" + str(case) + ".dat'\n")  # Need to check
+        f.write("dirname = '" + db_name + "_" + str(case) + "'\n")  # Update TODO
+        f.write("modelpath = '../temoa_model/temoa_model.py'\n") # TODO
+        f.write("dotdatpath = '../data_files/" + db_name + "_" + str(case) + ".dat'\n")  # TODO
         f.write("stochasticset = 'time_optimize'\n")
         f.write("stochastic_points = (")
         for year in years:
@@ -139,10 +170,11 @@ for case in range(n_cases):
         # ====================================
         # Configuration file
         # ====================================
+        os.chdir(configdir)
         filename = "config_stoch_" + db_name + "_" + str(case) + ".txt"
-        input_path = os.path.join(temoa_path, "tools",  db_name + "_" + str(case),
+        input_path = os.path.join(temoadir, "tools",  db_name + "_" + str(case),
                                   "ScenarioStructure.dat")
-        output_path = os.path.join(temoa_path, "data_files", db_name + "_" + str(case) + ".sqlite")
+        output_path = os.path.join(temoadir, "data_files", db_name + "_" + str(case) + ".sqlite")
 
         f = open(filename, "w")
         # ---
@@ -204,6 +236,7 @@ for case in range(n_cases):
         # ====================================
         # Script file - Individual
         # ====================================
+        os.chdir(stochdir)
 
         config_filename = "config_stoch_" + db_name + "_" + str(case) + ".txt"
         tree_filename = "stoch_" + db_name + "_" + str(case) + ".py"
@@ -236,8 +269,10 @@ for case in range(n_cases):
 # ====================================
 # Script file - batch
 # ====================================
-f = open("run_all.sh", "w")
+os.chdir(wrkdir)
+f = open("run_all_simulations.sh", "w")
 f.write("#!/bin/bash\n\n")
+f.write('cd stoch_scripts')
 for case in range(n_cases):
     for db in dbs:
         db_name = tt.remove_ext(db)
@@ -251,11 +286,11 @@ for db in dbs:
         db_name = tt.remove_ext(db)
         # .sqlite
         src_dir = os.path.join(wrkdir, "databases", db_name + ".sqlite")
-        dst_dir = os.path.join(wrkdir, "stoch_inputs", db_name + "_" + str(case) + ".sqlite")
+        dst_dir = os.path.join(wrkdir, "stoch_databases", db_name + "_" + str(case) + ".sqlite")
         shutil.copy(src_dir, dst_dir)
         # .dat
         src_dir = os.path.join(wrkdir, "databases", db_name + ".dat")
-        dst_dir = os.path.join(wrkdir, "stoch_inputs", db_name + "_" + str(case) + ".dat")
+        dst_dir = os.path.join(wrkdir, "stoch_databases", db_name + "_" + str(case) + ".dat")
         shutil.copy(src_dir, dst_dir)
 
 # Return to original working directory

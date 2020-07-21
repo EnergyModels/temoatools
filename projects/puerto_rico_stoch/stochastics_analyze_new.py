@@ -199,7 +199,7 @@ def analyze_results(task, folder_db, all_dbs_dict, db_shift, node_prob,
 if __name__ == '__main__':
     ncpus = 6 # int(os.getenv('NUM_PROCS'))
 
-    db_folder = os.path.join(os.getcwd(), 'stochastic_databases')
+    db_folder = os.path.join(os.getcwd(), 'stoch_databases')
     result_folder = os.path.join(os.getcwd(), 'results')
 
     print("running")
