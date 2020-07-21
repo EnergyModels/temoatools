@@ -1062,8 +1062,8 @@ def StorageInitIndices(M):
     indices = set(
         (t, v)
 
-        for p, t in M.storageVintages.keys()
-        for v in M.storageVintages[p, t]
+        for p, t in M.helper_storageVintages.keys()
+        for v in M.helper_storageVintages[p, t]
     )
 
     return indices
