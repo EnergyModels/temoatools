@@ -174,8 +174,8 @@ def temoa_create_model ( name='The Temoa Energy System Model' ):
     M.CapacityCredit = Param( M.tech_all, default=1 )
     M.ReserveMargin  = Param( M.commodity_all, default=0.0 )
 
-    # Storage duration is expressed as fraction of a year (default = 4hrs).
-    M.StorageDuration = Param(M.tech_storage, default=0.00045662100456621) # = 4/8760
+    # Storage duration is expressed in hours
+    M.StorageDuration = Param(M.tech_storage, default=4)
     # Initial storage charge level, expressed as fraction of full energy capacity
     M.StorageInit = Param(M.tech_storage, default=0.5)
 
