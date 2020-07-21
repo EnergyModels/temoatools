@@ -222,6 +222,7 @@ for case in range(n_cases):
         f.write("source activate temoa-stoch-py2\n\n")
         f.write("# if gurobi is available\n")
         f.write("module load gurobi/9.0.1\n\n")
+        f.write("export PYTHONPATH=$EBROOTGUROBI/lib/python2.7_utf32\n\n")
         f.write("# set the NUM_PROCS env variable for the Python script\n")
         f.write("export NUM_PROCS =$SLURM_CPUS_PER_TASK\n\n")
         f.write("# run\n")
