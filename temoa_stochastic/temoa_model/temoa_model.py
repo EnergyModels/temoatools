@@ -176,8 +176,10 @@ def temoa_create_model ( name='The Temoa Energy System Model' ):
 
     # Storage duration is expressed in hours
     M.StorageDuration = Param(M.tech_storage, default=4)
-    # Initial storage charge level, expressed as fraction of full energy capacity
-    M.StorageInit = Param(M.tech_storage, default=0.5)
+    # Initial storage charge level, expressed as fraction of full energy capacity.
+    # If the parameter is not defined, the model optimizes the initial storage charge level.
+    M.StorageInit_tv = Set(dimen=2, initialize=StorageInitIndices)
+    M.StorageInitFrac = Param(M.StorageInit_tv)
 
     # Decision Variables--------------------------------------------------------
     #   Base decision variables
@@ -225,6 +227,7 @@ def temoa_create_model ( name='The Temoa Energy System Model' ):
     # M.V_HourlyStorage = Var( M.HourlyStorage_psdt, domain=NonNegativeReals )
     M.StorageLevel_psdtv = Set(dimen=5, initialize=StorageVariableIndices)
     M.V_StorageLevel = Var(M.StorageLevel_psdtv, domain=NonNegativeReals)
+    M.V_StorageInit = Var(M.StorageInit_tv, domain=NonNegativeReals)
 
     #Sudan
     M.tech_CapReduction = Set() 
@@ -376,6 +379,11 @@ def temoa_create_model ( name='The Temoa Energy System Model' ):
 
     M.StorageThroughputConstraint = Constraint(
         M.StorageConstraints_psdtv, rule=StorageThroughput_Constraint
+    )
+
+    M.StorageInitConstraint_tv = Set(dimen=2, initialize=StorageInitConstraintIndices)
+    M.StorageInitConstraint = Constraint(
+        M.StorageInitConstraint_tv, rule=StorageInit_Constraint
     )
 
     #-----------------    
