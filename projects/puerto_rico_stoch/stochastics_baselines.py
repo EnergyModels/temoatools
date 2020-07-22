@@ -23,7 +23,7 @@ if __name__ == '__main__':
     # Model Inputs
     # =======================================================
     temoa_path = os.path.abspath('..//..//temoa_stochastic')
-    project_path = os.getcwd()  # .path.normcase('/home/jab6ft/puerto_rico/puerto_rico_stoch/')
+    project_path = os.getcwd()
     modelInputs_XLSX_list = ['data_T.xlsx', 'data_U.xlsx', 'data_V.xlsx', 'data_W.xlsx', 'data_X.xlsx', 'data_Y.xlsx',
                              'data_Z.xlsx', 'data_A.xlsx']
     scenarioInputs = 'scenarios.xlsx'
@@ -31,28 +31,8 @@ if __name__ == '__main__':
                           ['WA', 'WB', 'WD', 'WE', 'WF'], ['XA', 'XB', 'XD'],
                           ['YA', 'YB', ],
                           ['ZA', 'ZB', ], ['AA', 'AB', 'AD', 'AE', 'AF'], ]
-    ncpus = 6  # int(os.getenv('NUM_PROCS'))
+    ncpus = int(os.getenv('NUM_PROCS'))
     solver = 'gurobi'
-
-    # temoa_path = os.path.normcase('C:/Users/benne/PycharmProjects/temoatools/temoa_stochastic')
-    # project_path = os.path.normcase('C:/Users/benne/PycharmProjects/temoatools/projects/puerto_rico_stoch')
-    # modelInputs_XLSX_list = ['data_T.xlsx', 'data_U.xlsx', 'data_V.xlsx', 'data_W.xlsx', 'data_X.xlsx', 'data_Y.xlsx',
-    #                          'data_Z.xlsx', 'data_A.xlsx']
-    # scenarioInputs = 'scenarios.xlsx'
-    # scenarioNames_list = [['T'], ['U'], ['V'],
-    #                       ['WA', 'WB', 'WD', 'WE', 'WF'], ['XA', 'XB', 'XD'],
-    #                       ['YA', 'YB', ],
-    #                       ['ZA', 'ZB', ], ['AA', 'AB', 'AD', 'AE', 'AF'], ]
-    # ncpus = 3 # int(os.getenv('NUM_PROCS'))
-    # solver = '' #'gurobi'
-
-    # temoa_path = os.path.normcase('C:/Users/benne/PycharmProjects/temoatools/temoa_stochastic')
-    # project_path = os.path.normcase('C:/Users/benne/PycharmProjects/temoatools/projects/puerto_rico_stoch')
-    # modelInputs_XLSX_list = [ 'data_U.xlsx']
-    # scenarioInputs = 'scenarios.xlsx'
-    # scenarioNames_list = [['U'],]
-    # ncpus = 3 # int(os.getenv('NUM_PROCS'))
-    # solver = '' #'gurobi'
 
     for modelInputs_XLSX, scenarioNames in zip(modelInputs_XLSX_list, scenarioNames_list):
 

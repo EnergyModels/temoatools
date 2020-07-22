@@ -1,3 +1,0 @@
-Reading data files.[    0.13]
-Creating Temoa model instance.Exception found in create_temoa_instance
-'TemoaModel' object has no attribute 'storageVintages'

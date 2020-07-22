@@ -1,22 +1,32 @@
 import os
 import shutil
 import temoatools as tt
+from pathlib import Path
+
+
+def test_directory(path):
+    # check if directory exists, create the directory if it does not
+    try:
+        os.stat(path)
+    except:
+        os.mkdir(path)
+
 
 # ===================================
 # Inputs
 # ===================================
-temoa_path = os.path.normcase('/home/jab6ft/puerto_rico/temoa_stochastic') # os.path.normcase('C:/Users/benne/PycharmProjects/temoatools/temoa_stochastic')
+# temoa_path = os.path.normcase('/home/jab6ft/puerto_rico/temoa_stochastic')  # os.path.normcase('C:/Users/benne/PycharmProjects/temoatools/temoa_stochastic')
 solver = 'gurobi'
 
 cutoff = 0.05  # cutoff^n<1e-6, where n is # of model years excluding the first time step
 
 # Baseline databases to use
 dbs = ["T.sqlite", "U.sqlite", "V.sqlite",
-       "WA.sqlite", "WB.sqlite",  "WD.sqlite", "WE.sqlite", "WF.sqlite",
-       "XA.sqlite", "XB.sqlite",  "XD.sqlite",
+       "WA.sqlite", "WB.sqlite", "WD.sqlite", "WE.sqlite", "WF.sqlite",
+       "XA.sqlite", "XB.sqlite", "XD.sqlite",
        "YA.sqlite", "YB.sqlite",
        "ZA.sqlite", "ZB.sqlite",
-       "AA.sqlite", "AB.sqlite",  "AD.sqlite", "AE.sqlite", "AF.sqlite",]
+       "AA.sqlite", "AB.sqlite", "AD.sqlite", "AE.sqlite", "AF.sqlite", ]
 
 # model years
 years = [2016, 2021, 2026, 2031, 2036]
@@ -65,39 +75,30 @@ else:
 # directory management
 # --------------------
 
-
 # current working directory (assumed to be temoatools//projects/puerto_rich_stoch)
 wrkdir = os.getcwd()
 
-# navigate to temoa_stochastic directory
+# Create directory to store stochastic shell scripts
+stochdir = os.path.join(wrkdir, 'sbatch_files')
+test_directory(stochdir)
+
+# temoa_stochastic directory (already exists from temoatools package)
 temoadir = os.path.abspath('..//..//temoa_stochastic')
 
-# config directory (assumed to already exist, from running baselines
-configdir = os.path.join(wrkdir, 'configs')
+# configuration file directory (create if necessary)
+configdir = os.path.abspath('..//..//temoa_stochastic//configs')
+test_directory(configdir)
 
-# databases directory (assumed to already exist, from running baselines
-datadir = os.path.join(wrkdir, 'databases')
-
-# Create directory to store stochastic shell scripts
-stochdir = os.path.join(wrkdir, 'stoch_scripts')
-try:
-    os.stat(stochdir)
-except:
-    os.mkdir(stochdir)
-
-# Create directory to store stochastic .dat and .sqlite files
-stoch_db_dir = os.path.join(wrkdir, 'stoch_databases')
-try:
-    os.stat(stoch_db_dir)
-except:
-    os.mkdir(stoch_db_dir)
+# database directory (create if necessary)
+datadir = os.path.abspath('..//..//temoa_stochastic//data_files')
+test_directory(datadir)
 
 # Create directory to store scenario tree scripts for stochastic simulations
-treedir = os.path.join(wrkdir, 'scenario_tree')
-try:
-    os.stat(treedir)
-except:
-    os.mkdir(treedir)
+treedir = os.path.abspath('..//..//temoa_stochastic//tools//options')
+
+# --------------------
+# begin creation of input files
+# --------------------
 
 # Create all input files
 n_cases = 1
@@ -118,6 +119,7 @@ for case in range(n_cases):
         # Stochastic input file
         # ====================================
         os.chdir(treedir)
+
         # Write File
         filename = "stoch_" + db_name + "_" + str(case) + ".py"
         # Open File
@@ -127,8 +129,8 @@ for case in range(n_cases):
         f.write("verbose = True\n")
         f.write("force = True\n")
         f.write("\n")
-        f.write("dirname = '" + db_name + "_" + str(case) + "'\n")  # Update TODO
-        f.write("modelpath = '../temoa_model/temoa_model.py'\n") # TODO
+        f.write("dirname = '" + db_name + "_" + str(case) + "'\n")
+        f.write("modelpath = '" + "../temoa_model/temoa_model.py'\n")
         f.write("dotdatpath = '../data_files/" + db_name + "_" + str(case) + ".dat'\n")  # TODO
         f.write("stochasticset = 'time_optimize'\n")
         f.write("stochastic_points = (")
@@ -163,18 +165,19 @@ for case in range(n_cases):
             f.write("\t\t),\n\n")
         f.write("\t),\n")
         f.write("}\n")
-
-        # Close File
-        f.close()
+        #
+        # # Close File
+        # f.close()
 
         # ====================================
         # Configuration file
         # ====================================
         os.chdir(configdir)
         filename = "config_stoch_" + db_name + "_" + str(case) + ".txt"
-        input_path = os.path.join(temoadir, "tools",  db_name + "_" + str(case),
+        input_path = os.path.join(temoadir, "tools", db_name + "_" + str(case),
                                   "ScenarioStructure.dat")
-        output_path = os.path.join(temoadir, "data_files", db_name + "_" + str(case) + ".sqlite")
+        output_path = os.path.join(datadir, "data_files", db_name + "_" + str(case) + ".sqlite")
+        db_io_path = os.path.join(datadir, "data_files")
 
         f = open(filename, "w")
         # ---
@@ -183,7 +186,7 @@ for case in range(n_cases):
         f.write("# This is an automatically generated configuration file for Temoa using")
         f.write(" temoatools github.com/EnergyModels/temoatools\n")
         f.write("# It allows you to specify (and document) all run-time model options\n")
-        f.write("# Legal chars in path: a-z A-Z 0-9 - _ \ / . :\n")
+        f.write("# Legal chars in path: a-z A-Z 0-9 - _  / . :\n")
         f.write("# Comment out non-mandatory options to omit them\n")
         f.write("#----------------------------------------------------- \n")
         f.write("\n")
@@ -202,7 +205,7 @@ for case in range(n_cases):
         f.write("\n")
         f.write("# Path to the 'db_io' folder (Mandatory)\n")
         f.write("# This is the location where database files reside\n")
-        f.write("--path_to_db_io=data_files\n")
+        f.write("--path_to_db_io=" + db_io_path + "\n")
         f.write("\n")
         f.write("# Spreadsheet Output (Optional)\n")
         f.write("# Direct model output to a spreadsheet\n")
@@ -240,15 +243,15 @@ for case in range(n_cases):
 
         config_filename = "config_stoch_" + db_name + "_" + str(case) + ".txt"
         tree_filename = "stoch_" + db_name + "_" + str(case) + ".py"
-        script_filename = "stoch_" + db_name + "_" + str(case) + ".sh" \
-                                                                 ""
+        script_filename = "stoch_" + db_name + "_" + str(case) + ".sh"
+        config_filepath = os.path.join(configdir, config_filename)
+
         f = open(script_filename, "w")
         f.write("#!/bin/bash\n")
         f.write("#SBATCH -N 1\n")
         f.write("#SBATCH --cpus-per-task=8\n")
         f.write("#SBATCH -t 16:00:00\n")
         f.write("#SBATCH -p standard\n\n")
-        f.write("cd ..\n\n")
         f.write("module purge\n")
         f.write("module load anaconda/2019.10-py2.7\n\n")
         f.write("# activate temoa environment\n")
@@ -259,11 +262,12 @@ for case in range(n_cases):
         f.write("# set the NUM_PROCS env variable for the Python script\n")
         f.write("export NUM_PROCS =$SLURM_CPUS_PER_TASK\n\n")
         f.write("# run\n")
-        f.write("cd tools\n")
+        f.write("cd " + temoadir + "\n")
+        f.write("cd tools\n\n")
         f.write("python generate_scenario_tree_JB.py options/" + tree_filename + " --debug\n")
-        f.write("python rewrite_tree_nodes.py options/" + tree_filename + " --debug\n")
-        f.write("cd ..\n")
-        f.write("python temoa_model/temoa_stochastic.py --config=temoa_model/" + config_filename + "\n")
+        f.write("python rewrite_tree_nodes.py options/" + tree_filename + " --debug\n\n")
+        f.write("cd ..\n\n")
+        f.write("python temoa_model/temoa_stochastic.py --config=" + config_filepath + "\n")
         f.close()
 
 # ====================================
@@ -272,7 +276,7 @@ for case in range(n_cases):
 os.chdir(wrkdir)
 f = open("run_all_simulations.sh", "w")
 f.write("#!/bin/bash\n\n")
-f.write('cd stoch_scripts')
+f.write('cd sbatch_files\n\n')
 for case in range(n_cases):
     for db in dbs:
         db_name = tt.remove_ext(db)
@@ -286,11 +290,11 @@ for db in dbs:
         db_name = tt.remove_ext(db)
         # .sqlite
         src_dir = os.path.join(wrkdir, "databases", db_name + ".sqlite")
-        dst_dir = os.path.join(wrkdir, "stoch_databases", db_name + "_" + str(case) + ".sqlite")
+        dst_dir = os.path.join(datadir, db_name + "_" + str(case) + ".sqlite")
         shutil.copy(src_dir, dst_dir)
         # .dat
         src_dir = os.path.join(wrkdir, "databases", db_name + ".dat")
-        dst_dir = os.path.join(wrkdir, "stoch_databases", db_name + "_" + str(case) + ".dat")
+        dst_dir = os.path.join(datadir, db_name + "_" + str(case) + ".dat")
         shutil.copy(src_dir, dst_dir)
 
 # Return to original working directory

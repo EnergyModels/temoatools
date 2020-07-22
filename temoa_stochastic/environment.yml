@@ -17,4 +17,6 @@ dependencies:
     - pyutilib
     - glpk
     - xlrd
-    #- coincbc
+    - pip
+        - -e pyomo
+        - -e .
