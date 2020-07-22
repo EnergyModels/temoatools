@@ -46,13 +46,21 @@ if __name__ == '__main__':
     # =======================================================
     # Model Inputs
     # =======================================================
-    temoa_path = Path('C:/temoa/temoa')  # Path('/home/jab6ft/temoa/temoa')
-    project_path = Path('C:/Users/benne/PycharmProjects/temoatools/examples/baselines')  # Path('/home/jab6ft/temoa/project/baselines')
+    temoa_path = Path('C:/temoa-energysystem')  # Path('/home/jab6ft/temoa/temoa')
+    project_path = Path(os.getcwd())
     modelInputs_XLSX_list = ['data.xlsx']
     scenarioInputs = 'scenarios.xlsx'
     scenarioNames_list = [['A', 'B', 'C', 'D', 'E', 'F']]
-    ncpus = 6  # int(os.getenv('NUM_PROCS'))
-    solver = ''  # 'gurobi'
+    ncpus = 6   # default, unless otherwise specified in sbatch script
+    solver = ''  # leave blank to let temoa decide which solver to use of those installed
+
+    # =======================================================
+    # begin script
+    # =======================================================
+    try:
+        ncpus = int(os.getenv('NUM_PROCS'))  # try to use variable defined in sbatch script
+    except:
+        ncpus = ncpus  # otherwise default to this number of cores
 
     for modelInputs_XLSX, scenarioNames in zip(modelInputs_XLSX_list, scenarioNames_list):
 

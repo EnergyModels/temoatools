@@ -53,7 +53,7 @@ The instructions below are for a new installation of anaconda3, Temoa and temoat
     > import temoatools as tt
 
 6) Optional: Make modifications to temoa source code for running simulations in parallel from a terminal
-    1) comment out lines 548-551 of temoa_run.py
+    1) comment out lines 550-553 of temoa_run.py
         >
              try:  # make compatible with Python 2.7 or 3
 	                raw_input() # Give the user a chance to confirm input
