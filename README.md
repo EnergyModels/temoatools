@@ -1,4 +1,4 @@
-# About
+## About
 The temoatools package is designed to complement the @github/TemoaProject by 
 providing methods to help with the creation and analysis of the .sqlite databases used by temoa.
 Specifically, users provide inputs in excel, which are then moved into .sqlite databases based 
@@ -25,7 +25,7 @@ More details:
         - temoatools - keep the temoatools directory accessible for example files and for easy updating
         - project_files - keep all project files here
           
-# temoatools installation with python 3
+## temoatools installation with python 3
 Temoatools is meant to be an add-in for Temoa, thus it builds on the current method for installing Temoa. 
 The instructions below are for a new installation of anaconda3, Temoa and temoatools. The example commands are shown in a Windows environment.
 
@@ -54,13 +54,14 @@ The instructions below are for a new installation of anaconda3, Temoa and temoat
 
 6) Optional: Make modifications to temoa source code for running simulations in parallel from a terminal
     1) comment out lines 548-551 of temoa_run.py
-        -     try:  # make compatible with Python 2.7 or 3
-	    -            raw_input() # Give the user a chance to confirm input
-	    -     except:
-        -            input()"
+        >
+             try:  # make compatible with Python 2.7 or 3
+	                raw_input() # Give the user a chance to confirm input
+	         except:
+                    input()"
         
         
-Sample commands for UVA's Rivanna supercomputer (Check https://www.anaconda.com/distribution/#download-section for the current python 2.7 anaconda module if this example does not work):
+Sample commands for running on Rivanna, UVA's high performance computing system*:
     
        
         module load anaconda/2019.10-py3.7
@@ -76,9 +77,14 @@ Sample commands for UVA's Rivanna supercomputer (Check https://www.anaconda.com/
         import temoatools as tt
 
 
-# stochastic instructions
+## Stochastic instructions
 For step-by-step instructions to run the Puerto Rico Stochastic project see the README.md file in projects/puerto_rico_stoch. 
 This project uses a stochastic implementation of temoa that is archived in temoa_stochastic.
 
-# Usage notes
+## Notes
 As of 2/8/2020, temoa currently does not output results to excel, therefore set saveEXCEL to False in temoatools.run()
+
+*At the time of writing this, Rivanna has python 2.7, Anaconda2 and Gurobi installed.
+However, modules on Rivanna are routinely updated. 
+Therefore "module load" commands (for anaconda and gurobi) may need to be updated. 
+Check https://www.rc.virginia.edu/userinfo/rivanna/software/modules/ for the latest.

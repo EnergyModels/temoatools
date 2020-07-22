@@ -202,7 +202,7 @@ if __name__ == '__main__':
     except:
         ncpus = 6  # otherwise default to this number of cores
 
-    db_folder = os.path.join(os.getcwd(), 'stoch_databases')
+    db_folder = os.path.abspath('..//..//temoa_stochastic//data_files')
     result_folder = os.path.join(os.getcwd(), 'results')
 
     print("running")

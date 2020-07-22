@@ -15,7 +15,6 @@ def test_directory(path):
 # ===================================
 # Inputs
 # ===================================
-# temoa_path = os.path.normcase('/home/jab6ft/puerto_rico/temoa_stochastic')  # os.path.normcase('C:/Users/benne/PycharmProjects/temoatools/temoa_stochastic')
 solver = 'gurobi'
 
 cutoff = 0.05  # cutoff^n<1e-6, where n is # of model years excluding the first time step
@@ -176,8 +175,8 @@ for case in range(n_cases):
         filename = "config_stoch_" + db_name + "_" + str(case) + ".txt"
         input_path = os.path.join(temoadir, "tools", db_name + "_" + str(case),
                                   "ScenarioStructure.dat")
-        output_path = os.path.join(datadir, "data_files", db_name + "_" + str(case) + ".sqlite")
-        db_io_path = os.path.join(datadir, "data_files")
+        output_path = os.path.join(datadir,  db_name + "_" + str(case) + ".sqlite")
+        db_io_path = os.path.join(datadir, )
 
         f = open(filename, "w")
         # ---
@@ -257,8 +256,8 @@ for case in range(n_cases):
         f.write("# activate temoa environment\n")
         f.write("source activate temoa-stoch-py2\n\n")
         f.write("# if gurobi is available\n")
+        f.write("export PYTHONPATH=$EBROOTGUROBI/lib/python2.7_utf32\n")
         f.write("module load gurobi/9.0.1\n\n")
-        f.write("export PYTHONPATH=$EBROOTGUROBI/lib/python2.7_utf32\n\n")
         f.write("# set the NUM_PROCS env variable for the Python script\n")
         f.write("export NUM_PROCS =$SLURM_CPUS_PER_TASK\n\n")
         f.write("# run\n")
