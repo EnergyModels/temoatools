@@ -29,7 +29,7 @@ More details:
 Temoatools is meant to be an add-in for Temoa, thus it builds on the current method for installing Temoa. 
 The instructions below are for a new installation of anaconda3, Temoa and temoatools. The example commands are shown in a Windows environment.
 
-1) install python 3 with anaconda3
+1) Prerequisites: python 3.7 using Anaconda
     - https://www.anaconda.com/distribution/#download-section
 
 2) install temoa
@@ -58,9 +58,27 @@ The instructions below are for a new installation of anaconda3, Temoa and temoat
 	    -            raw_input() # Give the user a chance to confirm input
 	    -     except:
         -            input()"
+        
+        
+Sample commands for UVA's Rivanna supercomputer (Check https://www.anaconda.com/distribution/#download-section for the current python 2.7 anaconda module if this example does not work):
+    
+       
+        module load anaconda/2019.10-py3.7
+        git clone https:www.github.com/temoaproject/temoa
+        cd temoa
+        conda env create
+        source activate temoa-py3
+        cd ..
+        git clone https:www.github.com/EnergyModels/temoatools
+        cd temoatools
+        pip install .
+        ipython
+        import temoatools as tt
+
 
 # stochastic instructions
-For step-by-step instructions to run the stochastic version of temoa refer to stochastic_instructions.md
+For step-by-step instructions to run the Puerto Rico Stochastic project see the README.md file in projects/puerto_rico_stoch. 
+This project uses a stochastic implementation of temoa that is archived in temoa_stochastic.
 
 # Usage notes
 As of 2/8/2020, temoa currently does not output results to excel, therefore set saveEXCEL to False in temoatools.run()

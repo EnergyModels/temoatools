@@ -22,6 +22,8 @@ Instructions to install temoa_stochastic and run the puerto_rico_stoch project
     >
         git clone https://www.github.com/EnergyModels/temoatools
         module load anaconda/2019.10-py2.7
+        module load gurobi/9.0.1
+        export PYTHONPATH=$EBROOTGUROBI/lib/python2.7_utf32
         cd temoatools/temoa_stochastic
         conda env create
         source activate temoa-stoch-py2

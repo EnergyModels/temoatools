@@ -70,7 +70,7 @@ def analyze_results(task, folder_db, all_dbs_dict, db_shift, node_prob,
 
     if metric == 'costs_yearly' or metric == 'emissions_yearly' \
             or metric == 'activity_by_fuel' or metric == 'activity_by_tech' \
-        or metric == 'capacity_by_fuel' or metric == 'capacity_by_tech':
+            or metric == 'capacity_by_fuel' or metric == 'capacity_by_tech':
 
         if metric == 'costs_yearly':
             filename = 'costs_yearly'
@@ -92,7 +92,7 @@ def analyze_results(task, folder_db, all_dbs_dict, db_shift, node_prob,
     # --------------------------------
     if metric == 'costs_yearly' or metric == 'emissions_yearly' \
             or metric == 'activity_by_fuel' or metric == 'activity_by_tech' \
-        or metric == 'capacity_by_fuel' or metric == 'capacity_by_tech':
+            or metric == 'capacity_by_fuel' or metric == 'capacity_by_tech':
 
         if metric == 'costs_yearly':
             filename = 'costs_yearly_exp'
@@ -165,7 +165,7 @@ def analyze_results(task, folder_db, all_dbs_dict, db_shift, node_prob,
     # Load and Process data
     df = pd.read_csv(filename, index_col=0)
     if metric == 'costs_yearly' or metric == 'emissions_yearly' \
-            or metric == 'activity_by_fuel' or metric == 'activity_by_tech'\
+            or metric == 'activity_by_fuel' or metric == 'activity_by_tech' \
             or metric == 'capacity_by_fuel' or metric == 'capacity_by_tech':
         df = df.drop("prob", axis=1)
     for col in df.columns:
@@ -197,7 +197,10 @@ def analyze_results(task, folder_db, all_dbs_dict, db_shift, node_prob,
 # Main body of script
 # ================================
 if __name__ == '__main__':
-    ncpus = 6 # int(os.getenv('NUM_PROCS'))
+    try:
+        ncpus = int(os.getenv('NUM_PROCS'))  # try to use variable defined in sbatch script
+    except:
+        ncpus = 6  # otherwise default to this number of cores
 
     db_folder = os.path.join(os.getcwd(), 'stoch_databases')
     result_folder = os.path.join(os.getcwd(), 'results')
@@ -213,14 +216,14 @@ if __name__ == '__main__':
                  "1": [0.2, 0.32, 0.48]}  # Climate Change
 
     # Dictionary relating simulated databases to calculated results using different distributions
-    db_shift = {"WA_0": "WA_1", "WB_0": "WB_1",  "WD_0": "WD_1", "WE_0": "WE_1", "WF_0": "WF_1",
-                "XA_0": "XA_1", "XB_0": "XB_1",  "XD_0": "XD_1",
+    db_shift = {"WA_0": "WA_1", "WB_0": "WB_1", "WD_0": "WD_1", "WE_0": "WE_1", "WF_0": "WF_1",
+                "XA_0": "XA_1", "XB_0": "XB_1", "XD_0": "XD_1",
                 "YA_0": "YA_1", "YB_0": "YB_1",
                 "ZA_0": "ZA_1", "ZB_0": "ZB_1",
                 "T_0": "T_1",
                 "U_0": "U_1",
                 "V_0": "V_1",
-                "AA_0": "AA_1", "AB_0": "AB_1",  "AD_0": "AD_1", "AE_0": "AE_1", "AF_0": "AF_1"}
+                "AA_0": "AA_1", "AB_0": "AB_1", "AD_0": "AD_1", "AE_0": "AE_1", "AF_0": "AF_1"}
 
     # Dictionary relating databases after applying different distributions
     all_dbs_dict = {"WA_0.sqlite": "WA_1.sqlite", "WB_0.sqlite": "WB_1.sqlite",
@@ -233,7 +236,7 @@ if __name__ == '__main__':
                     "U_0.sqlite": "U_1.sqlite",
                     "V_0.sqlite": "V_1.sqlite",
                     "AA_0.sqlite": "AA_1.sqlite", "AB_0.sqlite": "AB_1.sqlite",
-                    "AD_0.sqlite": "AD_1.sqlite", "AE_0.sqlite": "AE_1.sqlite", "AF_0.sqlite": "AF_1.sqlite",}
+                    "AD_0.sqlite": "AD_1.sqlite", "AE_0.sqlite": "AE_1.sqlite", "AF_0.sqlite": "AF_1.sqlite", }
 
     # Technology Groups
     tech_group = ['Centralized', 'Distributed',
@@ -259,7 +262,7 @@ if __name__ == '__main__':
                        "AD_0.sqlite": tech_group[3], "AD_1.sqlite": tech_group[3],
                        "AE_0.sqlite": tech_group[6], "AE_1.sqlite": tech_group[6],
                        "AF_0.sqlite": tech_group[7], "AF_1.sqlite": tech_group[7]
-}
+                       }
 
     # Historical or Climate Change Probabilities
     prob = ["Historical", "Climate Change", "None"]
@@ -342,7 +345,7 @@ if __name__ == '__main__':
         # For our analysis we only use the following metrics
         if db == "T_0.sqlite" or db == "U_0.sqlite" or db == "V_0.sqlite":
             metrics = ['costs_yearly', 'emissions_yearly', 'activity_by_fuel', 'activity_by_tech', 'capacity_by_fuel',
-                    'capacity_by_tech']
+                       'capacity_by_tech']
         else:
             metrics = ['costs_yearly', 'emissions_yearly']
 

@@ -5,7 +5,10 @@ from joblib import Parallel, delayed, parallel_backend
 
 
 if __name__ == '__main__':
-    ncpus = 2 # int(os.getenv('NUM_PROCS'))
+    try:
+        ncpus = int(os.getenv('NUM_PROCS'))  # try to use variable defined in sbatch script
+    except:
+        ncpus = 2  # otherwise default to this number of cores
 
     db_folder = os.path.join(os.getcwd(), 'stochastic_databases')
     result_folder = os.path.join(os.getcwd(), 'results')

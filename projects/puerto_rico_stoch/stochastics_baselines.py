@@ -31,8 +31,11 @@ if __name__ == '__main__':
                           ['WA', 'WB', 'WD', 'WE', 'WF'], ['XA', 'XB', 'XD'],
                           ['YA', 'YB', ],
                           ['ZA', 'ZB', ], ['AA', 'AB', 'AD', 'AE', 'AF'], ]
-    ncpus = int(os.getenv('NUM_PROCS'))
-    solver = 'gurobi'
+    solver = ''  # leave blank to let temoa decide which solver to use of those installed
+    try:
+        ncpus = int(os.getenv('NUM_PROCS'))  # try to use variable defined in sbatch script
+    except:
+        ncpus = 6  # otherwise default to this number of cores
 
     for modelInputs_XLSX, scenarioNames in zip(modelInputs_XLSX_list, scenarioNames_list):
 

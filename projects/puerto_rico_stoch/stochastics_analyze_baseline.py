@@ -55,14 +55,14 @@ def analyze_results(task, folder_db, tech_group_dict, prob_type_dict, infra_dict
     elif metric == 'capacity_by_fuel':
         switch = 'fuel'
         tt.getCapacityNew(folder_db, dbs, switch=switch, sector_name=sector_name, save_data=save_data,
-                       create_plots=create_plots, run_name=run_name)
+                          create_plots=create_plots, run_name=run_name)
 
     # Analyze capacity by fuel types
     elif metric == 'capacity_by_tech':
         switch = 'tech'
         sector_name = 'all'
         tt.getCapacityNew(folder_db, dbs, switch=switch, sector_name=sector_name, save_data=save_data,
-                       create_plots=create_plots, run_name=run_name)
+                          create_plots=create_plots, run_name=run_name)
 
     # --------------------------------
     # Move to results directory
@@ -161,7 +161,10 @@ def analyze_results(task, folder_db, tech_group_dict, prob_type_dict, infra_dict
 # Main body of script
 # ================================
 if __name__ == '__main__':
-    ncpus = 3  # int(os.getenv('NUM_PROCS'))
+    try:
+        ncpus = int(os.getenv('NUM_PROCS'))  # try to use variable defined in sbatch script
+    except:
+        ncpus = 3  # otherwise default to this number of cores
 
     db_folder = os.path.join(os.getcwd(), 'databases')
     result_folder = os.path.join(os.getcwd(), 'results')
@@ -198,7 +201,7 @@ if __name__ == '__main__':
 
         # For our analysis we only use the following metrics
         metrics = ['costs_yearly', 'emissions_yearly', 'activity_by_fuel', 'activity_by_tech', 'capacity_by_fuel',
-                    'capacity_by_tech']
+                   'capacity_by_tech']
 
         for metric in metrics:
             t = pd.Series(index=entries)
