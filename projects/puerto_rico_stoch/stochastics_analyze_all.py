@@ -370,94 +370,94 @@ if __name__ == '__main__':
                                      tech_group_dict, prob_type_dict, infra_dict, carbon_tax_dict) for index, task in
             tasks.iterrows())
 
-    # -------------------
-    # combine the results
-    # -------------------
-    costs_yearly = []
-    emissions_yearly = []
-    activity_by_fuel = []
-    activity_by_tech = []
-    capacity_by_fuel = []
-    capacity_by_tech = []
-
-    for index, task in tasks.iterrows():
-        db = task['db']
-        metric = task['metric']
-        run_name = task['run_name']
-        folder_results = task['folder_results']
-
-        os.chdir(folder_results)
-
-        if metric == 'costs_yearly':
-            temp = pd.read_csv('costs_yearly_toPlot.csv')
-            if len(costs_yearly) == 0:
-                costs_yearly = temp
-            else:
-                costs_yearly = pd.concat([costs_yearly, temp])
-
-        elif metric == 'emissions_yearly':
-            temp = pd.read_csv('emissions_yearly_toPlot.csv')
-            if len(emissions_yearly) == 0:
-                emissions_yearly = temp
-            else:
-                emissions_yearly = pd.concat([emissions_yearly, temp])
-
-        elif metric == 'activity_by_fuel':
-            temp = pd.read_csv('activity_by_fuel_toPlot.csv')
-            if len(activity_by_fuel) == 0:
-                activity_by_fuel = temp
-            else:
-                activity_by_fuel = pd.concat([activity_by_fuel, temp])
-
-        elif metric == 'activity_by_tech':
-            temp = pd.read_csv('activity_by_tech_toPlot.csv')
-            if len(activity_by_tech) == 0:
-                activity_by_tech = temp
-            else:
-                activity_by_tech = pd.concat([activity_by_tech, temp])
-
-        elif metric == 'capacity_by_fuel':
-            temp = pd.read_csv('capacity_by_fuel_toPlot.csv')
-            if len(activity_by_fuel) == 0:
-                capacity_by_fuel = temp
-            else:
-                capacity_by_fuel = pd.concat([capacity_by_fuel, temp])
-
-        elif metric == 'capacity_by_tech':
-            temp = pd.read_csv('capacity_by_tech_toPlot.csv')
-            if len(capacity_by_tech) == 0:
-                capacity_by_tech = temp
-            else:
-                capacity_by_tech = pd.concat([capacity_by_tech, temp])
-
-    # save
-    os.chdir(result_folder)
-    costs_yearly.to_csv('costs_yearly_toPlot_stochastics.csv')
-    emissions_yearly.to_csv('emissions_yearly_toPlot_stochastics.csv')
-    activity_by_fuel.to_csv('activity_by_fuel_toPlot_stochastics.csv')
-    activity_by_tech.to_csv('activity_by_tech_toPlot_stochastics.csv')
-    capacity_by_fuel.to_csv('capacity_by_fuel_toPlot.csv')
-    capacity_by_tech.to_csv('capacity_by_tech_toPlot.csv')
-
-    # ------------------------
-    # combine with baseline results
-    # ------------------------
-
-    # load baselines results and concat
-    temp = pd.read_csv('costs_yearly_toPlot_baselines.csv')
-    costs_yearly = pd.concat([costs_yearly, temp])
-
-    temp = pd.read_csv('emissions_yearly_toPlot_baselines.csv')
-    emissions_yearly = pd.concat([emissions_yearly, temp])
-
-    temp = pd.read_csv('activity_by_fuel_toPlot_baselines.csv')
-    activity_by_fuel = pd.concat([activity_by_fuel, temp])
-
-    temp = pd.read_csv('activity_by_tech_toPlot_baselines.csv')
-    activity_by_tech = pd.concat([activity_by_tech, temp])
-
-    # save
-    costs_yearly.to_csv('costs_yearly_toPlot.csv')
-    emissions_yearly.to_csv('emissions_yearly_toPlot.csv')
-    activity_by_fuel.to_csv('activity_by_fuel_toPlot.csv')
-    activity_by_tech.to_csv('activity_by_tech_toPlot.csv')
+    # # -------------------
+    # # combine the results
+    # # -------------------
+    # costs_yearly = []
+    # emissions_yearly = []
+    # activity_by_fuel = []
+    # activity_by_tech = []
+    # capacity_by_fuel = []
+    # capacity_by_tech = []
+    #
+    # for index, task in tasks.iterrows():
+    #     db = task['db']
+    #     metric = task['metric']
+    #     run_name = task['run_name']
+    #     folder_results = task['folder_results']
+    #
+    #     os.chdir(folder_results)
+    #
+    #     if metric == 'costs_yearly':
+    #         temp = pd.read_csv('costs_yearly_toPlot.csv')
+    #         if len(costs_yearly) == 0:
+    #             costs_yearly = temp
+    #         else:
+    #             costs_yearly = pd.concat([costs_yearly, temp])
+    #
+    #     elif metric == 'emissions_yearly':
+    #         temp = pd.read_csv('emissions_yearly_toPlot.csv')
+    #         if len(emissions_yearly) == 0:
+    #             emissions_yearly = temp
+    #         else:
+    #             emissions_yearly = pd.concat([emissions_yearly, temp])
+    #
+    #     elif metric == 'activity_by_fuel':
+    #         temp = pd.read_csv('activity_by_fuel_toPlot.csv')
+    #         if len(activity_by_fuel) == 0:
+    #             activity_by_fuel = temp
+    #         else:
+    #             activity_by_fuel = pd.concat([activity_by_fuel, temp])
+    #
+    #     elif metric == 'activity_by_tech':
+    #         temp = pd.read_csv('activity_by_tech_toPlot.csv')
+    #         if len(activity_by_tech) == 0:
+    #             activity_by_tech = temp
+    #         else:
+    #             activity_by_tech = pd.concat([activity_by_tech, temp])
+    #
+    #     elif metric == 'capacity_by_fuel':
+    #         temp = pd.read_csv('capacity_by_fuel_toPlot.csv')
+    #         if len(activity_by_fuel) == 0:
+    #             capacity_by_fuel = temp
+    #         else:
+    #             capacity_by_fuel = pd.concat([capacity_by_fuel, temp])
+    #
+    #     elif metric == 'capacity_by_tech':
+    #         temp = pd.read_csv('capacity_by_tech_toPlot.csv')
+    #         if len(capacity_by_tech) == 0:
+    #             capacity_by_tech = temp
+    #         else:
+    #             capacity_by_tech = pd.concat([capacity_by_tech, temp])
+    #
+    # # save
+    # os.chdir(result_folder)
+    # costs_yearly.to_csv('costs_yearly_toPlot_stochastics.csv')
+    # emissions_yearly.to_csv('emissions_yearly_toPlot_stochastics.csv')
+    # activity_by_fuel.to_csv('activity_by_fuel_toPlot_stochastics.csv')
+    # activity_by_tech.to_csv('activity_by_tech_toPlot_stochastics.csv')
+    # capacity_by_fuel.to_csv('capacity_by_fuel_toPlot.csv')
+    # capacity_by_tech.to_csv('capacity_by_tech_toPlot.csv')
+    #
+    # # ------------------------
+    # # combine with baseline results
+    # # ------------------------
+    #
+    # # load baselines results and concat
+    # temp = pd.read_csv('costs_yearly_toPlot_baselines.csv')
+    # costs_yearly = pd.concat([costs_yearly, temp])
+    #
+    # temp = pd.read_csv('emissions_yearly_toPlot_baselines.csv')
+    # emissions_yearly = pd.concat([emissions_yearly, temp])
+    #
+    # temp = pd.read_csv('activity_by_fuel_toPlot_baselines.csv')
+    # activity_by_fuel = pd.concat([activity_by_fuel, temp])
+    #
+    # temp = pd.read_csv('activity_by_tech_toPlot_baselines.csv')
+    # activity_by_tech = pd.concat([activity_by_tech, temp])
+    #
+    # # save
+    # costs_yearly.to_csv('costs_yearly_toPlot.csv')
+    # emissions_yearly.to_csv('emissions_yearly_toPlot.csv')
+    # activity_by_fuel.to_csv('activity_by_fuel_toPlot.csv')
+    # activity_by_tech.to_csv('activity_by_tech_toPlot.csv')

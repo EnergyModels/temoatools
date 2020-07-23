@@ -16,3 +16,4 @@ export NUM_PROCS=$SLURM_CPUS_PER_TASK
 # run
 python stochastics_analyze_baseline.py
 python stochastics_analyze_all.py
+python combine_results.py

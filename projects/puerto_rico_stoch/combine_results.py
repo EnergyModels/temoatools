@@ -6,7 +6,6 @@ from joblib import Parallel, delayed, parallel_backend
 
 if __name__ == '__main__':
 
-    db_folder = os.path.join(os.getcwd(), 'stochastic_databases')
     result_folder = os.path.join(os.getcwd(), 'results')
 
     print("running")
@@ -182,6 +181,9 @@ if __name__ == '__main__':
         metric = task['metric']
         run_name = task['run_name']
         folder_results = task['folder_results']
+
+        print("db: " + str(db))
+        print("folder_results: " + str(folder_results))
 
         os.chdir(folder_results)
 
