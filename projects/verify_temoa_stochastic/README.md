@@ -1,7 +1,7 @@
 ## Instructions to verify temoa_stochastic performance
 The instance of temoa_stochastic was verified by comparing it against the performance of the latest version of temoa for a known dataset.
 
-###Prerequisites:
+### Prerequisites:
 1) Install temoa and temoatools
     - follow instructions in temoatools/README.md
     - verification was performed with temoa commit 9d10c1da81dc6b4f2b34cadfac9db947251254e2, https://github.com/TemoaProject/temoa/tree/9d10c1da81dc6b4f2b34cadfac9db947251254e2

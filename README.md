@@ -78,7 +78,7 @@ Sample commands for running on Rivanna, UVA's high performance computing system*
 
 
 ## Stochastic instructions
-For step-by-step instructions to run the Puerto Rico Stochastic project see the README.md file in projects/puerto_rico_stoch. 
+For step-by-step instructions to run the Puerto Rico Stochastic project, see the README.md file in projects/puerto_rico_stoch. 
 This project uses a stochastic implementation of temoa that is archived in temoa_stochastic.
 
 ## Notes
