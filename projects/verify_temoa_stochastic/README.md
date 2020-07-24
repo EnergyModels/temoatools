@@ -13,6 +13,7 @@ The instance of temoa_stochastic was verified by comparing it against the perfor
     - This is the version of temoa used for the Puerto Rico project
     - make note of the path to temoa_stochastic
 ### Run the test cases
+Test cases are from Henry et al.
 1) run test cases with the current version of temoa
 2) run test cases with the stochastic version of temoa
     
@@ -36,3 +37,7 @@ Sample code in Anaconda2 (for running stochastic version):
     python temoa_model/ --config=../projects/verify_temoa_stochastic/stochastic/config_NGCC.txt
     python temoa_model/ --config=../projects/verify_temoa_stochastic/stochastic/config_solarBatt.txt
     python temoa_model/ --config=../projects/verify_temoa_stochastic/stochastic/config_Base_zeroDR.txt    
+
+
+References:
+Henry et al., 2020, Inter-comparisons for Capacity Expansion Models, In preparation to submission to Joule Perspective.
