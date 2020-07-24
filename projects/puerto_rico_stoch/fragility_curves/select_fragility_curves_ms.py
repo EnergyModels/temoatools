@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import temoatools as tt
+import pandas as pd
 
 # =============================================================================#
 # Select Fragility Curves
@@ -23,7 +24,7 @@ curves = {"trans": "trans_UK_base",
 # Calculate damage across a range of windspeeds
 # ================================#
 
-mph = np.arange(0.1, 178, 1) # 80 m/s
+mph = np.arange(0.1, 178, 1)  # 80 m/s
 # mph = np.arange(0.1, 223, 1) # 100 m/s
 ms = mph * 0.44704
 trans = tt.fragility(mph, curve=curves['trans'])
@@ -61,7 +62,7 @@ plt.plot(ms, dist_twr, label="Distribution towers", color=colors[5])
 
 plt.plot(ms, solar, label="Solar panels", color=colors[8])
 plt.plot(ms, coal_biomass, '--', label="Coal & biomass power plants", color=colors[7])
-plt.plot(ms, battery,  label="Battery storage plants", color=colors[3])
+plt.plot(ms, battery, label="Battery storage plants", color=colors[3])
 plt.plot(ms, hydro, '--', label="Hydroelectric power plants", color=colors[9])
 
 plt.plot(ms, sub, '--', label="Substations", color=colors[6])
@@ -79,9 +80,9 @@ plt.xlabel("Wind speed ($ms^{-1}$)")
 
 # Add vertical lines for category cases
 y = [0, 1.02]
-low = 22.*0.44704 # mph to m/s
-med = 113.0*0.44704
-high = 154.0*0.44704
+low = 22. * 0.44704  # mph to m/s
+med = 113.0 * 0.44704
+high = 154.0 * 0.44704
 
 plt.plot([low, low], y, color="gray")
 plt.plot([med, med], y, color="gray")
@@ -91,10 +92,31 @@ y_txt = 1.03
 plt.text(low, y_txt, "1", ha="center")
 plt.text(med, y_txt, "2-3", ha="center")
 plt.text(high, y_txt, "4-5", ha="center")
-plt.text((low+high)/2.0, y_txt+0.07, "Hurricane category", ha="center")
+plt.text((low + high) / 2.0, y_txt + 0.07, "Hurricane category", ha="center")
 
 sns.despine()
 
 # Save and show
 plt.savefig("Figure4_fragility_curves_selected_ms.png", dpi=1000, bbox_inches="tight")
 
+# --------------------------
+# write out results to csv
+# --------------------------
+low = low / 0.44704  # m/s back to mph
+med = med / 0.44704
+high = high / 0.44704
+
+entries = ['technology', 'curve', 'low', 'med', 'high']
+
+curve_order = ["dist_cond", "wind", "dist_twr", "solar", "coal_biomass",
+               "battery", "hydro", "sub", "trans", "natgas_petrol", "UGND"]
+df = pd.DataFrame(columns=entries)
+for curve in curve_order:
+    s = pd.Series(index=entries)
+    s['technology'] = curve
+    s['curve'] = curves[curve]
+    s['low'] = 1.0 - tt.fragility(low, curve=curves[curve])
+    s['med'] = 1.0 - tt.fragility(med, curve=curves[curve])
+    s['high'] = 1.0 - tt.fragility(high, curve=curves[curve])
+    df = df.append(s, ignore_index=True)
+df.to_csv('fragility_curve_summary.csv')
