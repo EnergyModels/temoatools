@@ -124,3 +124,13 @@ ggplot(df1,aes(x=Year,y=Value, fill=Case))+
 
 ggsave('Fig6A_V300.png', device="png",
        width=6.0, height=5.0, units="in",dpi=1000)
+
+# Analyze Results
+# Combine same technologies
+groupings = c("Year","Case")
+df_smry_all <- df1 %>% 
+  group_by(.dots=groupings)%>%
+  summarise(min = min(Value),    # calculates the minimum
+            mean = mean(Value),    # calculates the minimum
+            max = max(Value))    # calculates the maximum
+write.csv(df_smry_all, "cost_summary.csv")

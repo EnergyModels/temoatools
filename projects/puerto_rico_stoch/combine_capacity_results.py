@@ -63,35 +63,7 @@ if __name__ == '__main__':
 
         os.chdir(folder_results)
 
-        if metric == 'costs_yearly':
-            temp = pd.read_csv('costs_yearly_toPlot.csv')
-            if len(costs_yearly) == 0:
-                costs_yearly = temp
-            else:
-                costs_yearly = pd.concat([costs_yearly, temp])
-
-        elif metric == 'emissions_yearly':
-            temp = pd.read_csv('emissions_yearly_toPlot.csv')
-            if len(emissions_yearly) == 0:
-                emissions_yearly = temp
-            else:
-                emissions_yearly = pd.concat([emissions_yearly, temp])
-
-        elif metric == 'activity_by_fuel':
-            temp = pd.read_csv('activity_by_fuel_toPlot.csv')
-            if len(activity_by_fuel) == 0:
-                activity_by_fuel = temp
-            else:
-                activity_by_fuel = pd.concat([activity_by_fuel, temp])
-
-        elif metric == 'activity_by_tech':
-            temp = pd.read_csv('activity_by_tech_toPlot.csv')
-            if len(activity_by_tech) == 0:
-                activity_by_tech = temp
-            else:
-                activity_by_tech = pd.concat([activity_by_tech, temp])
-
-        elif metric == 'capacity_by_fuel':
+        if metric == 'capacity_by_fuel':
             temp = pd.read_csv('capacity_by_fuel_toPlot.csv')
             if len(capacity_by_fuel) == 0:
                 capacity_by_fuel = temp

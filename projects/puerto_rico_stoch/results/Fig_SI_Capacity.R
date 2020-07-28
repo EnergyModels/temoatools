@@ -194,7 +194,7 @@ df3 <- df3[ which(df3$Technology !='exclude'),]
 
 # Combine same technologies within each scenario (s)
 groupings = c("Scenario","s","Technology","Year","case","prob_type","infra",
-              "carbon_tax","infra_and_carbon_tax", "entry")
+              "carbon_tax","infra_and_carbon_tax")
 df1_smry <- df1 %>% 
   group_by(.dots=groupings)%>%
   summarise(Value=sum(Value))
