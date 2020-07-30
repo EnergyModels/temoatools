@@ -153,8 +153,7 @@ if __name__ == '__main__':
 
         # For our analysis we only use the following metrics
         if db == "T_0.sqlite" or db == "U_0.sqlite" or db == "V_0.sqlite":
-            metrics = ['costs_yearly', 'emissions_yearly', 'activity_by_fuel', 'activity_by_tech', 'capacity_by_fuel',
-                    'capacity_by_tech']
+            metrics = ['costs_yearly', 'emissions_yearly', 'activity_by_fuel', 'activity_by_tech']
         else:
             metrics = ['costs_yearly', 'emissions_yearly']
 
@@ -235,8 +234,8 @@ if __name__ == '__main__':
     emissions_yearly.to_csv('emissions_yearly_toPlot_stochastics.csv')
     activity_by_fuel.to_csv('activity_by_fuel_toPlot_stochastics.csv')
     activity_by_tech.to_csv('activity_by_tech_toPlot_stochastics.csv')
-    capacity_by_fuel.to_csv('capacity_by_fuel_toPlot_stochastics.csv')
-    capacity_by_tech.to_csv('capacity_by_tech_toPlot_stochastics.csv')
+    # capacity_by_fuel.to_csv('capacity_by_fuel_toPlot_stochastics.csv')
+    # capacity_by_tech.to_csv('capacity_by_tech_toPlot_stochastics.csv')
 
     # ------------------------
     # combine with baseline results
@@ -255,18 +254,18 @@ if __name__ == '__main__':
     temp = pd.read_csv('activity_by_tech_toPlot_baselines.csv')
     activity_by_tech = pd.concat([activity_by_tech, temp])
 
-    temp = pd.read_csv('capacity_by_fuel_toPlot_baselines.csv')
-    capacity_by_fuel = pd.concat([capacity_by_fuel, temp])
-
-    temp = pd.read_csv('capacity_by_tech_toPlot_baselines.csv')
-    capacity_by_tech = pd.concat([capacity_by_tech, temp])
+    # temp = pd.read_csv('capacity_by_fuel_toPlot_baselines.csv')
+    # capacity_by_fuel = pd.concat([capacity_by_fuel, temp])
+    #
+    # temp = pd.read_csv('capacity_by_tech_toPlot_baselines.csv')
+    # capacity_by_tech = pd.concat([capacity_by_tech, temp])
 
     # save
     costs_yearly.to_csv('costs_yearly_toPlot.csv')
     emissions_yearly.to_csv('emissions_yearly_toPlot.csv')
     activity_by_fuel.to_csv('activity_by_fuel_toPlot.csv')
     activity_by_tech.to_csv('activity_by_tech_toPlot.csv')
-    capacity_by_fuel.to_csv('capacity_by_fuel_toPlot.csv')
-    capacity_by_tech.to_csv('capacity_by_tech_toPlot.csv')
+    # capacity_by_fuel.to_csv('capacity_by_fuel_toPlot.csv')
+    # capacity_by_tech.to_csv('capacity_by_tech_toPlot.csv')
 
 

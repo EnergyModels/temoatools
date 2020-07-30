@@ -350,8 +350,7 @@ if __name__ == '__main__':
 
         # For our analysis we only use the following metrics
         if db == "T_0.sqlite" or db == "U_0.sqlite" or db == "V_0.sqlite":
-            metrics = ['costs_yearly', 'emissions_yearly', 'activity_by_fuel', 'activity_by_tech', 'capacity_by_fuel',
-                       'capacity_by_tech']
+            metrics = ['costs_yearly', 'emissions_yearly', 'activity_by_fuel', 'activity_by_tech']
         else:
             metrics = ['costs_yearly', 'emissions_yearly']
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -N 1
-#SBATCH --cpus-per-task=40
+#SBATCH --cpus-per-task=20
 #SBATCH -t 2:00:00
 #SBATCH -p standard
 
@@ -17,3 +17,4 @@ export NUM_PROCS=$SLURM_CPUS_PER_TASK
 python stochastics_analyze_baseline.py
 python stochastics_analyze_all.py
 python combine_results.py
+python stochastics_analyze_capacity.py
