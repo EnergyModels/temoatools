@@ -73,8 +73,9 @@ Sample commands for running on Rivanna, UVA's high performance computing system*
         git clone https:www.github.com/EnergyModels/temoatools
         cd temoatools
         pip install .
-        ipython
-        import temoatools as tt
+        cd examples/baselines
+        sbatch run_baselines.sh
+        sacct
 
 
 ## Stochastic Instructions

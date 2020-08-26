@@ -5,7 +5,7 @@
 #SBATCH -p standard
 
 module purge
-module load anaconda
+module load load anaconda/2019.10-3.7
 
 # activate temoa environment
 source activate temoa-py3
