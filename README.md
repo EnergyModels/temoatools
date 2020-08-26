@@ -61,9 +61,9 @@ The instructions below are for a new installation of anaconda3, Temoa and temoat
                     input()"
         
         
-Sample commands for running on Rivanna, UVA's high performance computing system*:
-    
-       
+## Running on Rivanna, UVA's high performance computing system*:
+   ### To install:
+          
         module load anaconda/2019.10-py3.7
         git clone https:www.github.com/temoaproject/temoa
         cd temoa
@@ -73,6 +73,8 @@ Sample commands for running on Rivanna, UVA's high performance computing system*
         git clone https:www.github.com/EnergyModels/temoatools
         cd temoatools
         pip install .
+    
+   ### To test:
         cd examples/baselines
         sbatch run_baselines.sh
         sacct
