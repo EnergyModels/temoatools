@@ -190,7 +190,7 @@ ggsave('new_capacity_summary_all.png', device="png",
 #--------------------------
 # Boxplot - T_0
 #--------------------------
-df4 <-subset(df4,database=="T_0.sqlite")
+df4 <-subset(df3,database=="T_0.sqlite")
 ggplot(df4, aes(x=Technology,y=Value,fill=Technology)) + geom_boxplot()+
   facet_grid("Year")+theme(legend.position="none",axis.text.x =  element_text(angle = 45,vjust=1.0))+coord_flip()+
   labs(y='New or reparied capacity (MW)')
