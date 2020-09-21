@@ -43,18 +43,14 @@ The instructions below are for a new installation of anaconda3, Temoa and temoat
     2) install temoatools using pip
         1) start anaconda3 prompt
         2) activate temoa-py3 environment
-        > 
-            conda activate temoa-py3
+        > conda activate temoa-py3
         3) navigate to temoatools directory
-        >
-            cd temoatools
+        > cd temoatools
         4) install using pip
-        > 
-            pip install .                                                                                                                                                                                                                     
+        > pip install .                                                                                                                                                                                                                     
 5) to test:
-    >
-        cd examples/baselines
-        python baselines_run.py
+    > cd examples/baselines  
+      python baselines_run.py
 
 6) Optional: Make modifications to temoa source code for running simulations in parallel from a terminal
     1) comment out lines 550-553 of temoa_run.py
