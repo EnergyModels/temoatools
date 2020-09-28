@@ -1,1 +1,0 @@
-Data comes from temoatools/projects/puerto_rico_stoch/data/data_T.xlsx
