@@ -91,5 +91,3 @@ As of 2/8/2020, temoa currently does not output results to excel, therefore set 
 However, modules on Rivanna are routinely updated. 
 Therefore "module load" commands (for anaconda and gurobi) may need to be updated. 
 Check https://www.rc.virginia.edu/userinfo/rivanna/software/modules/ for the latest.
-
-Test
