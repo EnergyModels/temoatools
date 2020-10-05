@@ -8,11 +8,11 @@
 # Input File (Mandatory)
 # Input can be a .sqlite or .dat file
 # Both relative path and absolute path are accepted
---input=/Users/rogerzhu/Documents/coopercenter_temoatools/temoatools/projects/virginia/databases/B.sqlite
+--input=/Users/rogerzhu/Documents/coopercenter_temoatools/temoatools/examples/baselines/databases/E.sqlite
 
 # Output File (Mandatory)
 # The output file must be a existing .sqlite file
---output=/Users/rogerzhu/Documents/coopercenter_temoatools/temoatools/projects/virginia/databases/B.sqlite
+--output=/Users/rogerzhu/Documents/coopercenter_temoatools/temoatools/examples/baselines/databases/E.sqlite
 
 # Scenario Name (Mandatory)
 # This scenario name is used to store results within the output .sqlite file
@@ -20,7 +20,7 @@
 
 # Path to the "db_io" folder (Mandatory)
 # This is the location where database files reside
---path_to_db_io=/Users/rogerzhu/Documents/coopercenter_temoatools/temoatools/projects/virginia/databases
+--path_to_db_io=/Users/rogerzhu/Documents/coopercenter_temoatools/temoatools/examples/baselines/databases
 
 # Spreadsheet Output (Optional)
 # Direct model output to a spreadsheet
