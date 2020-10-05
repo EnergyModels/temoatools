@@ -312,7 +312,7 @@ def processSystem(inputs, local, outputs):
                                    inputs['representativeDays'].dmdFrac):
         for timeOfDay, timeOfDay_frac in zip(inputs['timesOfDay'].timeOfDay, inputs['timesOfDay'].dmdFrac):
             value = season_frac * timeOfDay_frac
-            outputs['DemandSpecificDistribution'].append([season, timeOfDay, demand_commodity, value, " "])
+            outputs['DemandSpecificDistribution'].append([season, timeOfDay, demand_commodity, value])
 
     # Add system level commodities
     # Add dummy fuel
