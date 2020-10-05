@@ -3,7 +3,7 @@ from setuptools import setup
 setup(name='temoatools',
       version='2.2.2',
       description='Modeling tools to support electric sector analyses in Temoa',
-      url='https://github.com/EnergyModels/temoatools',
+      url='https://github.com/coopercenter/temoatools',
       author='Jeff Bennett',
       author_email='jab6ft@virginia.edu',
       packages=['temoatools'],
