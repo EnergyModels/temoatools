@@ -48,13 +48,13 @@ class TemoaModel( AbstractModel ):
 		self.processInputs  = dict()
 		self.processOutputs = dict()
 		self.processLoans = dict()
-		self.activeFlow_rpsditvo = None
-		self.activeFlow_rpitvo = None
-		self.activeFlowInStorage_rpsditvo = None
-		self.activeCurtailment_rpsditvo = None
-		self.activeActivity_rptv = None
-		self.activeCapacity_rtv = None
-		self.activeCapacityAvailable_rpt = None
+		self.activeFlow_psditvo = None
+		self.activeFlow_pitvo = None
+		self.activeFlowInStorage_psditvo = None
+		self.activeCurtailment_psditvo = None
+		self.activeActivity_ptv = None
+		self.activeCapacity_tv = None
+		self.activeCapacityAvailable_pt = None
 
 		self.commodityDStreamProcess  = dict() # The downstream process of a commodity during a period
 		self.commodityUStreamProcess  = dict() # The upstream process of a commodity during a period
@@ -70,8 +70,6 @@ class TemoaModel( AbstractModel ):
 		self.inputsplitVintages = dict()
 		self.outputsplitVintages = dict()
 		self.ProcessByPeriodAndOutput = dict()
-		self.exportRegions = dict()
-		self.importRegions = dict()
 
 # ---------------------------------------------------------------
 # Validation and initialization routines.
@@ -80,13 +78,13 @@ class TemoaModel( AbstractModel ):
 # parameter values.
 # ---------------------------------------------------------------
 
-def isValidProcess ( self, r, p, i, t, v, o ):
+def isValidProcess ( self, p, i, t, v, o ):
 	"""\
 Returns a boolean (True or False) indicating whether, in any given period, a
 technology can take a specified input carrier and convert it to and specified
 output carrier. Not currently used.
 """
-	index = (r, p, t, v)
+	index = (p, t, v)
 	if index in self.processInputs and index in self.processOutputs:
 		if i in self.processInputs[ index ]:
 			if o in self.processOutputs[ index ]:
@@ -97,7 +95,7 @@ output carrier. Not currently used.
 def get_str_padding ( obj ):
 	return len(str( obj ))
 
-def CommodityBalanceConstraintErrorCheck ( vflow_out, vflow_in, r, p, s, d, c ):
+def CommodityBalanceConstraintErrorCheck ( vflow_out, vflow_in, p, s, d, c ):
 	if int is type(vflow_out):
 		flow_in_expr = StringIO()
 		vflow_in.pprint( ostream=flow_in_expr )
@@ -111,10 +109,10 @@ def CommodityBalanceConstraintErrorCheck ( vflow_out, vflow_in, r, p, s, d, c ):
 		  ' - Are there missing entries in the Efficiency parameter?\n'
 		  ' - Does a process need a longer LifetimeProcess parameter setting?')
 		raise Exception( msg.format(
-		  r, c, s, d, p, flow_in_expr.getvalue()
+		  c, s, d, p, flow_in_expr.getvalue()
 		))
 
-def CommodityBalanceConstraintErrorCheckAnnual ( vflow_out, vflow_in, r, p, c ):
+def CommodityBalanceConstraintErrorCheckAnnual ( vflow_out, vflow_in, p, c ):
 	if int is type(vflow_out):
 		flow_in_expr = StringIO()
 		vflow_in.pprint( ostream=flow_in_expr )
@@ -128,17 +126,17 @@ def CommodityBalanceConstraintErrorCheckAnnual ( vflow_out, vflow_in, r, p, c ):
 		  ' - Are there missing entries in the Efficiency parameter?\n'
 		  ' - Does a process need a longer LifetimeProcess parameter setting?')
 		raise Exception( msg.format(
-		  r, c, p, flow_in_expr.getvalue()
+		  c, p, flow_in_expr.getvalue()
 		))		
 
-def DemandConstraintErrorCheck ( supply, r, p, s, d, dem ):
+def DemandConstraintErrorCheck ( supply, p, s, d, dem ):
 	if int is type( supply ):
 		msg = ("Error: Demand '{}' for ({}, {}, {}) unable to be met by any "
 		  'technology.\n\tPossible reasons:\n'
 		  ' - Is the Efficiency parameter missing an entry for this demand?\n'
 		  ' - Does a tech that satisfies this demand need a longer '
 		  'LifetimeProcess?\n')
-		raise Exception( msg.format(r, dem, p, s, d) )
+		raise Exception( msg.format(dem, p, s, d) )
 
 def validate_time ( M ):
 	"""
@@ -209,9 +207,10 @@ def CheckEfficiencyIndices ( M ):
 	"""
 	Ensure that there are no unused items in any of the Efficiency index sets.
 	"""
-	c_physical = set( i for r, i, t, v, o in M.Efficiency.sparse_iterkeys() )
-	techs      = set( t for r, i, t, v, o in M.Efficiency.sparse_iterkeys() )
-	c_outputs  = set( o for r, i, t, v, o in M.Efficiency.sparse_iterkeys() )
+
+	c_physical = set( i for i, t, v, o in M.Efficiency.sparse_iterkeys() )
+	techs      = set( t for i, t, v, o in M.Efficiency.sparse_iterkeys() )
+	c_outputs  = set( o for i, t, v, o in M.Efficiency.sparse_iterkeys() )
 
 	symdiff = c_physical.symmetric_difference( M.commodity_physical )
 	for i in M.commodity_emissions.keys(): #For letting emission commodities as input cmmodities in the efficiency table
@@ -253,15 +252,15 @@ def CreateCapacityFactors ( M ):
 	CFP = M.CapacityFactorProcess
 
 	# Step 1
-	processes  = set( (r, t, v) for r, i, t, v, o in M.Efficiency.sparse_iterkeys() )
+	processes  = set( (t, v) for i, t, v, o in M.Efficiency.sparse_iterkeys() )
 
 	all_cfs = set(
-	  (r, s, d, t, v)
+	  (s, d, t, v)
 
-	  for (r, t, v), s, d in cross_product(
-	    processes,
+	  for s, d, (t, v) in cross_product(
 	    M.time_season,
-	    M.time_of_day
+	    M.time_of_day,
+	    processes
 	  )
 	)
 
@@ -277,8 +276,8 @@ def CreateCapacityFactors ( M ):
 
 	if unspecified_cfs:
 		# CFP._constructed = False
-		for r, s, d, t, v in unspecified_cfs:
-			CFP[r, s, d, t, v] = M.CapacityFactorTech[r, s, d, t]
+		for s, d, t, v in unspecified_cfs:
+			CFP[s, d, t, v] = M.CapacityFactorTech[s, d, t]
 		# CFP._constructed = True
 
 
@@ -295,8 +294,8 @@ def CreateLifetimes ( M ):
 	LPR = M.LifetimeProcess
 
 	# Step 1
-	lprocesses = set( M.LifetimeLoanProcess_rtv )
-	processes  = set( M.LifetimeProcess_rtv )
+	lprocesses = set( M.LifetimeLoanProcess_tv )
+	processes  = set( M.LifetimeProcess_tv )
 
 
 	# Step 2
@@ -312,14 +311,14 @@ def CreateLifetimes ( M ):
 
 	if unspecified_loan_lives:
 		# LLN._constructed = False
-		for r, t, v in unspecified_loan_lives:
-			LLN[r, t, v] = M.LifetimeLoanTech[ (r, t) ]
+		for t, v in unspecified_loan_lives:
+			LLN[t, v] = M.LifetimeLoanTech[ t ]
 		# LLN._constructed = True
 
 	if unspecified_tech_lives:
 		# LPR._constructed = False
-		for r, t, v in unspecified_tech_lives:
-			LPR[r, t, v] = M.LifetimeTech[ (r, t) ]
+		for t, v in unspecified_tech_lives:
+			LPR[t, v] = M.LifetimeTech[ t ]
 		# LPR._constructed = True
 
 
@@ -340,16 +339,12 @@ def CreateDemands ( M ):
 
 	# Step 0: some setup for a couple of reusable items
 
-	# iget(3): 3 = magic number to specify the fourth column.  Currently the
-	# demand in the tuple (r, s, d, dem)
-	DSD_dem_getter = iget(3)
-
-	# iget(0): 0 = magic number to specify the first column.  Currently the
-	# demand in the tuple (r, s, d, dem)
-	DSD_region_getter = iget(0)
+	# iget(2): 2 = magic number to specify the third column.  Currently the
+	# demand in the tuple (s, d, dem)
+	DSD_dem_getter = iget(2)
 
 	# Step 1
-	used_dems = set(dem for r, p, dem in M.Demand.sparse_iterkeys())
+	used_dems = set(dem for p, dem in M.Demand.sparse_iterkeys())
 	unused_dems = sorted(M.commodity_demand.difference( used_dems ))
 	if unused_dems:
 		for dem in unused_dems:
@@ -401,7 +396,7 @@ def CreateDemands ( M ):
 	   (i for i in DSD.sparse_iterkeys()) ))
 	unset_demand_distributions = used_dems.difference( demands_specified )
 	unset_distributions = set(
-	   cross_product(M.regions, M.time_season, M.time_of_day, unset_demand_distributions))
+	   cross_product(M.time_season, M.time_of_day, unset_demand_distributions))
 
 	if unset_distributions:
 		# Some hackery because Pyomo thinks that this Param is constructed.
@@ -409,37 +404,37 @@ def CreateDemands ( M ):
 		# targeting values that have not yet been constructed, that we know are
 		# valid, and that we will need.
 		# DSD._constructed = False
-		for r, s, d, dem in unset_distributions:
-			DSD[r, s, d, dem] = DDD[s, d]
+		for s, d, dem in unset_distributions:
+			DSD[s, d, dem] = DDD[s, d]
 		# DSD._constructed = True
 
 	# Step 5
-	for r in M.regions:	
-		for dem in used_dems:
-			keys = (k for k in DSD.sparse_iterkeys() if DSD_dem_getter(k) == dem and  DSD_region_getter(k) == r)
-			total = sum( DSD[ i ] for i in keys )
-			if abs(value(total) - 1.0) > 0.001:
-			# We can't explicitly test for "!= 1.0" because of incremental rounding
-			# errors associated with the specification of demand shares by time slice, 
-			# but we check to make sure it is within the specified tolerance.
-	
-				keys = [k for k in DSD.sparse_iterkeys() if DSD_dem_getter(k) == dem and  DSD_region_getter(k) == r]
-				key_padding = max(map( get_str_padding, keys ))
-	
-				format = "%%-%ds = %%s" % key_padding
-					# Works out to something like "%-25s = %s"
-	
-				items = sorted( (k, DSD[k]) for k in keys )
-				items = '\n   '.join( format % (str(k), v) for k, v in items )
-	
-				msg = ('The values of the DemandSpecificDistribution parameter do not '
-				  'sum to 1.  The DemandSpecificDistribution specifies how end-use '
-				  'demands are distributed per time-slice (i.e., time_season, '
-				  'time_of_day).  Within each end-use Demand, then, the distribution '
-				  'must total to 1.\n\n   Demand-specific distribution in error: '
-				  ' {}\n\n   {}\n\tsum = {}')
-	
-				raise Exception( msg.format(dem, items, total) )
+	for dem in used_dems:
+		keys = (k for k in DSD.sparse_iterkeys() if DSD_dem_getter(k) == dem )
+		total = sum( DSD[ i ] for i in keys )
+
+		if abs(value(total) - 1.0) > 0.001:
+		# We can't explicitly test for "!= 1.0" because of incremental rounding
+		# errors associated with the specification of demand shares by time slice, 
+		# but we check to make sure it is within the specified tolerance.
+
+			keys = [k for k in DSD.sparse_iterkeys() if DSD_dem_getter(k) == dem ]
+			key_padding = max(map( get_str_padding, keys ))
+
+			format = "%%-%ds = %%s" % key_padding
+				# Works out to something like "%-25s = %s"
+
+			items = sorted( (k, DSD[k]) for k in keys )
+			items = '\n   '.join( format % (str(k), v) for k, v in items )
+
+			msg = ('The values of the DemandSpecificDistribution parameter do not '
+			  'sum to 1.  The DemandSpecificDistribution specifies how end-use '
+			  'demands are distributed per time-slice (i.e., time_season, '
+			  'time_of_day).  Within each end-use Demand, then, the distribution '
+			  'must total to 1.\n\n   Demand-specific distribution in error: '
+			  ' {}\n\n   {}\n\tsum = {}')
+
+			raise Exception( msg.format(dem, items, total) )
 
 
 def CreateCosts ( M ):
@@ -455,8 +450,8 @@ def CreateCosts ( M ):
 	CV = M.CostVariable
 
 	# Step 1
-	fixed_indices = set( M.CostFixed_rptv )
-	var_indices   = set( M.CostVariable_rptv )
+	fixed_indices = set( M.CostFixed_ptv )
+	var_indices   = set( M.CostVariable_ptv )
 
 	# Step 2
 	unspecified_fixed_prices = fixed_indices.difference( CF.sparse_iterkeys() )
@@ -471,16 +466,16 @@ def CreateCosts ( M ):
 
 	if unspecified_fixed_prices:
 		# CF._constructed = False
-		for r, p, t, v in unspecified_fixed_prices:
-			if (r, t, v) in M.CostFixedVintageDefault:
-				CF[r, p, t, v] = M.CostFixedVintageDefault[r, t, v]
+		for p, t, v in unspecified_fixed_prices:
+			if (t, v) in M.CostFixedVintageDefault:
+				CF[p, t, v] = M.CostFixedVintageDefault[t, v]
 		# CF._constructed = True
 
 	if unspecified_var_prices:
 		# CV._constructed = False
-		for r, p, t, v in unspecified_var_prices:
-			if (r, t, v) in M.CostVariableVintageDefault:
-				CV[r, p, t, v] = M.CostVariableVintageDefault[r, t, v]
+		for p, t, v in unspecified_var_prices:
+			if (t, v) in M.CostVariableVintageDefault:
+				CV[p, t, v] = M.CostVariableVintageDefault[t, v]
 		# CV._constructed = True
 
 
@@ -494,20 +489,6 @@ def init_set_vintage_exist ( M ):
 
 def init_set_vintage_optimize ( M ):
 	return sorted( M.time_optimize )
-
-
-def CreateRegionalIndices ( M ):
-	regional_indices = set()
-	for r_i in M.regions:
-		if "-" in r_i:
-			raise Exception("Individual region names can not have '-' in their names: "+str(r_i))
-		for r_j in M.regions:
-			if r_i == r_j:
-				regional_indices.add(r_i)
-			else:
-				regional_indices.add(r_i+"-"+r_j)
-	return regional_indices
-
 
 # ---------------------------------------------------------------
 # The functions below perform the sparse matrix indexing, allowing Pyomo to only
@@ -534,11 +515,8 @@ def CreateSparseDicts ( M ):
 
 	# The basis for the dictionaries are the sparse keys defined in the
 	# Efficiency table.
-	for r, i, t, v, o in M.Efficiency.sparse_iterkeys():
-		if "-" in r and t not in M.tech_exchange:
-			raise Exception("Technology "+str(t)+" seems to be an exchange \
-				technology but it is not specified in tech_exchange set")
-		l_process = (r, t, v)
+	for i, t, v, o in M.Efficiency.sparse_iterkeys():
+		l_process = (t, v)
 		l_lifetime = value(M.LifetimeProcess[ l_process ])
 		# Do some error checking for the user.
 		if v in M.vintage_exist:
@@ -562,7 +540,7 @@ def CreateSparseDicts ( M ):
 				SE.write( msg % (l_process, l_lifetime, l_first_period) )
 				continue
 
-		eindex = (r, i, t, v, o)
+		eindex = (i, t, v, o)
 		if 0 == M.Efficiency[ eindex ]:
 			msg = ('\nNotice: Unnecessary specification of Efficiency %s.  If '
 			  'specifying an efficiency of zero, you may simply omit the '
@@ -578,7 +556,7 @@ def CreateSparseDicts ( M ):
 			# Can't build a vintage before it's been invented
 			if p < v: continue
 
-			pindex = (r, p, t, v)
+			pindex = (p, t, v)
 
 			if v in M.time_optimize:
 				l_loan_life = value(M.LifetimeLoanProcess[ l_process ])
@@ -594,74 +572,66 @@ def CreateSparseDicts ( M ):
 			if pindex not in M.processInputs:
 				M.processInputs[  pindex ] = set()
 				M.processOutputs[ pindex ] = set()
-			if (r, p, i) not in M.commodityDStreamProcess:
-				M.commodityDStreamProcess[r, p, i] = set()
-			if (r, p, o) not in M.commodityUStreamProcess:
-				M.commodityUStreamProcess[r, p, o] = set()
-			if (r, p, t, v, i) not in M.ProcessOutputsByInput:
-				M.ProcessOutputsByInput[r, p, t, v, i] = set()
-			if (r, p, t, v, o) not in M.ProcessInputsByOutput:
-				M.ProcessInputsByOutput[r, p, t, v, o] = set()
-			if (r, t) not in M.processTechs:
-					M.processTechs[r, t] = set()
+			if (p, i) not in M.commodityDStreamProcess:
+				M.commodityDStreamProcess[p, i] = set()
+			if (p, o) not in M.commodityUStreamProcess:
+				M.commodityUStreamProcess[p, o] = set()
+			if (p, t, v, i) not in M.ProcessOutputsByInput:
+				M.ProcessOutputsByInput[p, t, v, i] = set()
+			if (p, t, v, o) not in M.ProcessInputsByOutput:
+				M.ProcessInputsByOutput[p, t, v, o] = set()
+			if t not in M.processTechs:
+					M.processTechs[t] = set()
 			# While the dictionary just above indentifies the vintage (v)
-			# associated with each (r,p,t) we need to do the same below for various
+			# associated with each (p,t) we need to do the same below for various
 			# technology subsets.
-			if (r, p, t) not in M.processVintages:
-				M.processVintages[r, p, t] = set()
-			if t in M.tech_curtailment and (r, p, t) not in M.curtailmentVintages:
-				M.curtailmentVintages[r, p, t] = set()
-			if t in M.tech_baseload and (r, p, t) not in M.baseloadVintages:
-				M.baseloadVintages[r, p, t] = set()
-			if t in M.tech_storage and (r, p, t) not in M.storageVintages:
-				M.storageVintages[r, p, t] = set()
-			if t in M.tech_ramping and (r, p, t) not in M.rampVintages:
+			if (p, t) not in M.processVintages:
+				M.processVintages[p, t] = set()
+			if t in M.tech_curtailment and (p, t) not in M.curtailmentVintages:
+				M.curtailmentVintages[p, t] = set()
+			if t in M.tech_baseload and (p, t) not in M.baseloadVintages:
+				M.baseloadVintages[p, t] = set()
+			if t in M.tech_storage and (p,t) not in M.storageVintages:
+				M.storageVintages[p,t] = set()
+			if t in M.tech_ramping and (p,t) not in M.rampVintages:
 				M.rampVintages[p,t] = set()
-			if (r, p, i, t) in M.TechInputSplit.sparse_iterkeys() and (r, p, i, t) not in M.inputsplitVintages:
-				M.inputsplitVintages[r,p,i,t] = set()
-			if (r, p, t, o) in M.TechOutputSplit.sparse_iterkeys() and (r, p, t, o) not in M.outputsplitVintages:
-				M.outputsplitVintages[r,p,t,o] = set()
-			if t in M.tech_resource and (r,p,o) not in M.ProcessByPeriodAndOutput:
-				M.ProcessByPeriodAndOutput[r,p,o] = set()
-			if t in M.tech_reserve and (r, p) not in M.processReservePeriods:
-					M.processReservePeriods[r, p] = set()
-			if t in M.tech_exchange and (r[:r.find("-")], p, i) not in M.exportRegions:
-					M.exportRegions[r[:r.find("-")], p, i] = set()	#since t is in M.tech_exchange, r here has *-* format (e.g. 'US-Mexico'). 
-																	#r[:r.find("-")] extracts the region index before the "-". 
-			if t in M.tech_exchange and (r[r.find("-")+1:], p, o) not in M.importRegions:
-					M.importRegions[r[r.find("-")+1:], p, o] = set()
+			if (p, i, t) in M.TechInputSplit.sparse_iterkeys() and (p, i, t) not in M.inputsplitVintages:
+				M.inputsplitVintages[p,i,t] = set()
+			if (p, t, o) in M.TechOutputSplit.sparse_iterkeys() and (p, t, o) not in M.outputsplitVintages:
+				M.outputsplitVintages[p,t,o] = set()
+			if t in M.tech_resource and (p,o) not in M.ProcessByPeriodAndOutput:
+				M.ProcessByPeriodAndOutput[p,o] = set()
+			if t in M.tech_reserve and p not in M.processReservePeriods:
+					M.processReservePeriods[p] = set()
 
 			# Now that all of the keys have been defined, and values initialized
 			# to empty sets, we fill in the appropriate values for each
 			# dictionary.
 			M.processInputs[ pindex ].add( i )
 			M.processOutputs[pindex ].add( o )
-			M.commodityDStreamProcess[r, p, i].add( (t, v) )
-			M.commodityUStreamProcess[r, p, o].add( (t, v) )
-			M.ProcessOutputsByInput[r, p, t, v, i].add( o )
-			M.ProcessInputsByOutput[r, p, t, v, o].add( i )
-			M.processTechs[r, t].add( (p, v) )
-			M.processVintages[r, p, t].add( v )
+			M.commodityDStreamProcess[p, i].add( (t, v) )
+			M.commodityUStreamProcess[p, o].add( (t, v) )
+			M.ProcessOutputsByInput[p, t, v, i].add( o )
+			M.ProcessInputsByOutput[p, t, v, o].add( i )
+			M.processTechs[t].add( (p, v) )
+			M.processVintages[p, t].add( v )
 			if t in M.tech_curtailment:
-				M.curtailmentVintages[r, p, t].add( v )
+				M.curtailmentVintages[p, t].add( v )
 			if t in M.tech_baseload:
-				M.baseloadVintages[r, p, t].add( v )
+				M.baseloadVintages[p, t].add( v )
 			if t in M.tech_storage:
-				M.storageVintages[r, p, t].add( v )
+				M.storageVintages[p, t].add( v )
 			if t in M.tech_ramping:
-				M.rampVintages[r, p , t].add( v )
-			if (r, p, i, t) in M.TechInputSplit.sparse_iterkeys():
-				M.inputsplitVintages[r,p,i,t].add( v )
-			if (r, p, t, o) in M.TechOutputSplit.sparse_iterkeys():
-				M.outputsplitVintages[r,p,t,o].add( v )
+				M.rampVintages[p , t].add( v )
+			if (p, i, t) in M.TechInputSplit.sparse_iterkeys():
+				M.inputsplitVintages[p,i,t].add( v )
+			if (p, t, o) in M.TechOutputSplit.sparse_iterkeys():
+				M.outputsplitVintages[p,t,o].add( v )
 			if t in M.tech_resource:
-				M.ProcessByPeriodAndOutput[r,p,o].add(( i,t,v ))
+				M.ProcessByPeriodAndOutput[p,o].add(( i,t,v ))
 			if t in M.tech_reserve:
-				M.processReservePeriods[r, p].add( (t,v) )
-			if t in M.tech_exchange:
-				M.exportRegions[r[:r.find("-")], p, i].add((r[r.find("-")+1:], t, v, o))
-			if t in M.tech_exchange:
-				M.importRegions[r[r.find("-")+1:], p, o].add((r[:r.find("-")], t, v, i))
+				M.processReservePeriods[p].add( (t,v) )
+
 
 	l_unused_techs = M.tech_all - l_used_techs
 	if l_unused_techs:
@@ -670,69 +640,69 @@ def CreateSparseDicts ( M ):
 		for i in sorted( l_unused_techs ):
 			SE.write( msg.format( i ))
 
-	M.activeFlow_rpsditvo = set(
-	  (r, p, s, d, i, t, v, o)
+	M.activeFlow_psditvo = set(
+	  (p, s, d, i, t, v, o)
 
-	  for r,p,t in M.processVintages.keys() if t not in M.tech_annual
-	  for v in M.processVintages[ r, p, t ]
-	  for i in M.processInputs[ r, p, t, v ]
-	  for o in M.ProcessOutputsByInput[ r, p, t, v, i ]
+	  for p,t in M.processVintages.keys() if t not in M.tech_annual
+	  for v in M.processVintages[ p, t ]
+	  for i in M.processInputs[ p, t, v ]
+	  for o in M.ProcessOutputsByInput[ p, t, v, i ]
 	  for s in M.time_season
 	  for d in M.time_of_day
 	)
 
-	M.activeFlow_rpitvo = set(
-	  (r, p, i, t, v, o)
+	M.activeFlow_pitvo = set(
+	  (p, i, t, v, o)
 
-	  for r,p,t in M.processVintages.keys() if t in M.tech_annual
-	  for v in M.processVintages[ r, p, t ]
-	  for i in M.processInputs[ r, p, t, v ]
-	  for o in M.ProcessOutputsByInput[ r, p, t, v, i ]
+	  for p,t in M.processVintages.keys() if t in M.tech_annual
+	  for v in M.processVintages[ p, t ]
+	  for i in M.processInputs[ p, t, v ]
+	  for o in M.ProcessOutputsByInput[ p, t, v, i ]
 	)
 
-	M.activeFlowInStorage_rpsditvo = set(
-	  (r, p, s, d, i, t, v, o)
+	M.activeFlowInStorage_psditvo = set(
+	  (p, s, d, i, t, v, o)
 
-	  for r,p,t in M.processVintages.keys() if t in M.tech_storage
-	  for v in M.processVintages[ r, p, t ]
-	  for i in M.processInputs[ r, p, t, v ]
-	  for o in M.ProcessOutputsByInput[ r, p, t, v, i ]
+	  for p,t in M.processVintages.keys() if t in M.tech_storage
+	  for v in M.processVintages[ p, t ]
+	  for i in M.processInputs[ p, t, v ]
+	  for o in M.ProcessOutputsByInput[ p, t, v, i ]
 	  for s in M.time_season
 	  for d in M.time_of_day
 	)
 
 
 
-	M.activeCurtailment_rpsditvo = set(
-	   (r, p, s, d, i, t, v, o)
+	M.activeCurtailment_psditvo = set(
+	   (p, s, d, i, t, v, o)
 
-	  for r,p,t in M.curtailmentVintages.keys()
-	  for v in M.curtailmentVintages[ r, p, t ]
-	  for i in M.processInputs[ r, p, t, v ]
-	  for o in M.ProcessOutputsByInput[ r, p, t, v, i ]
+	  for p,t in M.curtailmentVintages.keys()
+	  for v in M.curtailmentVintages[ p, t ]
+	  for i in M.processInputs[ p, t, v ]
+	  for o in M.ProcessOutputsByInput[ p, t, v, i ]
 	  for s in M.time_season
 	  for d in M.time_of_day
 	)
 
-	M.activeActivity_rptv = set(
-	  (r, p, t, v)
+	M.activeActivity_ptv = set(
+	  (p, t, v)
 
-	  for r,p,t in M.processVintages.keys()
-	  for v in M.processVintages[ r, p, t ]
+	  for p,t in M.processVintages.keys()
+	  for v in M.processVintages[ p, t ]
 	)
 
-	M.activeCapacity_rtv = set(
-	  (r, t, v)
+	M.activeCapacity_tv = set(
+	  (t, v)
 
-	  for r,p,t in M.processVintages.keys()
-	  for v in M.processVintages[ r, p, t ]
+	  for p,t in M.processVintages.keys()
+	  for v in M.processVintages[ p, t ]
 	)
 
-	M.activeCapacityAvailable_rpt = set(
-	  (r, p, t)
+	M.activeCapacityAvailable_pt = set(
+	  (p, t)
 
-	  for r,p,t in M.processVintages.keys()
-	  if M.processVintages[ r, p, t ]
+	  for p,t in M.processVintages.keys()
+	  if M.processVintages[ p, t ]
 	)
 
 # ---------------------------------------------------------------
@@ -743,9 +713,9 @@ def CreateSparseDicts ( M ):
 
 def CapacityFactorProcessIndices ( M ):
 	indices = set(
-	  (r, s, d, t, v)
+	  (s, d, t, v)
 
-	  for r, i, t, v, o in M.Efficiency.sparse_iterkeys()
+	  for i, t, v, o in M.Efficiency.sparse_iterkeys()
 	  for s in M.time_season
 	  for d in M.time_of_day
 	)
@@ -754,45 +724,33 @@ def CapacityFactorProcessIndices ( M ):
 
 def CapacityFactorTechIndices ( M ):
 	indices = set(
-	  (r, s, d, t)
+	  (s, d, t)
 
-	  for r, s, d, t, v in M.CapacityFactor_rsdtv
+	  for s, d, t, v in M.CapacityFactor_sdtv
 	)
 
 	return indices
 
 def CostFixedIndices ( M ):
-	return M.activeActivity_rptv
+	return M.activeActivity_ptv
 
 def CostVariableIndices ( M ):
-	return M.activeActivity_rptv
+	return M.activeActivity_ptv
 
 def CostInvestIndices ( M ):
 	indices = set(
-	  (r, t, v)
+	  (t, v)
 
-	  for r, p, t, v in M.processLoans
+	  for p, t, v in M.processLoans
 	)
 
 	return indices
 
-def RegionalEmissionLimitIndices ( M ):
-	from itertools import permutations
-	indices = set()
-	for n in range(1,len(M.regions)+1):
-		regional_perms = permutations(M.regions,n)
-		for i in regional_perms:
-			indices.add("-".join(i))
-	indices.add('global')
-
-	return indices
-
-
 def EmissionActivityIndices ( M ):
 	indices = set(
-	  (r, e, i, t, v, o)
+	  (e, i, t, v, o)
 
-	  for r, i, t, v, o in M.Efficiency.sparse_iterkeys()
+	  for i, t, v, o in M.Efficiency.sparse_iterkeys()
 	  for e in M.commodity_emissions
 	)
 
@@ -830,7 +788,7 @@ def EmissionActivityByPeriodAndTechVariableIndices ( M ):
 	
 def LoanLifeFracIndices ( M ):
 	"""\
-Returns the set of (region, period, tech, vintage) tuples of process loans that die
+Returns the set of (period, tech, vintage) tuples of process loans that die
 between period boundaries.  The tuple indicates the last period in which a
 process is active.
 """
@@ -838,21 +796,21 @@ process is active.
 	l_max_year = max( M.time_future )
 
 	indices = set()
-	for r, t, v in M.LifetimeLoanProcess.sparse_iterkeys():
-		l_death_year = v + value(M.LifetimeLoanProcess[r, t, v])
+	for t, v in M.LifetimeLoanProcess.sparse_iterkeys():
+		l_death_year = v + value(M.LifetimeLoanProcess[t, v])
 		if l_death_year < l_max_year and l_death_year not in l_periods:
 			p = max( yy for yy in M.time_optimize if yy < l_death_year )
-			indices.add( (r, p, t, v) )
+			indices.add( (p, t, v) )
 
 	return indices
 
 def ModelProcessLifeIndices ( M ):
 	"""\
-Returns the set of sensical (region, period, tech, vintage) tuples.  The tuple indicates
+Returns the set of sensical (period, tech, vintage) tuples.  The tuple indicates
 the periods in which a process is active, distinct from TechLifeFracIndices that
 returns indices only for processes that EOL mid-period.
 """
-	return M.activeActivity_rptv
+	return M.activeActivity_ptv
 
 def LifetimeProcessIndices ( M ):
 	"""\
@@ -860,9 +818,9 @@ Based on the Efficiency parameter's indices, this function returns the set of
 process indices that may be specified in the LifetimeProcess parameter.
 """
 	indices = set(
-	  (r, t, v)
+	  (t, v)
 
-	  for r, i, t, v, o in M.Efficiency.sparse_iterkeys()
+	  for i, t, v, o in M.Efficiency.sparse_iterkeys()
 	)
 
 	return indices
@@ -876,9 +834,9 @@ CostInvest parameter.
 	min_period = min( M.vintage_optimize )
 
 	indices = set(
-	  (r, t, v)
+	  (t, v)
 
-	  for r, i, t, v, o in M.Efficiency.sparse_iterkeys()
+	  for i, t, v, o in M.Efficiency.sparse_iterkeys()
 	  if v >= min_period
 	)
 
@@ -891,31 +849,31 @@ CostInvest parameter.
 # ---------------------------------------------------------------
 
 def CapacityVariableIndices ( M ):
-	return M.activeCapacity_rtv
+	return M.activeCapacity_tv
 
 def CapacityAvailableVariableIndices ( M ):
-	return M.activeCapacityAvailable_rpt
+	return M.activeCapacityAvailable_pt
 
 def FlowVariableIndices ( M ):
-	return M.activeFlow_rpsditvo
+	return M.activeFlow_psditvo
 
 
 def FlowVariableAnnualIndices ( M ):
-	return M.activeFlow_rpitvo
+	return M.activeFlow_pitvo
 
 def FlowInStorageVariableIndices ( M ):
-	return M.activeFlowInStorage_rpsditvo
+	return M.activeFlowInStorage_psditvo
 
 
 def CurtailmentVariableIndices ( M ):
-	return M.activeCurtailment_rpsditvo
+	return M.activeCurtailment_psditvo
 
 
 def CapacityConstraintIndices ( M ):
 	capacity_indices = set(
-	  (r, p, s, d, t, v)
+	  (p, s, d, t, v)
 
-	  for r, p, t, v in M.activeActivity_rptv if t not in M.tech_annual
+	  for p, t, v in M.activeActivity_ptv if t not in M.tech_annual
 	  for s in M.time_season
 	  for d in M.time_of_day
 	)
@@ -924,9 +882,9 @@ def CapacityConstraintIndices ( M ):
 
 def CapacityAnnualConstraintIndices ( M ):
 	capacity_indices = set(
-	  (r, p, t, v)
+	  (p, t, v)
 
-	  for r, p, t, v in M.activeActivity_rptv if t in M.tech_annual
+	  for p, t, v in M.activeActivity_ptv if t in M.tech_annual
 
 	)
 
@@ -948,51 +906,41 @@ ensure demand activity remains consistent across time slices.
 """
 	first_s = M.time_season.first()
 	first_d = M.time_of_day.first()
-	for r,p,t,v,dem in M.ProcessInputsByOutput.keys():
+	for p,t,v,dem in M.ProcessInputsByOutput.keys():
 		if dem in M.commodity_demand and t not in M.tech_annual:
 			for s in M.time_season:
 				for d in M.time_of_day:
 					if s != first_s or d != first_d:
-						yield (r,p,s,d,t,v,dem,first_s,first_d)
+						yield (p,s,d,t,v,dem,first_s,first_d)
 
 def DemandConstraintIndices ( M ):
-	used_dems = set((r,dem) for r, p, dem in M.Demand.sparse_iterkeys())
+	used_dems = set(dem for p, dem in M.Demand.sparse_iterkeys())
 	DSD_keys = M.DemandSpecificDistribution.sparse_keys()
-	dem_slices = { (r,dem) : set(
+	dem_slices = { dem : set(
 	    (s, d)
 	    for s in M.time_season
 	    for d in M.time_of_day
-	    if (r, s, d, dem) in DSD_keys )
-	  for (r,dem) in used_dems
+	    if (s, d, dem) in DSD_keys )
+	  for dem in used_dems
 	}
 
 	indices = set(
-	  (r, p, s, d, dem)
+	  (p, s, d, dem)
 
-	  for r, p, dem in M.Demand.sparse_iterkeys()
-	  for s, d in dem_slices[ (r,dem) ]
+	  for p, dem in M.Demand.sparse_iterkeys()
+	  for s, d in dem_slices[ dem ]
 	)
 
 	return indices
 
 def BaseloadDiurnalConstraintIndices ( M ):
 	indices = set(
-	  (r, p, s, d, t, v)
+	  (p, s, d, t, v)
 
-	  for r,p,t in M.baseloadVintages.keys()
-	  for v in M.baseloadVintages[ r, p, t ]
+	  for p,t in M.baseloadVintages.keys()
+	  for v in M.baseloadVintages[ p, t ]
 	  for s in M.time_season
 	  for d in M.time_of_day
-	)
-
-	return indices
-
-def RegionalExchangeCapacityConstraintIndices ( M ):
-	indices = set(
-		(r_e, r_i, t, v)
-
-		for r_e, p, i in M.exportRegions.keys()
-		for r_i, t, v, o in M.exportRegions[r_e, p, i] 
 	)
 
 	return indices
@@ -1004,12 +952,11 @@ def CommodityBalanceConstraintIndices ( M ):
 	period_commodity_with_dn = set( M.commodityDStreamProcess.keys() )
 	period_commodity = period_commodity_with_up.intersection( period_commodity_with_dn )
 	indices = set(
-	  (r, p, s, d, o)
+	  (p, s, d, o)
 
-	  for r, p, o in period_commodity #r in this line includes interregional transfer combinations (not needed).  
-	  for r in M.regions # this line ensures only the regions are included.
-	  for t, v in M.commodityUStreamProcess[ r, p, o ]
-	  if (r, t) not in M.tech_storage and t not in M.tech_annual
+	  for p, o in period_commodity
+	  for t, v in M.commodityUStreamProcess[ p, o ]
+	  if t not in M.tech_storage and t not in M.tech_annual
 	  for s in M.time_season
 	  for d in M.time_of_day
 	)
@@ -1024,12 +971,11 @@ def CommodityBalanceAnnualConstraintIndices ( M ):
 	period_commodity_with_dn = set( M.commodityDStreamProcess.keys() )
 	period_commodity = period_commodity_with_up.intersection( period_commodity_with_dn )
 	indices = set(
-	  (r, p, o)
+	  (p, o)
 
-	  for r, p, o in period_commodity #r in this line includes interregional transfer combinations (not needed).  
-	  for r in M.regions # this line ensures only the regions are included.
-	  for t, v in M.commodityUStreamProcess[ r, p, o ]
-	  if (r, t) not in M.tech_storage and t in M.tech_annual
+	  for p, o in period_commodity
+	  for t, v in M.commodityUStreamProcess[ p, o ]
+	  if t not in M.tech_storage and t in M.tech_annual
 	)
 
 	return indices
@@ -1037,12 +983,12 @@ def CommodityBalanceAnnualConstraintIndices ( M ):
 
 def StorageVariableIndices ( M ):
 	indices = set(
-		(r, p, s, d, t, v)
+		(p, s, d, t, v)
 		
-		for r, p, t in M.storageVintages.keys()
+		for p,t in M.storageVintages.keys()
 		for s in M.time_season
 		for d in M.time_of_day		
-		for v in M.storageVintages[ r, p, t ]
+		for v in M.storageVintages[ p, t ]
 
 	)
 
@@ -1051,10 +997,10 @@ def StorageVariableIndices ( M ):
 
 def StorageInitIndices ( M ):
 	indices = set(
-		(r, t, v)
+		(t, v)
 
-		for r,p,t in M.storageVintages.keys()
-		for v in M.storageVintages[ r, p, t ]
+		for p,t in M.storageVintages.keys()
+		for v in M.storageVintages[ p, t ]
 	)
 
 	return indices
@@ -1062,9 +1008,9 @@ def StorageInitIndices ( M ):
 
 def StorageInitConstraintIndices ( M ):
 	indices = set(
-		(r,t,v)
+		(t,v)
 
-		for r,t,v in M.StorageInitFrac.sparse_iterkeys()
+		for t,v in M.StorageInitFrac.sparse_iterkeys()
 	)
 
 	return indices
@@ -1072,41 +1018,40 @@ def StorageInitConstraintIndices ( M ):
 
 def RampConstraintDayIndices ( M ):
 	indices = set(
-	  (r, p, s, d, t, v)
+	  (p, s, d, t, v)
 
-	  for r,p,t in M.rampVintages.keys()
+	  for p,t in M.rampVintages.keys()
 	  for s in M.time_season
 	  for d in M.time_of_day
-	  for v in M.rampVintages[ r, p, t ]
+	  for v in M.rampVintages[ p, t ]
 	)
 
 	return indices
 
 def RampConstraintSeasonIndices ( M ):
 	indices = set(
-	  (r, p, s, t, v)
+	  (p, s, t, v)
 
-	  for r, p,t in M.rampVintages.keys()
+	  for p,t in M.rampVintages.keys()
 	  for s in M.time_season	  
-	  for v in M.rampVintages[ r, p, t ]
+	  for v in M.rampVintages[ p, t ]
 	)
 
 	return indices
 
 def RampConstraintPeriodIndices ( M ):
 	indices = set(
-	  (r, p, t, v)
+	  (p, t, v)
 
-	  for r, p,t in M.rampVintages.keys()
-	  for v in M.rampVintages[ r, p, t ]	)
+	  for p,t in M.rampVintages.keys()
+	  for v in M.rampVintages[ p, t ]	)
 
 	return indices
 
 def ReserveMarginIndices ( M ):
 	indices = set(
-		(r, p , s , d )
+		(p , s , d )
 
-	   for r in M.regions
 	   for p in M.time_optimize
 	   for s in M.time_season
 	   for d in M.time_of_day
@@ -1115,10 +1060,10 @@ def ReserveMarginIndices ( M ):
 
 def TechInputSplitConstraintIndices ( M ):
 	indices = set(
-	  (r, p, s, d, i, t, v)
+	  (p, s, d, i, t, v)
 
-	  for r, p, i, t in M.inputsplitVintages.keys() if t not in M.tech_annual
-	  for v in M.inputsplitVintages[ r, p, i, t ]
+	  for p, i, t in M.inputsplitVintages.keys() if t not in M.tech_annual
+	  for v in M.inputsplitVintages[ p, i, t ]
 	  for s in M.time_season
 	  for d in M.time_of_day
 	)
@@ -1127,20 +1072,20 @@ def TechInputSplitConstraintIndices ( M ):
 
 def TechInputSplitAnnualConstraintIndices ( M ):
 	indices = set(
-	  (r, p, i, t, v)
+	  (p, i, t, v)
 
-	  for r, p, i, t in M.inputsplitVintages.keys() if t in M.tech_annual
-	  for v in M.inputsplitVintages[ r, p, i, t ]
+	  for p, i, t in M.inputsplitVintages.keys() if t in M.tech_annual
+	  for v in M.inputsplitVintages[ p, i, t ]
 	)
 
 	return indices	
 
 def TechOutputSplitConstraintIndices ( M ):
 	indices = set(
-	  (r, p, s, d, t, v, o)
+	  (p, s, d, t, v, o)
 
-	  for r, p, t, o in M.outputsplitVintages.keys() if t not in M.tech_annual
-	  for v in M.outputsplitVintages[ r, p, t, o ]
+	  for p, t, o in M.outputsplitVintages.keys() if t not in M.tech_annual
+	  for v in M.outputsplitVintages[ p, t, o ]
 	  for s in M.time_season
 	  for d in M.time_of_day
 	)
@@ -1149,10 +1094,10 @@ def TechOutputSplitConstraintIndices ( M ):
 
 def TechOutputSplitAnnualConstraintIndices ( M ):
 	indices = set(
-	  (r, p, t, v, o)
+	  (p, t, v, o)
 
-	  for r, p, t, o in M.outputsplitVintages.keys() if t in M.tech_annual
-	  for v in M.outputsplitVintages[ r, p, t, o ]
+	  for p, t, o in M.outputsplitVintages.keys() if t in M.tech_annual
+	  for v in M.outputsplitVintages[ p, t, o ]
 	)
 
 	return indices
