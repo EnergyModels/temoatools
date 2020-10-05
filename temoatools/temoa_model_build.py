@@ -630,12 +630,12 @@ def processTech(inputs, local, outputs, tech):
             for vintage in buildYears:
                 if (vintage <= period) and ((period - vintage) < tech['lifetime']):
                     outputs['CostFixed'].append(
-                        (str(period), tech['name'], str(vintage), tech['cost_fixed'], "M$/GW", " "))
+                        (str(period), tech['name'], str(vintage), tech['cost_fixed'], "M USD/GW", " "))
 
     # CostInvest
     if goodValue(tech['cost_invest']):
         for year in futureBuildYears:
-            outputs['CostInvest'].append((tech['name'], str(year), tech['cost_invest'], "M$/GW", " "))
+            outputs['CostInvest'].append((tech['name'], str(year), tech['cost_invest'], "M USD/GW", " "))
 
     # CostVariable
     if goodValue(tech['cost_variable']):
@@ -648,7 +648,7 @@ def processTech(inputs, local, outputs, tech):
                         costVar = tech['cost_variable'] * (1.0 + tech['costVariableIncr'] / 100.0) ** (N)
                     else:
                         costVar = tech['cost_variable']
-                    outputs['CostVariable'].append((str(period), tech['name'], str(vintage), costVar, "M$/PJ", " "))
+                    outputs['CostVariable'].append((str(period), tech['name'], str(vintage), costVar, "M USD/PJ", " "))
 
     # Efficiency
     if goodValue(tech['efficiency']):

@@ -1,6 +1,7 @@
 import temoatools as tt
 from joblib import Parallel, delayed, parallel_backend
 from pathlib import Path
+import os
 import shutil
 import calendar;
 import time;
@@ -25,12 +26,12 @@ if __name__ == '__main__':
     # =======================================================
     # Model Inputs
     # =======================================================
-    temoa_path = Path('/Users/rogerzhu/Documents/temoa/temoa-energysystem')  # Path('/home/jab6ft/temoa/temoa')
-    project_path = Path('/Users/rogerzhu/Documents/temoa/temoa-va/virginia')  # Path('/home/jab6ft/temoa/project/baselines')
+    temoa_path = os.path.abspath('../../temoa-energysystem')
+    project_path = os.getcwd()
     modelInputs_XLSX_list = ['data_virginia.xlsx']
     scenarioInputs = 'scenarios_multiple.xlsx'
-    scenarioNames_list = [['A' , 'B']]
-    ncpus = 6  # int(os.getenv('NUM_PROCS'))
+    scenarioNames_list = [['A', 'B']]
+    ncpus = 1  # int(os.getenv('NUM_PROCS'))
     solver = ''  # 'gurobi'
 
     #shutil.copy2('/Users/rogerzhu/Documents/temoa/temoa-va/virginia/data/data_virginia.xlsx', '/Users/rogerzhu/Documents/temoa/temoa-va/virginia/data/data_virginia_'+str(calendar.timegm(time.gmtime()))+'.xlsx');

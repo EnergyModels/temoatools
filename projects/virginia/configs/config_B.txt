@@ -8,11 +8,11 @@
 # Input File (Mandatory)
 # Input can be a .sqlite or .dat file
 # Both relative path and absolute path are accepted
---input=/Users/rogerzhu/Documents/temoa/temoa-va/virginia/databases/B.sqlite
+--input=C:\Users\benne\PycharmProjects\coopercenter_temoatools\projects\virginia\databases\B.sqlite
 
 # Output File (Mandatory)
 # The output file must be a existing .sqlite file
---output=/Users/rogerzhu/Documents/temoa/temoa-va/virginia/databases/B.sqlite
+--output=C:\Users\benne\PycharmProjects\coopercenter_temoatools\projects\virginia\databases\B.sqlite
 
 # Scenario Name (Mandatory)
 # This scenario name is used to store results within the output .sqlite file
@@ -20,7 +20,7 @@
 
 # Path to the "db_io" folder (Mandatory)
 # This is the location where database files reside
---path_to_db_io=/Users/rogerzhu/Documents/temoa/temoa-va/virginia/databases
+--path_to_db_io=C:\Users\benne\PycharmProjects\coopercenter_temoatools\projects\virginia\databases
 
 # Spreadsheet Output (Optional)
 # Direct model output to a spreadsheet
