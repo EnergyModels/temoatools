@@ -7,16 +7,15 @@ import os
 # =======================================================
 # Function to evaluate a single model
 # =======================================================
-def evaluateModel(modelInputs, scenarioInputs, scenarioName, paths):
+def evaluateModel(modelInputs, scenarioInputs, scenarioName, temoa_path, project_path, solver):
     # Unique filename
     model_filename = scenarioName
 
     # Build Model
-    tt.build(modelInputs, scenarioInputs, scenarioName, model_filename, path='data')
+    tt.build(modelInputs, scenarioInputs, scenarioName, model_filename, path=project_path)
 
     # Run Model
-    saveEXCEL = True
-    tt.run(model_filename, paths, saveEXCEL=True, data_path='data', debug=False)
+    tt.run(model_filename, saveEXCEL=False, temoa_path=temoa_path, debug=True, solver=solver)
 
 
 if __name__ == '__main__':
@@ -31,6 +30,7 @@ if __name__ == '__main__':
 
     temoa_path = os.path.abspath('../../temoa-energysystem')
     project_path = os.getcwd()
+    solver = ''  # 'gurobi'
 
     # =======================================================
     # Move modelInputs_XLSX to database
@@ -51,11 +51,13 @@ if __name__ == '__main__':
 
     if option == 1:
         # Perform single simulation
-        evaluateModel(modelInputs, scenarioInputs, scenarioNames[0], paths)
+        evaluateModel(modelInputs, scenarioInputs, scenarioNames[0], temoa_path)
 
     elif option == 2:
         # Perform simulations in parallel
         with parallel_backend('multiprocessing', n_jobs=num_cores):
             Parallel(n_jobs=num_cores, verbose=5)(
-                delayed(evaluateModel)(modelInputs, scenarioInputs, scenarioName, paths) for scenarioName in
+                delayed(evaluateModel)(modelInputs, scenarioInputs, scenarioName, temoa_path, project_path, solver)
+                for
+                scenarioName in
                 scenarioNames)
