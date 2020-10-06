@@ -29,8 +29,8 @@ if __name__ == '__main__':
     scenarioNames = ['BATT']
     paths = 'paths.csv'
 
-    temoa_path = os.path.normcase('C:\\Users\\benne\PycharmProjects\\temoatools\\temoa_stochastic')
-    project_path = os.path.normcase('.')
+    temoa_path = os.path.abspath('../../temoa-energysystem')
+    project_path = os.getcwd()
 
     # =======================================================
     # Move modelInputs_XLSX to database
