@@ -1,7 +1,7 @@
 ## About
 The temoatools package is designed to complement the @github/TemoaProject by 
 providing methods to help with the creation and analysis of the .sqlite databases used by temoa.
-Specifically, users provide inputs in excel, which are then moved into .sqlite databases based 
+Specifically, users provide inputs in Excel, which are then moved into .sqlite databases based 
 on several simplifying assumptions (listed below). Methods are provided for creating, running and analyzing
 baseline scenarios, sensitivity studies, Monte Carlo studies, and stochastic optimization runs using 
 parallelization libraries.
@@ -27,8 +27,10 @@ More details:
     - temoatools/temoatools - temoatools source code
           
 ## temoatools installation with Python 3
-Temoatools is meant to be an add-in for Temoa. Temoa is an on-going project, so temoatools uses an archived version of Temoa to ensure compatibility 
-The instructions below are for a new installation of anaconda3, Temoa and temoatools. 
+Temoatools is meant to be an extension for Temoa. 
+Temoa is an on-going project, so in order to ensure compatibility, temoatools uses an archived version of Temoa.
+Temoatools currently uses the June 30, 2020 version of Temoa (commit 9d10c1d), downloadable at:  https://github.com/TemoaProject/temoa/tree/9d10c1da81dc6b4f2b34cadfac9db947251254e2
+The instructions below are for a new installation of temoatools. 
 The example commands are shown in a Windows environment.
 
 1) prerequisites: git and Anaconda3
@@ -40,7 +42,7 @@ The example commands are shown in a Windows environment.
 3) navigate to where you want to install and run temoatools
     > cd harddrive/yourdirectory
 
-4) download temoatools
+4) download temoatools using git
     > git clone https://www.github.com/EnergyModels/temoatools
 
 3) create temoa-py3 environment
