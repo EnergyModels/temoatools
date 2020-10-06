@@ -19,58 +19,57 @@ More details:
     2) scenarios - specify which technologies (from data) are used for each scenario to be run
     3) sensitivityVariables - specify which variables to perturb for a sensitivity analysis
   
-3) Suggested project structure
-    - project_folder
-        - temoa - keep the version of temoa that you use accessible in case you would like to review methods or update
-        - temoatools - keep the temoatools directory accessible for example files and for easy updating
-        - project_files - keep all project files here
+3) Overview of main folders
+    - temoatools/examples - sample uses of temoatools to run and analyze temoa models
+    - temoatools/projects - sample projects, it is recommended to create a directory here for your project
+    - temoatools/temoa-energysystem - an archived version of Temoa is now kept within the temoatools repository. This is the most recent version that works with temoatools
+    - temoatools/temoa_stochastic - an archived version of Temoa in Python 2 that  is now kept within the temoatools repository. This is the most recent version that works with temoatools
+    - temoatools/temoatools - temoatools source code
           
-## temoatools installation with python 3
-Temoatools is meant to be an add-in for Temoa, thus it builds on the current method for installing Temoa. 
-The instructions below are for a new installation of anaconda3, Temoa and temoatools. The example commands are shown in a Windows environment.
+## temoatools installation with Python 3
+Temoatools is meant to be an add-in for Temoa. Temoa is an on-going project, so temoatools uses an archived version of Temoa to ensure compatibility 
+The instructions below are for a new installation of anaconda3, Temoa and temoatools. 
+The example commands are shown in a Windows environment.
 
-1) Prerequisites: python 3.7 using Anaconda
+1) prerequisites: git and Anaconda3
+    - https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
     - https://www.anaconda.com/distribution/#download-section
+    
+2) launch anaconda3 prompt
 
-2) install temoa
-    1) follow instructions on https://temoacloud.com/download/ using the temoa-py3 environment
-    2) record path to temoa 
-        - Scripts that use temoatools refer to this as the temoa_path variable
+3) navigate to where you want to install and run temoatools
+    > cd harddrive/yourdirectory
 
-3) install temoatools
-    1) download temoatools
-        > git clone https://www.github.com/EnergyModels/temoatools
-    2) install temoatools using pip
-        1) start anaconda3 prompt
-        2) activate temoa-py3 environment
-        > conda activate temoa-py3
-        3) navigate to temoatools directory
-        > cd temoatools
-        4) install using pip
-        > pip install .                                                                                                                                                                                                                     
+4) download temoatools
+    > git clone https://www.github.com/EnergyModels/temoatools
+
+3) create temoa-py3 environment
+    1) navigate to archived version of temoa
+    > cd temoa-energysystem
+    2) create and activate environment
+    > conda env create
+    > conda activate temoa-py3
+    
+4) install temoatools
+    1) navigate to temoatools directory
+    > cd ..
+    4) install using pip
+    > pip install .
+                                                                                                                                                                                                                     
 5) to test:
     > cd examples/baselines  
-      python baselines_run.py
+    python baselines_run.py
 
-6) Optional: Make modifications to temoa source code for running simulations in parallel from a terminal
-    1) comment out lines 550-553 of temoa_run.py
-        >
-             try:  # make compatible with Python 2.7 or 3
-	                raw_input() # Give the user a chance to confirm input
-	         except:
-                    input()"
-        
         
 ## Running on Rivanna, UVA's high performance computing system*:
    ### To install:
           
         module load anaconda/2019.10-py3.7
-        git clone https:www.github.com/temoaproject/temoa
+        git clone https:www.github.com/EnergyModels/temoatools
         cd temoa
         conda env create
         source activate temoa-py3
         cd ..
-        git clone https:www.github.com/EnergyModels/temoatools
         cd temoatools
         pip install .
     

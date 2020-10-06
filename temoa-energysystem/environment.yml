@@ -17,4 +17,3 @@ dependencies:
     - pydoe
     - pyutilib
     - glpk
-    - coincbc
