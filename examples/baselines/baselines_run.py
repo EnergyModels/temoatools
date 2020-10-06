@@ -76,12 +76,12 @@ if __name__ == '__main__':
 
         # ====================================
         # Perform Simulations
-        option = 2  # 1 - Run single, 2 - Run all
+        option = 1  # 1 - Run single, 2 - Run all
         # ====================================
 
         if option == 1:
             # Perform single simulation
-            evaluateModel(modelInputs, scenarioInputs, scenarioNames[0], temoa_path)
+            evaluateModel(modelInputs, scenarioInputs, scenarioNames[0], temoa_path, project_path, solver)
 
         elif option == 2:
             # Perform simulations in parallel

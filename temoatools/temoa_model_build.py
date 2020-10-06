@@ -14,7 +14,8 @@ debug = False
 
 # Format for inputs, format is name and number of associated entries
 inputTables = [("representativeDays", 2), ("timesOfDay", 2), ("Connections", 11), ("ConnectionsExisting", 4),
-               ("Demand", 4), ("DiscountRateGlobal", 2), ("DiscountRateTech",4),("Emission",5), ("Fuels", 12), ("FuelsExisting", 4), ("PowerPlants", 7),
+               ("Demand", 4), ("DiscountRateGlobal", 2), ("DiscountRateTech", 4), ("Emission", 5), ("Fuels", 12),
+               ("FuelsExisting", 4), ("PowerPlants", 10),
                ("PowerPlantsPerformance", 9), ("PowerPlantsCosts", 7), ("PowerPlantsConstraints", 7),
                ("PowerPlantsExisting", 4), ("ReserveMargin", 2), ("capacityFactorTOD", 5), ("ref", 6)]
 
@@ -28,12 +29,13 @@ temoaTables = [('commodities', 3), ('technologies', 5), ('tech_baseload', 1),
                ('tech_reserve', 1), ('tech_ramping', 1), ('time_of_day', 1),
                ('time_periods', 2), ('time_season', 1), ('CapacityFactorTech', 5),
                ('CapacityToActivity', 3), ('CostFixed', 6), ('CostInvest', 5),
-               ('CostVariable', 6), ('Demand', 5), ('DemandSpecificDistribution', 5), ('DiscountRate',4),
-               ('Efficiency', 6), ('EmissionActivity', 8), ("EmissionLimit",5), 
+               ('CostVariable', 6), ('Demand', 5), ('DemandSpecificDistribution', 5), ('DiscountRate', 4),
+               ('Efficiency', 6), ('EmissionActivity', 8), ("EmissionLimit", 5),
                ('ExistingCapacity', 5), ('LifetimeLoanTech', 3), ('LifetimeTech', 3),
                ('MaxCapacity', 5), ('MaxActivity', 5),
                ('GlobalDiscountRate', 1), ('GrowthRateMax', 3), ('GrowthRateSeed', 4),
                ('RampUp', 2), ('RampDown', 2), ('ReserveMargin', 2), ('SegFrac', 4),
+               ('StorageDuration', 3),
                ('MinGenGroupOfTechnologies_Data', 3), ('MinGenGroupOfTechnologies', 4), ('CapacityCredit', 2)]
 
 # =============================================================================
@@ -50,7 +52,8 @@ demand_commodity = 'ELC_DMD'
 # =============================================================================
 # Function to build a temoa model
 # =============================================================================
-def build(modelInputs, scenarioXLSX, scenarioName, outFilename, sensitivity={}, MCinputs={}, path=os.path.normcase('.')):
+def build(modelInputs, scenarioXLSX, scenarioName, outFilename, sensitivity={}, MCinputs={},
+          path=os.path.normcase('.')):
     data_path = os.path.join(path, 'data')
     # Get empty dictionary of local variables
     local = getEmptyLocalDict()
@@ -331,21 +334,29 @@ def processSystem(inputs, local, outputs):
     outputs['GlobalDiscountRate'].append(str(inputs['DiscountRateGlobal'].DiscountRate[0]))
 
     # Discount Rate Tech
-    for tech, vintage, tech_rate, tech_rate_notes in zip(inputs['DiscountRateTech'].tech, inputs['DiscountRateTech'].vintage, inputs['DiscountRateTech'].tech_rate, inputs['DiscountRateTech'].tech_rate_notes):
+    for tech, vintage, tech_rate, tech_rate_notes in zip(inputs['DiscountRateTech'].tech,
+                                                         inputs['DiscountRateTech'].vintage,
+                                                         inputs['DiscountRateTech'].tech_rate,
+                                                         inputs['DiscountRateTech'].tech_rate_notes):
         outputs['DiscountRate'].append((tech, vintage, tech_rate, str(tech_rate_notes)))
-    
+
     # Emission Limit
-    for periods, emis_comm, emis_limit, emis_limit_units, emis_limit_notes in zip(inputs['Emission'].periods,inputs['Emission'].emis_comm,inputs['Emission'].emis_limit,inputs['Emission'].emis_limit_units,inputs['Emission'].emis_limit_notes):
-        outputs['EmissionLimit'].append((periods,str(emis_comm),emis_limit,str(emis_limit_units),str(emis_limit_notes)))
-    
+    for periods, emis_comm, emis_limit, emis_limit_units, emis_limit_notes in zip(inputs['Emission'].periods,
+                                                                                  inputs['Emission'].emis_comm,
+                                                                                  inputs['Emission'].emis_limit,
+                                                                                  inputs['Emission'].emis_limit_units,
+                                                                                  inputs['Emission'].emis_limit_notes):
+        outputs['EmissionLimit'].append(
+            (periods, str(emis_comm), emis_limit, str(emis_limit_units), str(emis_limit_notes)))
+
     # ReserveMargin
     if local['include_reserve_margin'] == 'Y':
         outputs['ReserveMargin'].append((demand_commodity, str(inputs['ReserveMargin'].ReserveMargin[0])))
 
     # Renewable Portfolio Standard
     if local['include_RPS'] == 'Y':
-      for period, RPS in zip(local['active_future_periods'], inputs['Demand'].RPS):
-        outputs['MinGenGroupOfTechnologies_Data'].append((str(period), "RPS", RPS))
+        for period, RPS in zip(local['active_future_periods'], inputs['Demand'].RPS):
+            outputs['MinGenGroupOfTechnologies_Data'].append((str(period), "RPS", RPS))
 
     return local, outputs
 
@@ -379,6 +390,7 @@ def processPowerPlants(inputs, local, outputs):
         tech['storage'] = inputs['PowerPlants'].loc[techType, 'storage']
         tech['sector'] = 'electric'
         tech['CapacityCredit'] = inputs['PowerPlants'].loc[techType, 'CapacityCredit']
+        tech['StorageDuration'] = inputs['PowerPlants'].loc[techType, 'StorageDuration']
 
         tech['c2a'] = 'Y'  # Indicator whether to include a capacity to activity input, only needed for powerplants
 
@@ -665,7 +677,7 @@ def processTech(inputs, local, outputs, tech):
     # ExistingCapacity
     exist_cap = 0  # Keep track of current capacity, growthrate_seed must be equal to or greater than this
     for vintage, capacity in zip(tech['existing_capacity_year'], tech['existing_capacity_rating']):
-        if min(local['active_future_periods']) - vintage < tech['lifetime']: # Prevent including if already retired
+        if min(local['active_future_periods']) - vintage < tech['lifetime']:  # Prevent including if already retired
             outputs['ExistingCapacity'].append((tech['name'], vintage, capacity, "GW", " "))
             exist_cap = exist_cap + capacity
 
@@ -675,6 +687,10 @@ def processTech(inputs, local, outputs, tech):
 
         loan_yrs = min(local['MaxLoan_yrs'], float(tech['lifetime']))
         outputs['LifetimeLoanTech'].append((tech['name'], loan_yrs, " "))
+
+    # StorageDuration
+    if tech['storage'] == "Y":
+        outputs['StorageDuration'].append((tech['name'], tech['StorageDuration'], "hours"))
 
     # -----
     # technologies
@@ -703,7 +719,7 @@ def processTech(inputs, local, outputs, tech):
 
     # renewable
     if local['include_RPS'] == 'Y' and tech['renewable'] == "Y":
-       outputs['MinGenGroupOfTechnologies'].append((tech['name'], 'RPS', 1.0, ''))
+        outputs['MinGenGroupOfTechnologies'].append((tech['name'], 'RPS', 1.0, ''))
 
     # -----
     # Constraints
@@ -718,7 +734,6 @@ def processTech(inputs, local, outputs, tech):
     if goodValue(tech['max_capacity']):
         for period in active_future_periods_con:
             outputs['MaxCapacity'].append((str(period), tech['name'], tech['max_capacity'], "GW", " "))
-    
 
     # MaxActivity (also used to enforce retirement)
     # Dual constraint
@@ -867,7 +882,8 @@ def createSensitivityCases(scenarioXLSX, scenarioName, sensitivityInputs, multip
 # =============================================================================
 # Create Sensitivity Inputs
 # =============================================================================
-def createMonteCarloCases(scenarioXLSX, scenarioName, sensitivityInputs, multiplier, n_cases=100, path=os.path.normcase('.')):
+def createMonteCarloCases(scenarioXLSX, scenarioName, sensitivityInputs, multiplier, n_cases=100,
+                          path=os.path.normcase('.')):
     params = {}
     data_path = os.path.join(path, 'data')
 
@@ -1038,7 +1054,7 @@ def applySensitivity(inputs, sensitivity, local):
             elif newValue < 0.0 and sensitivity['variable'] == 'Loss':
                 newValue = 0.0
 
-            if sensitivity['variable'] == 'ExpectedLifetime': # Must be an integer
+            if sensitivity['variable'] == 'ExpectedLifetime':  # Must be an integer
                 newValue = int(newValue)
 
             # Set new value

@@ -34,7 +34,8 @@ def move_data_to_db(XLSX,path=os.path.normcase('.')):
     
     # Keep track of sheet_names and corresponding number of columns to read-in
     sheets = [("representativeDays",3),("timesOfDay",3),("Connections",11),("ConnectionsExisting",4),
-                   ("Demand",4),("DiscountRateGlobal",2),("DiscountRateTech",4),("Emission",5),("Fuels",12),("FuelsExisting",4),("PowerPlants",9),
+                   ("Demand",4),("DiscountRateGlobal",2),("DiscountRateTech",4),("Emission",5),("Fuels",12),
+                    ("FuelsExisting",4),("PowerPlants",10),
                    ("PowerPlantsPerformance",9),("PowerPlantsCosts",7),("PowerPlantsConstraints",7),
                    ("PowerPlantsExisting",4),("ReserveMargin",2),("capacityFactorTOD",5),("ref",6)]
     
