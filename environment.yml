@@ -1,0 +1,22 @@
+name: temoa-py3
+channels:
+    - defaults
+    - conda-forge
+dependencies:
+    - python=3.7.3
+    - pyomo=5.5.1
+    - pyomo.extras
+    - xlwt=1.3.0
+    - ipython
+    - matplotlib
+    - pandas=1.0.0
+    - numpy=1.18.1
+    - scipy=1.4.1
+    - joblib=0.14.1
+    - salib
+    - pydoe=0.3.8
+    - pyutilib=5.7.2
+    - glpk
+    - matplotlib=3.1.3
+    - seaborn=0.10.0
+    - xlrd=1.2.0

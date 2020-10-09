@@ -45,17 +45,14 @@ The example commands are shown in a Windows environment.
 4) download temoatools using git
     > git clone https://www.github.com/EnergyModels/temoatools
 
-3) create temoa-py3 environment
-    1) navigate to archived version of temoa
-    > cd temoa-energysystem
-    2) create and activate environment
+5) navigate to temoatools directory
+    > cd temoatools
+
+3) create temoa-py3 environment (modified from archvied version of Temoa)
     > conda env create
     > conda activate temoa-py3
     
 4) install temoatools
-    1) navigate to temoatools directory
-    > cd ..
-    4) install using pip
     > pip install .
                                                                                                                                                                                                                      
 5) to test:
