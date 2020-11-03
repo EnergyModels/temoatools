@@ -14,7 +14,7 @@ debug = False
 
 # Format for inputs, format is name and number of associated entries
 inputTables = [("representativeDays", 2), ("timesOfDay", 2), ("Connections", 11), ("ConnectionsExisting", 4),
-               ("Demand", 5), ("DiscountRate", 2), ("Fuels", 12), ("FuelsExisting", 4), ("PowerPlants", 7),
+               ("Demand", 6), ("DiscountRate", 2), ("Fuels", 12), ("FuelsExisting", 4), ("PowerPlants", 7),
                ("PowerPlantsPerformance", 9), ("PowerPlantsCosts", 7), ("PowerPlantsConstraints", 7),
                ("PowerPlantsExisting", 4), ("ReserveMargin", 2), ("capacityFactorTOD", 5), ("ref", 6)]
 
