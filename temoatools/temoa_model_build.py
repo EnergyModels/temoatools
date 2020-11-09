@@ -476,7 +476,7 @@ def processFuels(inputs, local, outputs):
         tech['max_capacity'] = None
         tech['max_activity'] = None
         tech['ramp_rate'] = None
-        tech['Retirement'] = None
+        tech['Retirement'] = inputs['Fuels'].loc[techType, 'Retirement']
         tech['FirstBuild'] = inputs['Fuels'].loc[techType, 'FirstBuild']
         tech['LastBuild'] = inputs['Fuels'].loc[techType, 'LastBuild']
 
