@@ -12,19 +12,12 @@ debug = False
 # Table structures used for inputs, local variables and temoa(outputs)
 # =============================================================================
 
-# Format for inputs, format is name and number of associated entries
-inputTables = [("representativeDays", 2), ("timesOfDay", 2), ("Connections", 11), ("ConnectionsExisting", 4),
-               ("Demand", 4), ("DiscountRateGlobal", 2), ("DiscountRateTech", 4), ("Emission", 5), ("Fuels", 12),
-               ("FuelsExisting", 4), ("PowerPlants", 10),
-               ("PowerPlantsPerformance", 9), ("PowerPlantsCosts", 7), ("PowerPlantsConstraints", 7),
-               ("PowerPlantsExisting", 4), ("ReserveMargin", 2), ("capacityFactorTOD", 5), ("ref", 6)]
-
 # Format for local, names only
 localTables = ['plants_to_include', 'fuels_to_include', 'connections_to_include', 'include_baseload',
-               'include_reserve_margin', 'include_ramping', 'include_growth_limit', 'delay_newBuilds',
+               'include_reserve_margin', 'include_ramping', 'include_growth_limit',
                'future_periods', 'active_future_periods', 'allTimePeriods', 'commodities', 'MaxLoan_yrs']
 
-# Format for outputs, format is name and number of associated entries
+# Format for outputs, format is name and number of associated entries - based on
 temoaTables = [('commodities', 3), ('technologies', 5), ('tech_baseload', 1),
                ('tech_reserve', 1), ('tech_ramping', 1), ('time_of_day', 1),
                ('time_periods', 2), ('time_season', 1), ('CapacityFactorTech', 5),
@@ -255,8 +248,6 @@ def processScenarios(scenarioXLSX, scenarioName, local, path):
     local['include_reserve_margin'] = df.loc['include_reserve_margin', scenarioName]
     # Option to include ramping constraint
     local['include_ramping'] = df.loc['include_ramping', scenarioName]
-    # Prevents new builds of any technology during the first period
-    local['delay_newBuilds'] = df.loc['delay_newBuilds', scenarioName]
     # Option to include growth_rate and growth_seed
     local['include_growth_limit'] = df.loc['include_growth_limit', scenarioName]
 
@@ -405,10 +396,13 @@ def processPowerPlants(inputs, local, outputs):
         tech['capacity_factor'] = inputs['PowerPlantsPerformance'].loc[techType, 'CapacityFactor'] / 100.0
 
         # Costs
-        tech['cost_fixed'] = inputs['PowerPlantsCosts'].loc[techType, 'CostFixed']
         tech['cost_invest'] = inputs['PowerPlantsCosts'].loc[techType, 'CostInvest']
+        tech['cost_fixed'] = inputs['PowerPlantsCosts'].loc[techType, 'CostFixed']
         tech['cost_variable'] = inputs['PowerPlantsCosts'].loc[techType, 'CostVariable']
-        tech['costVariableIncr'] = 0.0  # # Yearly increase (%) - Constant
+        # Cost Increase - Constant Yearly % increase
+        tech['CostInvestIncr'] = inputs['PowerPlantsCosts'].loc[techType, 'CostInvestIncr']
+        tech['CostFixedIncr'] = inputs['PowerPlantsCosts'].loc[techType, 'CostFixedIncr']
+        tech['CostVariableIncr'] = inputs['PowerPlantsCosts'].loc[techType, 'CostVariableIncr']
 
         # Constraints
         tech['max_capacity'] = inputs['PowerPlantsConstraints'].loc[
@@ -416,6 +410,8 @@ def processPowerPlants(inputs, local, outputs):
         tech['max_activity'] = inputs['PowerPlantsConstraints'].loc[techType, 'MaxActivity']
         tech['ramp_rate'] = inputs['PowerPlantsConstraints'].loc[techType, 'RampRate']
         tech['Retirement'] = None
+        tech['FirstBuild'] = inputs['PowerPlantsConstraints'].loc[techType, 'FirstBuild']
+        tech['LastBuild'] = inputs['PowerPlantsConstraints'].loc[techType, 'LastBuild']
 
         # Existing
         tech['existing_capacity_year'] = []
@@ -468,16 +464,21 @@ def processFuels(inputs, local, outputs):
         tech['capacity_factor'] = None
 
         # Costs
-        tech['cost_fixed'] = None
         tech['cost_invest'] = inputs['Fuels'].loc[techType, 'CostInvest']
+        tech['cost_fixed'] = None
         tech['cost_variable'] = inputs['Fuels'].loc[techType, 'CostVariable']
-        tech['costVariableIncr'] = inputs['Fuels'].loc[techType, 'CostVariableIncr']  # Yearly increase (%)
+        # Cost Increase - Constant Yearly % increase
+        tech['CostInvestIncr'] = inputs['Fuels'].loc[techType, 'CostInvestIncr']
+        tech['CostFixedIncr'] = None
+        tech['CostVariableIncr'] = inputs['Fuels'].loc[techType, 'CostVariableIncr']
 
         # Constraints
         tech['max_capacity'] = None
         tech['max_activity'] = None
         tech['ramp_rate'] = None
-        tech['Retirement'] = inputs['Fuels'].loc[techType, 'Retirement']
+        tech['Retirement'] = None
+        tech['FirstBuild'] = inputs['Fuels'].loc[techType, 'FirstBuild']
+        tech['LastBuild'] = inputs['Fuels'].loc[techType, 'LastBuild']
 
         # Existing
         tech['existing_capacity_year'] = []
@@ -530,16 +531,21 @@ def processConnections(inputs, local, outputs):
         tech['capacity_factor'] = None
 
         # Costs
-        tech['cost_fixed'] = None
         tech['cost_invest'] = inputs['Connections'].loc[techType, 'CostInvest']
+        tech['cost_fixed'] = None
         tech['cost_variable'] = inputs['Connections'].loc[techType, 'CostVariable']
-        tech['costVariableIncr'] = 0.0  # # Yearly increase (%) - Constant
+        # Cost Increase - Constant Yearly % increase
+        tech['CostInvestIncr'] = inputs['Connections'].loc[techType, 'CostInvestIncr']
+        tech['CostFixedIncr'] = None
+        tech['CostVariableIncr'] = inputs['Connections'].loc[techType, 'CostVariableIncr']
 
         # Constraints
         tech['max_capacity'] = None
         tech['max_activity'] = None
         tech['ramp_rate'] = None
         tech['Retirement'] = None
+        tech['FirstBuild'] = inputs['Connections'].loc[techType, 'FirstBuild']
+        tech['LastBuild'] = inputs['Connections'].loc[techType, 'LastBuild']
 
         # Existing
         tech['existing_capacity_year'] = []
@@ -579,35 +585,51 @@ def processTech(inputs, local, outputs, tech):
     # Do something    
 
     # --------    
-    # Find years the technology is active
+    # determine the years the technology is active
     # --------
+    # lists to hold active periods
+    buildYears = []
+    futureBuildYears = []
+    active_future_periods_con = []  # years when constraints are active
 
-    # No New Builds Allowed
-    if not tech['newBuilds'] == 'Y':
-        buildYears = []
-        futureBuildYears = []
-    # New Builds Allowed
-    else:
-        # No Builds First Year (only applies to electric sector)
-        if local['delay_newBuilds'] == "Y" and tech['sector'] == 'electric':
-            buildYears = copy.copy(local['active_future_periods'][1:])
-            futureBuildYears = copy.copy(local['active_future_periods'][1:])
-        # Builds Any Year
-        else:
-            buildYears = copy.copy(local['active_future_periods'])
-            futureBuildYears = copy.copy(local['active_future_periods'])
+    if tech['newBuilds'] == 'Y':
+        # default - first and last model years
+        first_build_year = min(local['active_future_periods'])
+        last_build_year = max(local['active_future_periods'])
+
+        if goodValue(tech['FirstBuild']):
+            first_build_year = tech['FirstBuild']
+
+        if goodValue(tech['LastBuild']):
+            last_build_year = tech['LastBuild']
+        # ---------
+        # iterate through all future years and keep those where technology can build
+        # ---------
+        for year in local['active_future_periods']:
+            if first_build_year <= year <= last_build_year:
+                buildYears.append(year)
+                futureBuildYears.append(year)
+            if first_build_year <= year <= last_build_year + tech['lifetime']:
+                active_future_periods_con.append(year)
+    # Consider existing capacity
     for year in tech['existing_capacity_year']:
         if min(local['active_future_periods']) - year < tech['lifetime']:  # Prevent including already retired capacity
             # For this technology only
-            if not year in buildYears:
+            if year not in buildYears:
                 buildYears.append(year)
             # For entire model
-            if not year in local['allTimePeriods']:
+            if year not in local['allTimePeriods']:
                 local['allTimePeriods'].append(year)
                 outputs['time_periods'].append((str(year), "e"), )
+    if len(tech['existing_capacity_year']) > 0:
+        for year in local['active_future_periods']:
+            if year <= max(tech['existing_capacity_year']) + tech['lifetime']:
+                if year not in active_future_periods_con:
+                    active_future_periods_con.append(year)
     # Sort into ascending order
     buildYears.sort()
     futureBuildYears.sort()
+    active_future_periods_con.sort()
 
     # --------
     # Record powerplant information
@@ -638,16 +660,28 @@ def processTech(inputs, local, outputs, tech):
 
     # CostFixed
     if goodValue(tech['cost_fixed']):
+        start_year = local['active_future_periods'][0]
         for period in local['active_future_periods']:
             for vintage in buildYears:
                 if (vintage <= period) and ((period - vintage) < tech['lifetime']):
+                    if goodValue(tech['CostFixedIncr']):
+                        N = float(period - start_year)
+                        costFixed = tech['cost_fixed'] * (1.0 + tech['CostFixedIncr'] / 100.0) ** N
+                    else:
+                        costFixed = tech['cost_fixed']
                     outputs['CostFixed'].append(
-                        (str(period), tech['name'], str(vintage), tech['cost_fixed'], "M USD/GW", " "))
+                        (str(period), tech['name'], str(vintage), costFixed, "M USD/GW", " "))
 
     # CostInvest
     if goodValue(tech['cost_invest']):
+        start_year = local['active_future_periods'][0]
         for year in futureBuildYears:
-            outputs['CostInvest'].append((tech['name'], str(year), tech['cost_invest'], "M USD/GW", " "))
+            if goodValue(tech['CostInvestIncr']):
+                N = float(year - start_year)
+                costInvest = tech['cost_invest'] * (1.0 + tech['CostInvestIncr'] / 100.0) ** N
+            else:
+                costInvest = tech['cost_invest']
+            outputs['CostInvest'].append((tech['name'], str(year), costInvest, "M USD/GW", " "))
 
     # CostVariable
     if goodValue(tech['cost_variable']):
@@ -655,9 +689,9 @@ def processTech(inputs, local, outputs, tech):
         for period in local['active_future_periods']:
             for vintage in buildYears:
                 if (vintage <= period) and ((period - vintage) < tech['lifetime']):
-                    if goodValue(tech['costVariableIncr']):
+                    if goodValue(tech['CostVariableIncr']):
                         N = float(period - start_year)
-                        costVar = tech['cost_variable'] * (1.0 + tech['costVariableIncr'] / 100.0) ** (N)
+                        costVar = tech['cost_variable'] * (1.0 + tech['CostVariableIncr'] / 100.0) ** N
                     else:
                         costVar = tech['cost_variable']
                     outputs['CostVariable'].append((str(period), tech['name'], str(vintage), costVar, "M USD/PJ", " "))
@@ -724,11 +758,6 @@ def processTech(inputs, local, outputs, tech):
     # -----
     # Constraints
     # -----
-    # Check delayBuild
-    if local['delay_newBuilds'] == 'Y' and exist_cap == 0.0:
-        active_future_periods_con = local['active_future_periods'][1:]
-    else:
-        active_future_periods_con = local['active_future_periods']
 
     # MaxCapacity
     if goodValue(tech['max_capacity']):

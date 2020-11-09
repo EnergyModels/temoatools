@@ -2,10 +2,14 @@
 <module type="PYTHON_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/examples/baselines/configs" />
+      <excludeFolder url="file://$MODULE_DIR$/examples/baselines/databases" />
       <excludeFolder url="file://$MODULE_DIR$/examples/puerto_rico/batch" />
       <excludeFolder url="file://$MODULE_DIR$/examples/puerto_rico/configs" />
       <excludeFolder url="file://$MODULE_DIR$/examples/puerto_rico/databases" />
       <excludeFolder url="file://$MODULE_DIR$/examples/puerto_rico/sensitivity" />
+      <excludeFolder url="file://$MODULE_DIR$/projects/virginia/configs" />
+      <excludeFolder url="file://$MODULE_DIR$/projects/virginia/databases" />
       <excludeFolder url="file://$MODULE_DIR$/temoa-energysystem/data_files/debug_logs/lp_files" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
