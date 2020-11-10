@@ -3,8 +3,8 @@ from joblib import Parallel, delayed, parallel_backend
 from pathlib import Path
 import os
 import shutil
-import calendar;
-import time;
+import calendar
+import time
 
 
 # =======================================================
