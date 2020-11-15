@@ -3,6 +3,7 @@ library(dplyr)
 library(gridExtra)
 library(grid)
 library(lubridate)
+library(tidyr)
 
 dir_plots = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results"
 
@@ -56,7 +57,7 @@ df1 <- transform(df1, carbon_tax = rename[as.character(carbon_tax)])
 names(df1)[names(df1) == 'case'] <- 'Case'
 # names(df2)[names(df2) == 'case'] <- 'Case'
 
-rename <- c(="'No policy - No storms'",
+rename <- c("'No policy - No storms'",
             "None-All-IRP"="'RPS - No storms'",
             "None-All-Tax"="'US$'~100~t^-1~CO[2]'- No storms'",
             "Historical-All-No IRP"="'No policy - Historical storm frequency'",
@@ -118,7 +119,10 @@ ggplot(df1,aes(x=Year,y=Value, fill=Case))+
   geom_boxplot(outlier.size = 0.2) +
   facet_grid(carbon_tax ~ prob_type, labeller = label_parsed)+
   labs(x='', y=expression(paste("Cost of electricity (US$ kWh"^-1,")"))) +
-  theme(legend.position="none",axis.text.x =  element_text(angle = 90,vjust=0.5)) +
+  theme(legend.position="none",axis.text.x =  element_text(angle = 90,vjust=0.5), 
+        panel.background = element_rect(fill = NA, colour ="black"),
+        panel.border = element_rect(linetype="solid", fill=NA),
+        strip.background = element_rect(colour = NA, fill = NA)) +
   scale_fill_manual(values=cbPalette)
 
 
@@ -126,7 +130,6 @@ ggsave('Fig6A_V300.png', device="png",
        width=6.0, height=5.0, units="in",dpi=1000)
 
 # Analyze Results
-# Combine same technologies
 groupings = c("Year","Case")
 df_smry_all <- df1 %>% 
   group_by(.dots=groupings)%>%
@@ -134,3 +137,12 @@ df_smry_all <- df1 %>%
             mean = mean(Value),    # calculates the minimum
             max = max(Value))    # calculates the maximum
 write.csv(df_smry_all, "cost_summary.csv")
+
+# Table for SI
+# Move to long format
+data_long <- melt(df_smry_all, id.vars=c("Case","Year"))
+
+# Move to wide format
+data_wide <- dcast(data_long, Case + variable ~ Year, value.var="value")
+write.csv(data_wide, "SI_Table1.csv")
+

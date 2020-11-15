@@ -111,7 +111,10 @@ ggplot(df2,aes(x=Year,y=Value, fill=Case))+
   geom_boxplot(outlier.size = 0.2) +
   facet_grid(carbon_tax ~ prob_type, labeller = label_parsed)+
   labs(x='', y=expression(paste("Emissions (Mton CO"[2],")"))) +
-  theme(legend.position="none",axis.text.x =  element_text(angle = 90,vjust=0.5)) +
+  theme(legend.position="none",axis.text.x =  element_text(angle = 90,vjust=0.5), 
+        panel.background = element_rect(fill = NA, colour ="black"),
+        panel.border = element_rect(linetype="solid", fill=NA),
+        strip.background = element_rect(colour = NA, fill = NA)) +
   scale_fill_manual(values=cbPalette)
 
 

@@ -331,7 +331,10 @@ ggplot(df_smry,aes(x=Year, y=mean, ymin=min, ymax=max, fill=Case, group=Case, co
                                                         'US$'~100~t^-1~CO[2]~'- Historical storm frequency',
                                                         'US$'~100~t^-1~CO[2]~' - Increased storm frequency'),guide = guide_legend(nrow = 3, label.hjust = 0))+
   labs(x='Year', y=expression(paste("Activity (TWh y"^-1,")")))+
-  theme(legend.position="bottom", legend.title = element_blank(),axis.text.x = element_text(angle = 90,vjust=0.5))
+  theme(legend.position="bottom", legend.title = element_blank(),axis.text.x = element_text(angle = 90,vjust=0.5), 
+        panel.background = element_rect(fill = NA, colour ="black"),
+        panel.border = element_rect(linetype="solid", fill=NA),
+        strip.background = element_rect(colour = NA, fill = NA))
   
 
 

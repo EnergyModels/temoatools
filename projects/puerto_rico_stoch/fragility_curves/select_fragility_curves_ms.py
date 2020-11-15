@@ -98,9 +98,10 @@ sns.despine()
 
 # Save and show
 plt.savefig("Figure4_fragility_curves_selected_ms.png", dpi=1000, bbox_inches="tight")
+plt.savefig("Figure4_fragility_curves_selected_ms.pdf", dpi=1000, bbox_inches="tight")
 
 # --------------------------
-# write out results to csv
+# write out results to csv - summary
 # --------------------------
 low = low / 0.44704  # m/s back to mph
 med = med / 0.44704
@@ -120,3 +121,29 @@ for curve in curve_order:
     s['high'] = 1.0 - tt.fragility(high, curve=curves[curve])
     df = df.append(s, ignore_index=True)
 df.to_csv('fragility_curve_summary.csv')
+
+# --------------------------
+# write out results to csv
+# --------------------------
+
+curves = {"ms": "Wind speed(ms-1)", "dist_cond": "Distribution lines", "wind": "Wind turbines",
+          "dist_twr": "Distribution towers",
+          "solar": "Solar panels", "coal_biomass": "Coal & biomass power plants",
+          "battery": "Battery storage plants",
+          "hydro": "Hydroelectric power plants", "sub": "Substations", "trans": "Transmission lines",
+          "natgas_petrol": "Natural gas, oil, diesel & landfill gas power plants", "UGND": "Buried lines"}
+
+df = pd.DataFrame()
+df.loc[:, "Wind speed(ms-1)"] = ms
+df.loc[:, "Distribution lines"] = dist_cond
+df.loc[:, "Wind turbines"] = wind
+df.loc[:, "Distribution towers"] = dist_twr
+df.loc[:, "Solar panels"] = solar
+df.loc[:, "Coal & biomass power plants"] = coal_biomass
+df.loc[:, "Battery storage plants"] = battery
+df.loc[:, "Hydroelectric power plants"] = hydro
+df.loc[:, "Substations"] = sub
+df.loc[:, "Transmission lines"] = trans
+df.loc[:, "Natural gas, oil, diesel & landfill gas power plants"] = natgas_petrol
+df.loc[:, "Buried lines"] = UGND
+df.to_csv('Bennett_SourceData_Fig5.csv')
