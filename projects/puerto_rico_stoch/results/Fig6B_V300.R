@@ -111,9 +111,33 @@ ggplot(df2,aes(x=Year,y=Value, fill=Case))+
   geom_boxplot(outlier.size = 0.2) +
   facet_grid(carbon_tax ~ prob_type, labeller = label_parsed)+
   labs(x='', y=expression(paste("Emissions (Mton CO"[2],")"))) +
-  theme(legend.position="none",axis.text.x =  element_text(angle = 90,vjust=0.5)) +
+  theme(legend.position="none",axis.text.x =  element_text(angle = 90,vjust=0.5), 
+        panel.background = element_rect(fill = NA, colour ="black"),
+        panel.border = element_rect(linetype="solid", fill=NA),
+        strip.background = element_rect(colour = NA, fill = NA)) +
   scale_fill_manual(values=cbPalette)
 
 
 ggsave('Fig6B_V300.png', device="png",
        width=2.5, height=5.0, units="in",dpi=1000)
+
+ggsave('Fig6B_V300.svg', device="svg",
+       width=2.5, height=5.0, units="in",dpi=1000)
+
+# -----------------------------------
+# Save SourceData for Journal
+# -----------------------------------
+# Remove columns
+sourcedataB <- select(df2,-c("X","infra","infra_and_carbon_tax","Scenario"))
+# Add Columns for additional information
+sourcedataB$Subplot ='B'
+sourcedataB$Quantity ='Emissions (Mton CO2)'
+sourcedataB$Analysis = sourcedataB$Case
+sourcedataB$Technology = sourcedataB$Case
+sourcedataB$mean ='na'
+sourcedataB$min ='na'
+sourcedataB$max ='na'
+# Reorder columns
+sourcedataB <- sourcedataB[,c(8,9,6,3,4,10,11,2,7,5,1,12,13,14)]
+# Save
+write.csv(sourcedataB, "Bennett_SourceData_Fig6B.csv")

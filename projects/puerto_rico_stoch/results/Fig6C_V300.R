@@ -331,10 +331,48 @@ ggplot(df_smry,aes(x=Year, y=mean, ymin=min, ymax=max, fill=Case, group=Case, co
                                                         'US$'~100~t^-1~CO[2]~'- Historical storm frequency',
                                                         'US$'~100~t^-1~CO[2]~' - Increased storm frequency'),guide = guide_legend(nrow = 3, label.hjust = 0))+
   labs(x='Year', y=expression(paste("Activity (TWh y"^-1,")")))+
-  theme(legend.position="bottom", legend.title = element_blank(),axis.text.x = element_text(angle = 90,vjust=0.5))
+  theme(legend.position="bottom", legend.title = element_blank(),axis.text.x = element_text(angle = 90,vjust=0.5), 
+        panel.background = element_rect(fill = NA, colour ="black"),
+        panel.border = element_rect(linetype="solid", fill=NA),
+        strip.background = element_rect(colour = NA, fill = NA))
   
 
 
 # Save
 ggsave('Fig6C_V300.png', device="png",
        width=8.0, height=8.0, units="in",dpi=1000)
+
+ggsave('Fig6C_V300.svg', device="svg", 
+       width=8.5, height=8.0, units="in",dpi=1000)
+
+
+
+# -----------------------------------
+# Save SourceData for Journal
+# -----------------------------------
+# Remove sd
+sourcedataC <- select(df_smry,-c("sd"))
+# Add Columns for additional information
+sourcedataC$Subplot ='C'
+sourcedataC$Quantity ='Activity (TWh y^-1)'
+sourcedataC$prob_type =sourcedataC$Case
+sourcedataC$carbon_tax =sourcedataC$Case
+sourcedataC$s ='na'
+sourcedataC$entry ='na'
+sourcedataC$Value ='na'
+# Reorder columns
+sourcedataC <- sourcedataC[,c(8,9,10,11,2,4,1,3,12,13,14,5,6,7)]
+# Save
+write.csv(sourcedataC, "Bennett_SourceData_Fig6c.csv")
+
+# load other source data
+# Load data:
+sourcedataA <- read.csv("Bennett_SourceData_Fig6A.csv")
+sourcedataA <- select(sourcedataA,-c("X"))
+sourcedataB <- read.csv("Bennett_SourceData_Fig6B.csv")
+sourcedataB <- select(sourcedataB,-c("X"))
+# Combine
+sourcedata <- rbind(sourcedataA,sourcedataB,sourcedataC)
+
+# Save
+write.csv(sourcedata, "Bennett_SourceData_Fig6.csv")
