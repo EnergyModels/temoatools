@@ -120,3 +120,24 @@ ggplot(df2,aes(x=Year,y=Value, fill=Case))+
 
 ggsave('Fig6B_V300.png', device="png",
        width=2.5, height=5.0, units="in",dpi=1000)
+
+ggsave('Fig6B_V300.svg', device="svg",
+       width=2.5, height=5.0, units="in",dpi=1000)
+
+# -----------------------------------
+# Save SourceData for Journal
+# -----------------------------------
+# Remove columns
+sourcedataB <- select(df2,-c("X","infra","infra_and_carbon_tax","Scenario"))
+# Add Columns for additional information
+sourcedataB$Subplot ='B'
+sourcedataB$Quantity ='Emissions (Mton CO2)'
+sourcedataB$Analysis = sourcedataB$Case
+sourcedataB$Technology = sourcedataB$Case
+sourcedataB$mean ='na'
+sourcedataB$min ='na'
+sourcedataB$max ='na'
+# Reorder columns
+sourcedataB <- sourcedataB[,c(8,9,6,3,4,10,11,2,7,5,1,12,13,14)]
+# Save
+write.csv(sourcedataB, "Bennett_SourceData_Fig6B.csv")

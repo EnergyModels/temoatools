@@ -4,6 +4,7 @@ library(gridExtra)
 library(grid)
 library(lubridate)
 library(tidyr)
+library(reshape2)
 
 dir_plots = "C:\\Users\\benne\\PycharmProjects\\temoatools\\projects\\puerto_rico_stoch\\results"
 
@@ -129,6 +130,9 @@ ggplot(df1,aes(x=Year,y=Value, fill=Case))+
 ggsave('Fig6A_V300.png', device="png",
        width=6.0, height=5.0, units="in",dpi=1000)
 
+ggsave('Fig6A_V300.svg', device="svg",
+       width=6.0, height=5.0, units="in",dpi=1000)
+
 # Analyze Results
 groupings = c("Year","Case")
 df_smry_all <- df1 %>% 
@@ -145,4 +149,24 @@ data_long <- melt(df_smry_all, id.vars=c("Case","Year"))
 # Move to wide format
 data_wide <- dcast(data_long, Case + variable ~ Year, value.var="value")
 write.csv(data_wide, "SI_Table1.csv")
+
+
+
+# -----------------------------------
+# Save SourceData for Journal
+# -----------------------------------
+# Remove columns
+sourcedataA <- select(df1,-c("X","Unnamed..0","Unnamed..0.1","Unnamed..0.1.1","infra","infra_and_carbon_tax","Scenario"))
+# Add Columns for additional information
+sourcedataA$Subplot ='A'
+sourcedataA$Quantity ='Cost of electricity(US$ kWh^-12)'
+sourcedataA$Analysis = sourcedataA$Case
+sourcedataA$Technology = sourcedataA$Case
+sourcedataA$mean ='na'
+sourcedataA$min ='na'
+sourcedataA$max ='na'
+# Reorder columns
+sourcedataA <- sourcedataA[,c(8,9,6,3,4,10,11,2,7,5,1,12,13,14)]
+# Save
+write.csv(sourcedataA, "Bennett_SourceData_Fig6A.csv")
 
