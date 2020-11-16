@@ -1,0 +1,16 @@
+/examples/baselines/data/*.db
+/examples/baselines/configs/
+/examples/baselines/databases/
+/examples/baselines/results/
+/examples/monte_carlo/data/*.db
+/examples/monte_carlo/configs/
+/examples/monte_carlo/databases/
+/examples/monte_carlo/monte_carlo/
+/examples/sensitivity/data/*.db
+/examples/sensitivity/configs/
+/examples/sensitivity/databases/
+/examples/sensitivity/sensitivity/
+/projects/puerto_rico_stoch/configs/
+/projects/puerto_rico_stoch/databases/
+/projects/uva/configs/
+/projects/uva/databases/
