@@ -6,7 +6,7 @@ import temoatools as tt
 # ===============
 
 onlySimple = False
-folder = '/Users/rogerzhu/Documents/temoa/temoa-va/virginia/databases'
+folder = os.getcwd() + '/databases'
 dbs = ["A.sqlite", "B.sqlite"]
 
 createPlots = 'Y'  # Create default plots
@@ -25,10 +25,10 @@ if not onlySimple:
     switch = 'fuel'
     capacityByFuel = tt.getCapacity(folder, dbs, switch=switch, save_data=saveData, create_plots=createPlots)
     ActivityByYearFuel = tt.getActivity(folder, dbs, switch=switch, save_data=saveData, create_plots=createPlots)
-    #ActivityByTODFuel = tt.getActivityTOD(folder, dbs, switch=switch, sectorName=sectorName, save_data=saveData, create_plots=createPlots) # TODO - update function
+    ActivityByTODFuel = tt.getActivityTOD(folder, dbs, switch=switch, sector_name=sectorName, save_data=saveData, create_plots=createPlots) # TODO - update function
 
     # Analyze capacity and activity by technology types
     switch = 'tech'
     capacityByTech = tt.getCapacity(folder, dbs, switch=switch, save_data=saveData, create_plots=createPlots)
     ActivityByYearTech = tt.getActivity(folder, dbs, switch=switch, save_data=saveData, create_plots=createPlots)
-    #ActivityByTODTech = tt.getActivityTOD(folder, dbs, switch=switch, sectorName=sectorName, save_data=saveData, create_plots=createPlots) # TODO - update function
+    ActivityByTODTech = tt.getActivityTOD(folder, dbs, switch=switch, sectorName=sectorName, save_data=saveData, create_plots=createPlots) # TODO - update function

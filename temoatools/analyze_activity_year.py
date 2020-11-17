@@ -43,7 +43,7 @@ def getActivity(folders, dbs, switch='fuel', sector_name='electric', save_data='
             fldrs.append(folders)
         folders = fldrs
 
-    # Create dictionary to hold each capacity_single series
+    # Create dataframe to hold each capacity_single series
     activity = pd.DataFrame(dtype='float64')
 
     # Iterate through each db
@@ -104,7 +104,7 @@ def getActivity(folders, dbs, switch='fuel', sector_name='electric', save_data='
 def SingleDB(folder, db, switch='fuel', sector_name='electric', conversion=277.777778):
     #    inputs:
     #    1) folder          - path containing db
-    #    2) db              - name of databas
+    #    2) db              - name of database
     #    3) switch          - 'fuel' or 'tech', basis of categorization
     #    4) sectorName      - name of temoa sector to be analyzed
     #    5) conversion      - conversion to GWh, default is 277.778 (from PJ)
@@ -169,7 +169,6 @@ def SingleDB(folder, db, switch='fuel', sector_name='electric', conversion=277.7
         cols = sorted(techs)
 
     future_t_periods = sorted(future_t_periods)
-    rows = future_t_periods[:-1]  # Last period is not calculated
 
     #   Identify Unique Scenarios
     qry = "SELECT * FROM Output_Objective"
@@ -180,7 +179,7 @@ def SingleDB(folder, db, switch='fuel', sector_name='electric', conversion=277.7
         if scenario not in scenarios:
             scenarios.append(scenario)
 
-    # Create pandas DataFrame to hold yearlyEmissions for all scenarios
+    # Create pandas DataFrame to hold activity for all scenarios
     index = pd.MultiIndex.from_product([[db], scenarios, cols], names=['database', 'scenario', 'fuelOrTech'])
     df = pd.DataFrame(index=index, columns=future_t_periods[:-1], dtype='float64')
     df = df.fillna(0.0)  # Default value to zero
