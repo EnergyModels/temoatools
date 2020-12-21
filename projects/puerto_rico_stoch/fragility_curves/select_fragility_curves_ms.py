@@ -61,14 +61,14 @@ plt.plot(ms, wind, label="Wind turbines", color=colors[2])
 plt.plot(ms, dist_twr, label="Distribution towers", color=colors[5])
 
 plt.plot(ms, solar, label="Solar panels", color=colors[8])
-plt.plot(ms, coal_biomass, '--', label="Coal & biomass power plants", color=colors[7])
+plt.plot(ms, coal_biomass, '--', label="Coal and biomass power plants", color=colors[7])
 plt.plot(ms, battery, label="Battery storage plants", color=colors[3])
 plt.plot(ms, hydro, '--', label="Hydroelectric power plants", color=colors[9])
 
 plt.plot(ms, sub, '--', label="Substations", color=colors[6])
 
 plt.plot(ms, trans, label="Transmission lines", color=colors[4])
-plt.plot(ms, natgas_petrol, label="Natural gas, oil, diesel \n& landfill gas power plants", color=colors[1])
+plt.plot(ms, natgas_petrol, label="Natural gas, oil, diesel \nand landfill gas power plants", color=colors[1])
 plt.plot(ms, UGND, ':', label="Buried lines", color=colors[0])
 
 # Legend and Labels
@@ -76,7 +76,7 @@ plt.plot(ms, UGND, ':', label="Buried lines", color=colors[0])
 plt.legend(bbox_to_anchor=(1.0, 0.5), loc='center left', ncol=1, frameon=False)
 # plt.legend(bbox_to_anchor=(0.1, 0.6), loc='center left', ncol=1, frameon=True)
 plt.ylabel("Probability of damage (-)")
-plt.xlabel("Wind speed ($ms^{-1}$)")
+plt.xlabel("Wind speed (m s$^{-1}$)")
 
 # Add vertical lines for category cases
 y = [0, 1.02]
@@ -90,8 +90,8 @@ plt.plot([high, high], y, color="gray")
 
 y_txt = 1.03
 plt.text(low, y_txt, "1", ha="center")
-plt.text(med, y_txt, "2-3", ha="center")
-plt.text(high, y_txt, "4-5", ha="center")
+plt.text(med, y_txt, "2 or 3", ha="center")
+plt.text(high, y_txt, "4 or 5", ha="center")
 plt.text((low + high) / 2.0, y_txt + 0.07, "Hurricane category", ha="center")
 
 sns.despine()
