@@ -26,6 +26,13 @@ More details:
     - temoatools/temoa_stochastic - an archived version of Temoa in Python 2 that  is now kept within the temoatools repository. This is the most recent version that works with temoatools
     - temoatools/temoatools - temoatools source code
           
+## How to cite
+### Temoa
+Hunter, K., Sreepathi, S. & DeCarolis, J. F. Modeling for insight using tools for energy model optimization and analysis (Temoa). Energy Econ. 40, 339–349 (2013). https://doi.org/10.1016/j.eneco.2013.07.014
+
+### temoatools (this library)
+Bennett, J.A., Trevisan, C.N., DeCarolis, J.F. et al. Extending energy system modelling to include extreme weather risks and application to hurricane events in Puerto Rico. Nat Energy 6, 240–249 (2021). https://doi.org/10.1038/s41560-020-00758-6
+
 ## temoatools installation with Python 3
 Temoatools is meant to be an extension for Temoa. 
 Temoa is an on-going project, so in order to ensure compatibility, temoatools uses an archived version of Temoa.
